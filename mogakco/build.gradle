@@ -1,0 +1,153 @@
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+        snippetsDir=file('build/generated-snippets')
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.6.2'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+    id 'org.asciidoctor.convert' version "1.5.3"
+    id 'java'
+}
+
+group = 'project'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
+    implementation 'org.apache.logging.log4j:log4j-core:2.17.1'
+    // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
+    implementation 'org.apache.logging.log4j:log4j-api:2.17.1'
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.6.2'
+
+    ////////////////////////////WEBSOCKET//////////////////////////////////
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.webjars:webjars-locator-core'
+    implementation group: 'org.webjars', name: 'sockjs-client', version: '1.5.1'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation group: 'org.webjars', name: 'stomp-websocket', version: '2.3.4'
+    implementation 'org.webjars:bootstrap:3.3.7'
+    ///////////////////////////////////////////////////////////////////////
+    // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: '4.0.3'
+
+    // aws secrets
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.0'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws-secrets-manager-config:2.2.6.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'commons-io:commons-io:2.5'
+
+    //jwt
+    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+
+    //react view
+    // https://mvnrepository.com/artifact/com.github.eirslett/frontend-maven-plugin
+    implementation group: 'com.github.eirslett', name: 'frontend-maven-plugin', version: '1.12.0'
+
+    // springfox-swagger-ui
+    implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
+    //querydsl
+    implementation 'com.querydsl:querydsl-jpa'
+
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+
+    //qr code
+    implementation group: 'com.google.zxing', name: 'javase', version: '3.1.0'
+
+    //jwt
+    implementation 'com.auth0:java-jwt:3.18.2'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+
+    //log4j2 security issue
+    implementation 'org.apache.logging.log4j:log4j-core:2.17.1'
+
+    //querydsl
+    implementation 'com.querydsl:querydsl-jpa'
+
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+    //oauth
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    //RestDocs API
+    asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:1.2.6.RELEASE' // (4)
+    testImplementation group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc', version: '2.0.6.RELEASE'
+
+    //Oauth2
+    implementation('org.springframework.boot:spring-boot-starter-oauth2-client')
+    implementation group: 'org.kohsuke',name: 'github-api',version:'1.125'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+
+    from file("build/asciidoc/html5/")
+    into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn copyDocument
+}
+
+
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+compileQuerydsl{
+    options.annotationProcessorPath = configurations.querydsl
+}
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
+}
