@@ -3,6 +3,10 @@
 
 # BE-Mogakco
 
+## 프로젝트 아키텍쳐
+
+![Architecture](readme_img/Mogakco_Architecture.png)
+
 # 0. 개발 환경, 언어, 도구
 
 - Intellij
