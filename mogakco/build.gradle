@@ -34,15 +34,16 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+/*
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+*/
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
+//    testImplementation 'org.springframework.security:spring-security-test'
     // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
     implementation 'org.apache.logging.log4j:log4j-core:2.17.1'
     // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
@@ -69,16 +70,11 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'commons-io:commons-io:2.5'*/
 
-    //jwt
-    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-
-    //react view
-    // https://mvnrepository.com/artifact/com.github.eirslett/frontend-maven-plugin
-    implementation group: 'com.github.eirslett', name: 'frontend-maven-plugin', version: '1.12.0'
 
     // springfox-swagger-ui
     implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
+
     //querydsl
     implementation 'com.querydsl:querydsl-jpa'
 
@@ -86,15 +82,13 @@ dependencies {
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 
 
-    //qr code
-    implementation group: 'com.google.zxing', name: 'javase', version: '3.1.0'
 
     //jwt
-    implementation 'com.auth0:java-jwt:3.18.2'
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
-    implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
-    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+//    implementation 'com.auth0:java-jwt:3.18.2'
+//    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+//    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+//    implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+//    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
     //log4j2 security issue
     implementation 'org.apache.logging.log4j:log4j-core:2.17.1'
@@ -105,15 +99,12 @@ dependencies {
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 
-    //oauth
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-
     //RestDocs API
     asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:1.2.6.RELEASE' // (4)
     testImplementation group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc', version: '2.0.6.RELEASE'
 
     //Oauth2
-    implementation('org.springframework.boot:spring-boot-starter-oauth2-client')
+//    implementation('org.springframework.boot:spring-boot-starter-oauth2-client')
 //    implementation group: 'org.kohsuke',name: 'github-api',version:'1.125'
 }
 
