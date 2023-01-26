@@ -1,19 +1,16 @@
 spring:
+  profiles:
+    include: oauth
+  config:
+    import:
+      - classpath:/config/application.yml
+      - classpath:/config/application-oauth.yml
+
   datasource:
     url: jdbc:mariadb://localhost:3306/mogakco_local
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
     password: 1234
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          github:
-#            client-id:
-#            client-secret:
-#          google:
-#            client-id:
-#            client-secret:
 
 
   jpa:
