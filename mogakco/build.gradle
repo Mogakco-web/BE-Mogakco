@@ -121,12 +121,13 @@ test {
     useJUnitPlatform()
 }
 
-task copyDocument(type: Copy) {
+
+/* task copyDocument(type: Copy) {
     dependsOn asciidoctor
 
     from file("build/asciidoc/html5/")
     into file("src/main/resources/static/docs")
-}
+} */
 
 build {
     dependsOn copyDocument
