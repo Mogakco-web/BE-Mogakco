@@ -129,9 +129,10 @@ test {
     into file("src/main/resources/static/docs")
 } */
 
+/*
 build {
     dependsOn copyDocument
-}
+} */
 
 
 def querydslDir = "$buildDir/generated/querydsl"
