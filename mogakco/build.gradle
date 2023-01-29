@@ -9,7 +9,6 @@ plugins {
     id 'org.springframework.boot' version '2.6.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
-    id 'org.asciidoctor.convert' version "1.5.3"
     id 'java'
 }
 
@@ -34,16 +33,21 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-/*
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-*/
+
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//    testImplementation 'org.springframework.security:spring-security-test'
+//  testImplementation 'org.springframework.security:spring-security-test'
+
+    /*
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    */
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
     // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
     implementation 'org.apache.logging.log4j:log4j-core:2.17.1'
     // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
@@ -66,10 +70,9 @@ dependencies {
 
     // aws secrets
     /*implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.0'
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws-secrets-manager-config:2.2.6.RELEASE'
+   implementation 'org.springframework.cloud:spring-cloud-starter-aws-secrets-manager-config:2.2.6.RELEASE'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'commons-io:commons-io:2.5'*/
-
 
     // springfox-swagger-ui
     implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
@@ -100,28 +103,33 @@ dependencies {
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 
     //RestDocs API
+    /*
     asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:1.2.6.RELEASE' // (4)
     testImplementation group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc', version: '2.0.6.RELEASE'
+    */
 
     //Oauth2
+
 //    implementation('org.springframework.boot:spring-boot-starter-oauth2-client')
-//    implementation group: 'org.kohsuke',name: 'github-api',version:'1.125'
-}
+
+ }
 
 test {
     useJUnitPlatform()
 }
 
-task copyDocument(type: Copy) {
+
+/* task copyDocument(type: Copy) {
     dependsOn asciidoctor
 
     from file("build/asciidoc/html5/")
     into file("src/main/resources/static/docs")
-}
+} */
 
+/*
 build {
     dependsOn copyDocument
-}
+} */
 
 
 def querydslDir = "$buildDir/generated/querydsl"
