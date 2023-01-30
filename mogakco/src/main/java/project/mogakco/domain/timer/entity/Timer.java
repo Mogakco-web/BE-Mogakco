@@ -1,5 +1,6 @@
 package project.mogakco.domain.timer.entity;
 
+import lombok.Builder;
 import project.mogakco.global.domain.BaseEntity;
 
 import javax.persistence.*;
@@ -15,4 +16,11 @@ public class Timer extends BaseEntity {
 	private MemberSocial memberSocial;
 
 	private String recodeTime;
+
+	@Builder
+	public Timer(Long timer_seq, MemberSocial memberSocial, String recodeTime) {
+		this.timer_seq = timer_seq;
+		this.memberSocial = memberSocial;
+		this.recodeTime = recodeTime;
+	}
 }
