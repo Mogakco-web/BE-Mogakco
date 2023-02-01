@@ -16,6 +16,11 @@ public class MogakcoApplication {
 		System.out.println(">>>>" +test);
 	}*/
 
+	@PostConstruct
+	public void init(){
+		System.out.println(">>> Server Open");
+	}
+
 	public static void main(String[] args) {
 		SpringApplication.run(MogakcoApplication.class, args);
 	}
