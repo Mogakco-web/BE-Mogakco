@@ -1,11 +1,4 @@
 spring:
-  profiles:
-    include: oauth
-  config:
-    import:
-      - classpath:/config/application.yml
-      - classpath:/config/application-oauth.yml
-      - classpath:/config/bootstrap.yml
 
   datasource:
     url: ${jdbc-url}
