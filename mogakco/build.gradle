@@ -69,10 +69,10 @@ dependencies {
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '4.0.3'
 
     // aws secrets
-    /*implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.0'
-   implementation 'org.springframework.cloud:spring-cloud-starter-aws-secrets-manager-config:2.2.6.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.0'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws-secrets-manager-config:2.2.6.RELEASE'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-    implementation 'commons-io:commons-io:2.5'*/
+    implementation 'commons-io:commons-io:2.5'
 
     // springfox-swagger-ui
     implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
