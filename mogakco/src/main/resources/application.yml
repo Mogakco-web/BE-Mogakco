@@ -1,10 +1,10 @@
 spring:
 
   datasource:
-    url: ${jdbc-url}
     driver-class-name: org.mariadb.jdbc.Driver
-    username: ${admin}
-    password: ${rds-pw}
+    url: ${jdbc-url}
+    username: ${username}
+    password: ${password}
 
 #  security:
 #    oauth2:
@@ -21,7 +21,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    generate-ddl: true
     properties:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
+

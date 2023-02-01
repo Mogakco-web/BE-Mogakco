@@ -1,8 +1,11 @@
 aws:
-  secretmanager:
+  secretsmanager:
     name: mogakco
+    enabled: true
 
 cloud:
   aws:
+    stack:
+      auto: false
     region:
       static: ap-northeast-2
