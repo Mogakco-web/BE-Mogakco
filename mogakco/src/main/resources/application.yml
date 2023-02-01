@@ -1,9 +1,18 @@
 spring:
+  profiles:
+    include: oauth
+  config:
+    import:
+      - classpath:/config/application.yml
+      - classpath:/config/application-oauth.yml
+      - classpath:/config/bootstrap.yml
+
   datasource:
     url: ${jdbc-url}
     driver-class-name: org.mariadb.jdbc.Driver
     username: ${admin}
     password: ${rds-pw}
+
 #  security:
 #    oauth2:
 #      client:
