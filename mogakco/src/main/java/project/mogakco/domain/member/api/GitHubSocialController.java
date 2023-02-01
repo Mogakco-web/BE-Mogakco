@@ -23,6 +23,8 @@ public class GitHubSocialController {
 
 	@GetMapping("/githubLogin")
 	public ResponseEntity<?> githubLogin(@PathParam("code")String code) throws IOException {
+		System.out.println("loginCode="+code);
+
 		GitHubResponseDTO loginInfoDTO = githubSocialService.getAccessToken(code);
 		if (code != null){
 			return new ResponseEntity<>(loginInfoDTO,HttpStatus.OK);

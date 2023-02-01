@@ -1,6 +1,7 @@
 package project.mogakco.domain.member.application.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import project.mogakco.domain.member.application.service.GithubSocialService;
 import project.mogakco.domain.member.dto.GitHubResponseDTO;
@@ -14,7 +15,10 @@ import java.util.Map;
 @Service
 public class GithubSocialServiceImpl implements GithubSocialService {
 
+	@Value("${spring.security.oauth2.client.registration.github.client-id}")
 	private String client_id;
+
+	@Value("${spring.security.oauth2.client.registration.github.client-secret}")
 	private String clinet_secret;
 
 	@Override
@@ -42,7 +46,7 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 
 		conn.disconnect();
 
-		System.out.println(responseData);
+		System.out.println("responseData="+responseData);
 
 		return access(responseData);
 	}
@@ -59,6 +63,7 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36");
 		conn.setRequestProperty("Authorization", "token " + access_token);
 
+		System.out.println("accessToken="+access_token);
 		int responseCode = conn.getResponseCode();
 
 		String res_data = getResponse(conn, responseCode);
@@ -86,15 +91,14 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 
 	private GitHubResponseDTO initializeUserInfo(Map<String,String> result){
 		GitHubResponseDTO gitHubResponseDTO=new GitHubResponseDTO();
+		System.out.println("result="+result);
 		gitHubResponseDTO.setLogin(result.get("login"));
 		gitHubResponseDTO.setAvatar_url(result.get("avatar_url"));
-		gitHubResponseDTO.setId(result.get("id"));
 		gitHubResponseDTO.setName(result.get("name"));
 		gitHubResponseDTO.setCreated_at(result.get("created_at"));
-		gitHubResponseDTO.setRepo_url(result.get("repo_url"));
+		gitHubResponseDTO.setRepos_url(result.get("repos_url"));
 		gitHubResponseDTO.setNode_id(result.get("node_id"));
 		gitHubResponseDTO.setType(result.get("type"));
-		gitHubResponseDTO.setSite_admin(result.get("site_admin"));
 		gitHubResponseDTO.setUpdated_at(result.get("updated_at"));
 
 		return gitHubResponseDTO;

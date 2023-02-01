@@ -6,13 +6,13 @@ spring:
     username: ${username}
     password: ${password}
 
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          github:
-#            client-id:
-#            client-secret:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${github-id}
+            client-secret: ${github-secret}
 #          google:
 #            client-id:
 #            client-secret:
