@@ -27,10 +27,6 @@ public class GitHubSocialController {
 		System.out.println("loginCode="+code);
 
 		MemberSocial loginInfo = githubSocialService.getAccessToken(code);
-		if (code != null){
-			return new ResponseEntity<>(loginInfo,HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>("Bad Request Code"+code,HttpStatus.OK);
-		}
+		return new ResponseEntity<>(loginInfo,HttpStatus.OK);
 	}
 }
