@@ -18,7 +18,7 @@ public class OAuth2UserInfo {
 		return MemberSocial.builder()
 				.member_social_id(name)
 				.role(MemberRole.MEMBER)
-				.member_social_email(email)
+				.email(email)
 				.authProvider(AuthProvider.changeStringAuthProvider(provider))
 				.build();
 	}

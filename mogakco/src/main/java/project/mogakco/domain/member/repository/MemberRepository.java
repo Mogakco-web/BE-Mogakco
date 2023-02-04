@@ -7,6 +7,6 @@ import project.mogakco.domain.member.entity.member.MemberSocial;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<MemberSocial,Long> {
-	Optional<MemberSocial> findByEmailAndProvider(String email, AuthProvider provider);
+	Optional<MemberSocial> findByEmailAndAuthProvider(String email, AuthProvider provider);
 
 }

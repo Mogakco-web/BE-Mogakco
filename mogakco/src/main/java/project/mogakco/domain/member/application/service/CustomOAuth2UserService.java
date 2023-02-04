@@ -65,7 +65,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 	private MemberSocial saveOrUpdate(OAuth2UserInfo oAuth2UserInfo) {
 
-		MemberSocial member= memberRepository.findByEmailAndProvider(oAuth2UserInfo.getEmail(), AuthProvider.changeStringAuthProvider(oAuth2UserInfo.getProvider()))
+		MemberSocial member= memberRepository.findByEmailAndAuthProvider(oAuth2UserInfo.getEmail(), AuthProvider.changeStringAuthProvider(oAuth2UserInfo.getProvider()))
 				.map(memberSocial -> memberSocial.updateNewUserInfo(oAuth2UserInfo.getEmail(),oAuth2UserInfo.getName(),oAuth2UserInfo.getImageUrl()))
 				.orElse(oAuth2UserInfo.toMember());
 		return memberRepository.save(member);

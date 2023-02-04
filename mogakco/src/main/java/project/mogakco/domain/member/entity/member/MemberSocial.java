@@ -14,7 +14,7 @@ public class MemberSocial {
 	@GeneratedValue
 	private Long member_seq;
 
-	private String member_social_email;
+	private String email;
 
 	private String member_imgUrl;
 
@@ -28,17 +28,21 @@ public class MemberSocial {
 
 
 	@Builder
-	public MemberSocial(String member_social_email, String member_imgUrl, String member_social_id, MemberRole role, AuthProvider authProvider) {
-		this.member_social_email = member_social_email;
+	public MemberSocial(String email, String member_imgUrl, String member_social_id, MemberRole role, AuthProvider authProvider) {
+		this.email = email;
 		this.member_imgUrl = member_imgUrl;
 		this.member_social_id = member_social_id;
 		this.role = role;
 		this.authProvider = authProvider;
 	}
 
+	public MemberSocial() {
+
+	}
+
 	public MemberSocial updateNewUserInfo(String member_social_email,String member_social_id,String member_imgUrl){
 		this.member_imgUrl=member_imgUrl;
-		this.member_social_email=member_social_email;
+		this.email =member_social_email;
 		this.member_social_id=member_social_id;
 		return this;
 	}
