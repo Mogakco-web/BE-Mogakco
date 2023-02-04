@@ -16,7 +16,7 @@ public class OAuth2UserInfo {
 	private String imageUrl;
 	public MemberSocial toMember() {
 		return MemberSocial.builder()
-				.member_social_id(name)
+				.nickname(name)
 				.role(MemberRole.MEMBER)
 				.email(email)
 				.authProvider(AuthProvider.changeStringAuthProvider(provider))
