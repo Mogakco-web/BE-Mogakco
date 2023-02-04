@@ -1,5 +1,6 @@
 spring:
-
+  profiles:
+    include: oauth
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: ${jdbc-url}
@@ -13,9 +14,11 @@ spring:
           github:
             client-id: ${github-id}
             client-secret: ${github-secret}
-#          google:
-#            client-id:
-#            client-secret:
+            redirectUri: http://3.38.8.89:8080/oauth2/github
+            scope: user
+  #          google:
+  #            client-id:
+  #            client-secret:
 
 
   jpa:
@@ -26,4 +29,3 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
-
