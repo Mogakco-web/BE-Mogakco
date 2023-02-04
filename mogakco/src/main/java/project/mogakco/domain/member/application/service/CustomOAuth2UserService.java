@@ -12,6 +12,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import project.mogakco.domain.member.entity.member.AuthProvider;
 import project.mogakco.domain.member.entity.member.MemberSocial;
+import project.mogakco.domain.member.entity.oauth.OAuth2Attributes;
+import project.mogakco.domain.member.entity.oauth.OAuth2UserInfo;
 import project.mogakco.domain.member.repository.MemberRepository;
 
 import java.util.Collections;
@@ -38,7 +40,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 				.getUserNameAttributeName(); // OAuth 로그인 시 키(pk)가 되는 값
 		Map<String, Object> attributes = oAuth2User.getAttributes(); // OAuth 서비스의 유저 정보들
 
-		OAuth2Attributes.extract(registrationId, attributes); // registrationId에 따라 유저 정보를 통해 공통된 UserProfile 객체로 만들어 줌
+		OAuth2UserInfo oAuth2UserInfo = OAuth2Attributes.extract(registrationId, attributes);// registrationId에 따라 유저 정보를 통해 공통된 UserProfile 객체로 만들어 줌
 		oAuth2UserInfo.setProvider(registrationId);
 		MemberSocial memberSocial = saveOrUpdate(oAuth2UserInfo);
 
