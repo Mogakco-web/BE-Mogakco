@@ -16,9 +16,9 @@ public class MemberSocial {
 
 	private String email;
 
-	private String member_imgUrl;
+	private String imgUrl;
 
-	private String member_social_id;
+	private String nickname;
 
 	@Enumerated
 	private MemberRole role;
@@ -26,12 +26,14 @@ public class MemberSocial {
 	@Enumerated
 	private AuthProvider authProvider;
 
+	private String gitRepoUrl;
 
 	@Builder
-	public MemberSocial(String email, String member_imgUrl, String member_social_id, MemberRole role, AuthProvider authProvider) {
+	public MemberSocial(String email, String imgUrl,String gitRepoUrl, String nickname, MemberRole role, AuthProvider authProvider) {
 		this.email = email;
-		this.member_imgUrl = member_imgUrl;
-		this.member_social_id = member_social_id;
+		this.imgUrl = imgUrl;
+		this.nickname = nickname;
+		this.gitRepoUrl=gitRepoUrl;
 		this.role = role;
 		this.authProvider = authProvider;
 	}
@@ -41,9 +43,9 @@ public class MemberSocial {
 	}
 
 	public MemberSocial updateNewUserInfo(String member_social_email,String member_social_id,String member_imgUrl){
-		this.member_imgUrl=member_imgUrl;
+		this.imgUrl =member_imgUrl;
 		this.email =member_social_email;
-		this.member_social_id=member_social_id;
+		this.nickname =member_social_id;
 		return this;
 	}
 }

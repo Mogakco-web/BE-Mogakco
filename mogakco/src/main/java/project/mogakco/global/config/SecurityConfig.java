@@ -24,11 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 				.authorizeRequests()
 				.antMatchers("/**").permitAll()
-				.anyRequest().authenticated()
-				.and()
-				.oauth2Login().defaultSuccessUrl("/api/v1/oauth/loginInfo",true)
-				.userInfoEndpoint()
-				.userService(oAuth2UserService);
+				.anyRequest().authenticated();
 
 	}
 }

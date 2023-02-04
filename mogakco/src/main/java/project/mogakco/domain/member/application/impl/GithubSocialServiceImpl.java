@@ -1,19 +1,26 @@
 package project.mogakco.domain.member.application.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import project.mogakco.domain.member.application.service.GithubSocialService;
 import project.mogakco.domain.member.dto.GitHubResponseDTO;
+import project.mogakco.domain.member.entity.member.MemberSocial;
+import project.mogakco.domain.member.repository.MemberRepository;
 
 import java.io.*;
+import java.lang.reflect.Member;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
 
 @Service
+@RequiredArgsConstructor
 public class GithubSocialServiceImpl implements GithubSocialService {
+
+	private final MemberRepository memberRepository;
 
 	@Value("${spring.security.oauth2.client.registration.github.client-id}")
 	private String client_id;
@@ -22,7 +29,7 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 	private String clinet_secret;
 
 	@Override
-	public GitHubResponseDTO getAccessToken(String code) throws IOException {
+	public MemberSocial getAccessToken(String code) throws IOException {
 		URL url = new URL("https://github.com/login/oauth/access_token");
 
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -51,7 +58,7 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		return access(responseData);
 	}
 
-	private GitHubResponseDTO access(String responseData) throws IOException{
+	private MemberSocial access(String responseData) throws IOException{
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> map = objectMapper.readValue(responseData, Map.class);
 		String access_token = map.get("access_token");
@@ -72,8 +79,9 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		objectMapper=new ObjectMapper();
 		Map<String,String> result=objectMapper.readValue(res_data,Map.class);
 		System.out.println("result="+result);
+		GitHubResponseDTO gitHubResponseDTO = initializeUserInfo(result);
 
-		return initializeUserInfo(result);
+		return githubSocialMemberSignup(gitHubResponseDTO);
 	}
 
 	private String getResponse(HttpURLConnection conn, int responseCode) throws IOException {
@@ -94,13 +102,12 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		System.out.println("result="+result);
 		gitHubResponseDTO.setLogin(result.get("login"));
 		gitHubResponseDTO.setAvatar_url(result.get("avatar_url"));
-		gitHubResponseDTO.setName(result.get("name"));
-		gitHubResponseDTO.setCreated_at(result.get("created_at"));
 		gitHubResponseDTO.setRepos_url(result.get("repos_url"));
-		gitHubResponseDTO.setNode_id(result.get("node_id"));
-		gitHubResponseDTO.setType(result.get("type"));
-		gitHubResponseDTO.setUpdated_at(result.get("updated_at"));
-
+		gitHubResponseDTO.setEmail(result.get("email"));
 		return gitHubResponseDTO;
+	}
+
+	private MemberSocial githubSocialMemberSignup(GitHubResponseDTO gitHubResponseDTO){
+		return memberRepository.save(gitHubResponseDTO.toEntity());
 	}
 }
