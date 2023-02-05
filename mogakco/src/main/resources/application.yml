@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: oauth
+    include: jwt
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: ${jdbc-url}

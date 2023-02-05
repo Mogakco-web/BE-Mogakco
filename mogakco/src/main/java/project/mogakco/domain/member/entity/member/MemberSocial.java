@@ -2,10 +2,7 @@ package project.mogakco.domain.member.entity.member;
 
 import lombok.Builder;
 
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class MemberSocial {
@@ -20,10 +17,10 @@ public class MemberSocial {
 
 	private String nickname;
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	private MemberRole role;
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	private AuthProvider authProvider;
 
 	private String gitRepoUrl;
