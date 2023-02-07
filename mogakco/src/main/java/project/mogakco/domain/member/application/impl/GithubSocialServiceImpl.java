@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import project.mogakco.domain.member.application.service.GithubSocialService;
 import project.mogakco.domain.member.dto.GitHubResponseDTO;
+import project.mogakco.domain.member.entity.member.AuthProvider;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.member.repository.MemberRepository;
 
@@ -104,10 +105,15 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		gitHubResponseDTO.setAvatar_url(result.get("avatar_url"));
 		gitHubResponseDTO.setRepos_url(result.get("repos_url"));
 		gitHubResponseDTO.setEmail(result.get("email"));
+		gitHubResponseDTO.setAuthProvider(AuthProvider.GITHUB);
 		return gitHubResponseDTO;
 	}
 
 	private MemberSocial githubSocialMemberSignup(GitHubResponseDTO gitHubResponseDTO){
+		memberRepository.findByEmailAndAuthProvider(gitHubResponseDTO.getEmail(),gitHubResponseDTO.getAuthProvider())
+				.map(memberSocial -> memberSocial.updateNewUserInfo(memberSocial.getEmail(),memberSocial.getImgUrl()))
+				.orElse(gitHubResponseDTO.toEntity());
+
 		return memberRepository.save(gitHubResponseDTO.toEntity());
 	}
 }

@@ -1,10 +1,12 @@
 package project.mogakco.domain.member.entity.member;
 
 import lombok.Builder;
+import lombok.Getter;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
 public class MemberSocial {
 
 	@Id
@@ -39,10 +41,9 @@ public class MemberSocial {
 
 	}
 
-	public MemberSocial updateNewUserInfo(String member_social_email,String member_social_id,String member_imgUrl){
-		this.imgUrl =member_imgUrl;
-		this.email =member_social_email;
-		this.nickname =member_social_id;
+	public MemberSocial updateNewUserInfo(String email,String imgUrl){
+		this.imgUrl =imgUrl;
+		this.email =email;
 		return this;
 	}
 }

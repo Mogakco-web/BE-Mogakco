@@ -1,6 +1,6 @@
 package project.mogakco.global.domain.oauth;
 
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
+import project.mogakco.domain.member.entity.member.AuthProvider;
 import project.mogakco.global.config.oauth.GithubOAuth2UserInfo;
 
 import java.util.Arrays;
@@ -13,7 +13,8 @@ public enum OAuthAttributes {
 				(String) attributes.get("login"),
 				(String) attributes.get("email"),
 				(String) attributes.get("avatar_url"),
-				(String) attributes.get("repos_url")
+				(String) attributes.get("repos_url"),
+				AuthProvider.GITHUB
 		);
 	});
 

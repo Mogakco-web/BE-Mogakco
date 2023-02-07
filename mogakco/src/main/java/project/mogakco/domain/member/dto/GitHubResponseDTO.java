@@ -13,6 +13,7 @@ public class GitHubResponseDTO {
 	private String avatar_url;
 	private String repos_url;
 	private String email;
+	private AuthProvider authProvider;
 
 	public MemberSocial toEntity(){
 		return MemberSocial.builder()
