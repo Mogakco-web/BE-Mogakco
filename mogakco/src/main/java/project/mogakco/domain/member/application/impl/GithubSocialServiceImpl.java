@@ -11,7 +11,6 @@ import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.member.repository.MemberRepository;
 
 import java.io.*;
-import java.lang.reflect.Member;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;

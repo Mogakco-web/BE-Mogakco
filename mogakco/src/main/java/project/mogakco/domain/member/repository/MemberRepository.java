@@ -9,4 +9,7 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<MemberSocial,Long> {
 	Optional<MemberSocial> findByEmailAndAuthProvider(String email, AuthProvider provider);
 
+	Optional<MemberSocial> findByEmail(String email);
+
+	Boolean existsByEmail(String email);
 }

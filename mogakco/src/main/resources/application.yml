@@ -14,6 +14,7 @@ spring:
           github:
             client-id: ${github-id}
             client-secret: ${github-secret}
+            redirectUri: "{baseUrl}/auth/{registrationId}"
             scope: user
   #          google:
   #            client-id:
