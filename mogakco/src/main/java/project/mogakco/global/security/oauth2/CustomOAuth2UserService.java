@@ -1,12 +1,6 @@
 package project.mogakco.global.security.oauth2;
 
-import com.example.demo.exception.OAuth2AuthenticationProcessingException;
-import com.example.demo.model.AuthProvider;
-import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.security.UserPrincipal;
-import com.example.demo.security.oauth2.user.OAuth2UserInfo;
-import com.example.demo.security.oauth2.user.OAuth2UserInfoFactory;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -16,9 +10,12 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import project.mogakco.domain.member.dto.GitHubDTO;
+import project.mogakco.domain.member.entity.member.AuthProvider;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.member.repository.MemberRepository;
 import project.mogakco.global.exception.OAuth2AuthenticationProcessingException;
+import project.mogakco.global.security.UserPrincipal;
 import project.mogakco.global.security.oauth2.user.OAuth2UserInfo;
 import project.mogakco.global.security.oauth2.user.OAuth2UserInfoFactory;
 
@@ -54,12 +51,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         MemberSocial memberSocial;
         if(userOptional.isPresent()) {
             memberSocial = userOptional.get();
-            if(!memberSocial.getAuthProvider().toString().equals(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))) {
+            if(!memberSocial.getAuthProvider().toString().equals(AuthProvider.valueOf((oAuth2UserRequest.getClientRegistration().getRegistrationId())))) {
                 throw new OAuth2AuthenticationProcessingException("Looks like you're signed up with " +
-                        memberSocial.getProvider() + " account. Please use your " + memberSocial.getProvider() +
-                        " account to login.");
+                        (memberSocial.getAuthProvider().toString() + " account. Please use your " + memberSocial.getAuthProvider().toString()  +
+                        " account to login."));
             }
-            memberSocial = updateExistingUser(memberSocial, oAuth2UserInfo);
+            memberSocial.updateNewUserInfo(oAuth2UserInfo.getEmail(),oAuth2UserInfo.getImageUrl());
         } else {
             memberSocial = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
         }
@@ -67,21 +64,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return UserPrincipal.create(memberSocial, oAuth2User.getAttributes());
     }
 
-    private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
-        User user = new User();
-
-        user.setProvider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()));
-        user.setProviderId(oAuth2UserInfo.getId());
-        user.setName(oAuth2UserInfo.getName());
-        user.setEmail(oAuth2UserInfo.getEmail());
-        user.setImageUrl(oAuth2UserInfo.getImageUrl());
-        return memberRepository.save(user);
-    }
-
-    private User updateExistingUser(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
-        existingUser.setName(oAuth2UserInfo.getName());
-        existingUser.setImageUrl(oAuth2UserInfo.getImageUrl());
-        return memberRepository.save(existingUser);
+    private MemberSocial registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
+        GitHubDTO gitHubDTO=new GitHubDTO();
+        gitHubDTO.setAuthProvider((oAuth2UserRequest.getClientRegistration().getRegistrationId().toLowerCase().equals("github")?AuthProvider.GITHUB:AuthProvider.GOOGLE));
+        gitHubDTO.setLogin(oAuth2UserInfo.getName());
+        gitHubDTO.setEmail(oAuth2UserInfo.getEmail());
+        gitHubDTO.setAvatar_url(oAuth2UserInfo.getImageUrl());
+        return memberRepository.save(gitHubDTO.toEntity());
     }
 
 }

@@ -1,14 +1,15 @@
 package project.mogakco.global.security.oauth2;
 
-import com.example.demo.config.AppProperties;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.security.TokenProvider;
-import com.example.demo.util.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
+import project.mogakco.global.config.AppProperties;
+import project.mogakco.global.exception.BadRequestException;
+import project.mogakco.global.security.TokenProvider;
+import project.mogakco.global.util.CookieUtils;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -16,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
+import static project.mogakco.global.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
-import static com.example.demo.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {

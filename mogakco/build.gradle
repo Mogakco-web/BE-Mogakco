@@ -109,8 +109,9 @@ dependencies {
     //Oauth2
 
     implementation('org.springframework.boot:spring-boot-starter-oauth2-client')
+    compile "org.springframework.boot:spring-boot-configuration-processor"
 
- }
+}
 
 test {
     useJUnitPlatform()
