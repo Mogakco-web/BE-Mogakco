@@ -1,26 +1,38 @@
 package project.mogakco.domain.member.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import lombok.*;
+
+import javax.persistence.*;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Getter
+@Builder
 public class MemberSocial {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long member_seq;
 
 	private String member_social_email;
+
+	private String nickname;
 
 	private String member_imgUrl;
 
 	private String member_social_id;
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	private MemberRole role;
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	private SocialType socialType;
+
+	private String refreshToken;
+
+	private String password;
+	public void updateRefreshToken(String updateRefreshToken){
+		this.refreshToken=updateRefreshToken;
+	}
 }
