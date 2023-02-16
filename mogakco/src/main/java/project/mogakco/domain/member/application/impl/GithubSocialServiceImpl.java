@@ -1,6 +1,8 @@
 package project.mogakco.domain.member.application.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import project.mogakco.domain.member.application.service.GithubSocialService;
 import project.mogakco.domain.member.dto.GitHubResponseDTO;
@@ -14,8 +16,10 @@ import java.util.Map;
 @Service
 public class GithubSocialServiceImpl implements GithubSocialService {
 
+	@Value("${spring.security.oauth2.client.registration.github.client-id}")
 	private String client_id;
-	private String clinet_secret;
+	@Value("${spring.security.oauth2.client.registration.github.client-secret}")
+	private String client_secret;
 
 	@Override
 	public GitHubResponseDTO getAccessToken(String code) throws IOException {
@@ -32,7 +36,7 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		// 여기서 사용한 secret 값은 사용 후 바로 삭제하였다.
 		// 실제 서비스나 깃허브에 올릴 때 이 부분은 항상 주의하자.
 		try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()))) {
-			bw.write("client_id="+client_id+"&client_secret="+clinet_secret+"&code=" + code);
+			bw.write("client_id="+client_id+"&client_secret="+ client_secret +"&code=" + code);
 			bw.flush();
 		}
 
@@ -45,6 +49,23 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		System.out.println(responseData);
 
 		return access(responseData);
+	}
+
+	@SneakyThrows
+	@Override
+	public void logoutByDeleteToken(String git_authToken){
+		URL url = new URL("https://api.github.com/applications/"+client_id+"/token");
+
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setDoInput(true);
+		conn.setDoOutput(true);
+		conn.setRequestMethod("DELETE");
+		conn.setRequestProperty("Accept", "application/json");
+		conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36");
+
+
+		String response = getResponse(conn, conn.getResponseCode());
+		System.out.println(response);
 	}
 
 	private GitHubResponseDTO access(String responseData) throws IOException{
@@ -99,4 +120,6 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 
 		return gitHubResponseDTO;
 	}
+
+
 }
