@@ -1,4 +1,4 @@
-package project.mogakco.domain.member.entity;
+package project.mogakco.domain.member.entity.member;
 
 import lombok.*;
 import project.mogakco.global.domain.BaseEntity;

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import project.mogakco.domain.member.application.service.GithubSocialService;
 import project.mogakco.domain.member.dto.GitHubResponseDTO;
+import project.mogakco.domain.member.entity.member.MemberSocial;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.websocket.server.PathParam;
@@ -22,14 +23,12 @@ public class GitHubSocialController {
 
 	private final GithubSocialService githubSocialService;
 
-	@GetMapping("/githubLogin")
+	@GetMapping("/authorization/github")
 	public ResponseEntity<?> githubLogin(@PathParam("code")String code) throws IOException {
-		GitHubResponseDTO loginInfoDTO = githubSocialService.getAccessToken(code);
-		if (code != null){
-			return new ResponseEntity<>(loginInfoDTO,HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>("Bad Request Code"+code,HttpStatus.BAD_REQUEST);
-		}
+		System.out.println("loginCode="+code);
+
+		MemberSocial loginInfo = githubSocialService.getAccessToken(code);
+		return new ResponseEntity<>(loginInfo,HttpStatus.OK);
 	}
 
 	@DeleteMapping("/eliminate/authToken")

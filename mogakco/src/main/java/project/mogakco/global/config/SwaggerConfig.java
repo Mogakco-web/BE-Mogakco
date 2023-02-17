@@ -11,6 +11,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
+@EnableWebMvc
 public class SwaggerConfig {
 
 	private static final String API_NAME = "모각코 서비스 API 명세서";

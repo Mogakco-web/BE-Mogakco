@@ -2,9 +2,9 @@ package project.mogakco.global.domain.entity.oauth;
 
 import lombok.Builder;
 import lombok.Getter;
-import project.mogakco.domain.member.entity.MemberRole;
-import project.mogakco.domain.member.entity.MemberSocial;
-import project.mogakco.domain.member.entity.SocialType;
+import project.mogakco.domain.member.entity.member.MemberRole;
+import project.mogakco.domain.member.entity.member.MemberSocial;
+import project.mogakco.domain.member.entity.member.SocialType;
 import project.mogakco.global.domain.dto.oauth.userinfo.GithubOAuth2UserInfo;
 import project.mogakco.global.domain.dto.oauth.userinfo.GoogleOAuth2UserInfo;
 import project.mogakco.global.domain.dto.oauth.userinfo.OAuth2UserInfo;
@@ -56,7 +56,7 @@ public class OAuthAttributes {
 	public MemberSocial toEntity(SocialType socialType, OAuth2UserInfo oauth2UserInfo) {
 		return MemberSocial.builder()
 				.socialType(socialType)
-				.member_social_id(oauth2UserInfo.getId())
+				.oauthId(oauth2UserInfo.getId())
 				.email(oauth2UserInfo.getEmail())
 				.nickname(oauth2UserInfo.getNickname())
 				.member_imgUrl(oauth2UserInfo.getImageUrl())
