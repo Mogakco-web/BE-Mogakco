@@ -1,15 +1,15 @@
 package project.mogakco.domain.member.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import project.mogakco.domain.member.entity.member.AuthProvider;
-import project.mogakco.domain.member.entity.member.MemberSocial;
+import project.mogakco.domain.member.entity.MemberSocial;
+import project.mogakco.domain.member.entity.SocialType;
 
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<MemberSocial,Long> {
-	Optional<MemberSocial> findByEmailAndAuthProvider(String email, AuthProvider provider);
-
+	Optional<MemberSocial> findByOauthId(String id);
 	Optional<MemberSocial> findByEmail(String email);
+	Optional<MemberSocial> findByRefreshToken(String refreshToken);
 
-	Boolean existsByEmail(String email);
+	Optional<MemberSocial> findBySocialTypeAndOauthId(SocialType socialType, String oauthId);
 }

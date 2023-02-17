@@ -1,49 +1,39 @@
 package project.mogakco.domain.member.entity.member;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
+import project.mogakco.global.domain.BaseEntity;
 
 import javax.persistence.*;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Getter
-public class MemberSocial {
+@Builder
+public class MemberSocial extends BaseEntity {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long member_seq;
 
 	private String email;
 
-	private String imgUrl;
-
 	private String nickname;
+
+	private String member_imgUrl;
+
+	private String oauthId;
 
 	@Enumerated(EnumType.STRING)
 	private MemberRole role;
 
 	@Enumerated(EnumType.STRING)
-	private AuthProvider authProvider;
+	private SocialType socialType;
 
-	private String gitRepoUrl;
+	private String refreshToken;
 
-	@Builder
-	public MemberSocial(String email, String imgUrl,String gitRepoUrl, String nickname, MemberRole role, AuthProvider authProvider) {
-		this.email = email;
-		this.imgUrl = imgUrl;
-		this.nickname = nickname;
-		this.gitRepoUrl=gitRepoUrl;
-		this.role = role;
-		this.authProvider = authProvider;
-	}
-
-	public MemberSocial() {
-
-	}
-
-	public MemberSocial updateNewUserInfo(String email,String imgUrl){
-		this.imgUrl =imgUrl;
-		this.email =email;
-		return this;
+	private String password;
+	public void updateRefreshToken(String updateRefreshToken){
+		this.refreshToken=updateRefreshToken;
 	}
 }

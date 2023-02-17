@@ -1,10 +1,12 @@
 package project.mogakco.domain.member.application.service;
 
 
-import project.mogakco.domain.member.entity.member.MemberSocial;
+import project.mogakco.domain.member.dto.GitHubResponseDTO;
 
 import java.io.IOException;
 
 public interface GithubSocialService {
-	MemberSocial getAccessToken(String code) throws IOException;
+	GitHubResponseDTO getAccessToken(String code) throws IOException;
+
+	void logoutByDeleteToken(String git_authToken);
 }

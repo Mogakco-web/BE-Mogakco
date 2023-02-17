@@ -1,14 +1,11 @@
 package project.mogakco.domain.member.application.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import project.mogakco.domain.member.application.service.GithubSocialService;
 import project.mogakco.domain.member.dto.GitHubResponseDTO;
-import project.mogakco.domain.member.entity.member.AuthProvider;
-import project.mogakco.domain.member.entity.member.MemberSocial;
-import project.mogakco.domain.member.repository.MemberRepository;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -17,19 +14,15 @@ import java.util.Map;
 
 
 @Service
-@RequiredArgsConstructor
 public class GithubSocialServiceImpl implements GithubSocialService {
-
-	private final MemberRepository memberRepository;
 
 	@Value("${spring.security.oauth2.client.registration.github.client-id}")
 	private String client_id;
-
 	@Value("${spring.security.oauth2.client.registration.github.client-secret}")
-	private String clinet_secret;
+	private String client_secret;
 
 	@Override
-	public MemberSocial getAccessToken(String code) throws IOException {
+	public GitHubResponseDTO getAccessToken(String code) throws IOException {
 		URL url = new URL("https://github.com/login/oauth/access_token");
 
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -43,7 +36,7 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		// 여기서 사용한 secret 값은 사용 후 바로 삭제하였다.
 		// 실제 서비스나 깃허브에 올릴 때 이 부분은 항상 주의하자.
 		try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()))) {
-			bw.write("client_id="+client_id+"&client_secret="+clinet_secret+"&code=" + code);
+			bw.write("client_id="+client_id+"&client_secret="+ client_secret +"&code=" + code);
 			bw.flush();
 		}
 
@@ -53,12 +46,29 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 
 		conn.disconnect();
 
-		System.out.println("responseData="+responseData);
+		System.out.println(responseData);
 
 		return access(responseData);
 	}
 
-	private MemberSocial access(String responseData) throws IOException{
+	@SneakyThrows
+	@Override
+	public void logoutByDeleteToken(String git_authToken){
+		URL url = new URL("https://api.github.com/applications/"+client_id+"/token");
+
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setDoInput(true);
+		conn.setDoOutput(true);
+		conn.setRequestMethod("DELETE");
+		conn.setRequestProperty("Accept", "application/json");
+		conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36");
+
+
+		String response = getResponse(conn, conn.getResponseCode());
+		System.out.println(response);
+	}
+
+	private GitHubResponseDTO access(String responseData) throws IOException{
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> map = objectMapper.readValue(responseData, Map.class);
 		String access_token = map.get("access_token");
@@ -70,7 +80,6 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36");
 		conn.setRequestProperty("Authorization", "token " + access_token);
 
-		System.out.println("accessToken="+access_token);
 		int responseCode = conn.getResponseCode();
 
 		String res_data = getResponse(conn, responseCode);
@@ -79,9 +88,8 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		objectMapper=new ObjectMapper();
 		Map<String,String> result=objectMapper.readValue(res_data,Map.class);
 		System.out.println("result="+result);
-		GitHubResponseDTO gitHubResponseDTO = initializeUserInfo(result);
 
-		return githubSocialMemberSignup(gitHubResponseDTO);
+		return initializeUserInfo(result);
 	}
 
 	private String getResponse(HttpURLConnection conn, int responseCode) throws IOException {
@@ -99,20 +107,19 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 
 	private GitHubResponseDTO initializeUserInfo(Map<String,String> result){
 		GitHubResponseDTO gitHubResponseDTO=new GitHubResponseDTO();
-		System.out.println("result="+result);
 		gitHubResponseDTO.setLogin(result.get("login"));
 		gitHubResponseDTO.setAvatar_url(result.get("avatar_url"));
-		gitHubResponseDTO.setRepos_url(result.get("repos_url"));
-		gitHubResponseDTO.setEmail(result.get("email"));
-		gitHubResponseDTO.setAuthProvider(AuthProvider.GITHUB);
+		gitHubResponseDTO.setId(result.get("id"));
+		gitHubResponseDTO.setName(result.get("name"));
+		gitHubResponseDTO.setCreated_at(result.get("created_at"));
+		gitHubResponseDTO.setRepo_url(result.get("repo_url"));
+		gitHubResponseDTO.setNode_id(result.get("node_id"));
+		gitHubResponseDTO.setType(result.get("type"));
+		gitHubResponseDTO.setSite_admin(result.get("site_admin"));
+		gitHubResponseDTO.setUpdated_at(result.get("updated_at"));
+
 		return gitHubResponseDTO;
 	}
 
-	private MemberSocial githubSocialMemberSignup(GitHubResponseDTO gitHubResponseDTO){
-		memberRepository.findByEmailAndAuthProvider(gitHubResponseDTO.getEmail(),gitHubResponseDTO.getAuthProvider())
-				.map(memberSocial -> memberSocial.updateNewUserInfo(memberSocial.getEmail(),memberSocial.getImgUrl()))
-				.orElse(gitHubResponseDTO.toEntity());
 
-		return memberRepository.save(gitHubResponseDTO.toEntity());
-	}
 }
