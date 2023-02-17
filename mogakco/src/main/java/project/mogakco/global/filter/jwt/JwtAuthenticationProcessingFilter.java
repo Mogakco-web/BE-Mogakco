@@ -10,7 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
-import project.mogakco.domain.member.entity.MemberSocial;
+import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.member.repository.MemberRepository;
 import project.mogakco.global.application.jwt.JwtService;
 import project.mogakco.global.util.PasswordUtil;

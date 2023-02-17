@@ -1,8 +1,9 @@
 package project.mogakco.domain.member.repository;
 
+
 import org.springframework.data.jpa.repository.JpaRepository;
-import project.mogakco.domain.member.entity.MemberSocial;
-import project.mogakco.domain.member.entity.SocialType;
+import project.mogakco.domain.member.entity.member.MemberSocial;
+import project.mogakco.domain.member.entity.member.SocialType;
 
 import java.util.Optional;
 
