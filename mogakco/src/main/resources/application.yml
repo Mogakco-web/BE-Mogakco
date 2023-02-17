@@ -1,6 +1,8 @@
 spring:
   profiles:
-    include: oauth
+    group:
+      "local": "local, jwt, oauth"
+      active: local
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: ${jdbc-url}
@@ -14,7 +16,7 @@ spring:
           github:
             client-id: ${github-id}
             client-secret: ${github-secret}
-            redirectUri: "{baseUrl}/auth/{registrationId}"
+            redirectUri: "http://3.38.8.89:3000/login/oauth2/code/"
             scope: user
   #          google:
   #            client-id:
