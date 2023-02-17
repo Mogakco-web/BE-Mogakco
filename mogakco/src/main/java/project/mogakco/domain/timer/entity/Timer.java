@@ -1,11 +1,15 @@
 package project.mogakco.domain.timer.entity;
 
-import lombok.Builder;
+import lombok.*;
 import project.mogakco.global.domain.BaseEntity;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class Timer extends BaseEntity {
 
 	@Id
@@ -17,10 +21,5 @@ public class Timer extends BaseEntity {
 
 	private String recodeTime;
 
-	@Builder
-	public Timer(Long timer_seq, MemberSocial memberSocial, String recodeTime) {
-		this.timer_seq = timer_seq;
-		this.memberSocial = memberSocial;
-		this.recodeTime = recodeTime;
-	}
+	private long day_of_totalTime;
 }
