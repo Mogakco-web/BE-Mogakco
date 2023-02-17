@@ -15,13 +15,13 @@ public class MemberSocial {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long member_seq;
 
-	private String member_social_email;
+	private String email;
 
 	private String nickname;
 
 	private String member_imgUrl;
 
-	private String member_social_id;
+	private String oauthId;
 
 	@Enumerated(EnumType.STRING)
 	private MemberRole role;
