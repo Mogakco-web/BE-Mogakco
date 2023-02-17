@@ -1,6 +1,7 @@
 package project.mogakco.domain.member.entity;
 
 import lombok.*;
+import project.mogakco.global.domain.BaseEntity;
 
 import javax.persistence.*;
 
@@ -9,7 +10,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Builder
-public class MemberSocial {
+public class MemberSocial extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
