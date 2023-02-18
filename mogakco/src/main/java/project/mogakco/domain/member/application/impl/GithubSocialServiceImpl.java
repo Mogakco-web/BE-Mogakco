@@ -76,11 +76,11 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		String response = getResponse(conn, conn.getResponseCode());
 		System.out.println(response);
 	}*/
-/*
-	private GitHubResponseDTO access(String responseData) throws IOException{
-		ObjectMapper objectMapper = new ObjectMapper();
+	@Override
+	public void access(String access_token) throws IOException{
+		/*ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> map = objectMapper.readValue(responseData, Map.class);
-		String access_token = map.get("access_token");
+		String access_token = map.get("access_token");*/
 
 		URL url = new URL("https://api.github.com/user");
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -94,12 +94,12 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		String res_data = getResponse(conn, responseCode);
 
 		conn.disconnect();
-		objectMapper=new ObjectMapper();
+		ObjectMapper objectMapper=new ObjectMapper();
 		Map<String,String> result=objectMapper.readValue(res_data,Map.class);
 		System.out.println("result="+result);
 
-		return initializeUserInfo(result);
-	}*/
+//		return initializeUserInfo(result);
+	}
 
 	private String getResponse(HttpURLConnection conn, int responseCode) throws IOException {
 		StringBuilder sb = new StringBuilder();
