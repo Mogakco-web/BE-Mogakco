@@ -1,7 +1,10 @@
 package project.mogakco.domain.member.application.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import lombok.SneakyThrows;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import project.mogakco.domain.member.application.service.GithubSocialService;
@@ -22,7 +25,7 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 	private String client_secret;
 
 	@Override
-	public GitHubResponseDTO getAccessToken(String code) throws IOException {
+	public String getAccessToken(String code) throws IOException {
 		URL url = new URL("https://github.com/login/oauth/access_token");
 
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -45,10 +48,12 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		String responseData = getResponse(conn, responseCode);
 
 		conn.disconnect();
-
+		JsonParser jsonParser=new JsonParser();
+		Object obj = jsonParser.parse(responseData);
+		JSONObject jso = (JSONObject) obj;
+		String authtoken = (String) jso.get("accessToken");
 		System.out.println(responseData);
-
-		return access(responseData);
+		return authtoken;
 	}
 
 	@SneakyThrows

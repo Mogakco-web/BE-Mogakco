@@ -5,8 +5,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import project.mogakco.domain.member.application.service.GithubSocialService;
 import project.mogakco.global.application.jwt.JwtService;
-import project.mogakco.global.application.oauth.GitHubSocialService;
 import project.mogakco.global.domain.entity.oauth.CustomOAuth2User;
 
 import javax.servlet.ServletException;
@@ -20,13 +20,13 @@ import java.io.IOException;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 	private final JwtService jwtService;
-	private final GitHubSocialService gitHubSocialService;
+	private final GithubSocialService githubSocialService;
 //    private final UserRepository userRepository;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 		log.info("OAuth2 Login 성공!");
-		String authToken = gitHubSocialService.getAccessToken(request.getParameter("code"));
+		String authToken = githubSocialService.getAccessToken(request.getParameter("code"));
 		try {
 			CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
