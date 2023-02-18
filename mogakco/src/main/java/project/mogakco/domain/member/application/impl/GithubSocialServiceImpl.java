@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 
 @Service
+@Log4j2
 public class GithubSocialServiceImpl implements GithubSocialService {
 
 	@Value("${spring.security.oauth2.client.registration.github.client-id}")
@@ -27,15 +29,14 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 	@Override
 	public String getAccessToken(String code) throws IOException {
 		URL url = new URL("https://github.com/login/oauth/access_token");
-
+		System.out.println("code="+code);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setDoInput(true);
 		conn.setDoOutput(true);
 		conn.setRequestMethod("POST");
 		conn.setRequestProperty("Accept", "application/json");
-		conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36");
+//		conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36");
 
-		System.out.println("code="+code);
 		// 이 부분에 client_id, client_secret, code를 넣어주자.
 		// 여기서 사용한 secret 값은 사용 후 바로 삭제하였다.
 		// 실제 서비스나 깃허브에 올릴 때 이 부분은 항상 주의하자.
@@ -45,20 +46,21 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		}
 
 		int responseCode = conn.getResponseCode();
-		System.out.println("response Github="+responseCode);
-		System.out.println("conn git="+conn);
 		String responseData = getResponse(conn, responseCode);
+		System.out.println("responseCode="+responseCode);
+		System.out.println("responseData="+responseData);
 
 		conn.disconnect();
-		System.out.println("responseData="+responseData);
+		/*System.out.println("responseData="+responseData);
 		JsonParser jsonParser=new JsonParser();
 		Object obj = jsonParser.parse(responseData);
 		JSONObject jso = (JSONObject) obj;
 		String authtoken = (String) jso.get("accessToken");
-		return authtoken;
+		return authtoken;*/
+		return null;
 	}
 
-	@SneakyThrows
+	/*@SneakyThrows
 	@Override
 	public void logoutByDeleteToken(String git_authToken){
 		URL url = new URL("https://api.github.com/applications/"+client_id+"/token");
@@ -73,8 +75,8 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 
 		String response = getResponse(conn, conn.getResponseCode());
 		System.out.println(response);
-	}
-
+	}*/
+/*
 	private GitHubResponseDTO access(String responseData) throws IOException{
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> map = objectMapper.readValue(responseData, Map.class);
@@ -97,7 +99,7 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		System.out.println("result="+result);
 
 		return initializeUserInfo(result);
-	}
+	}*/
 
 	private String getResponse(HttpURLConnection conn, int responseCode) throws IOException {
 		StringBuilder sb = new StringBuilder();
