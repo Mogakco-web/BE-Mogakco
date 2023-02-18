@@ -105,6 +105,7 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 			try (InputStream is = conn.getInputStream();
 				 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 				for (String line = br.readLine(); line != null; line = br.readLine()) {
+					System.out.println("line="+line);
 					sb.append(line);
 				}
 			}
