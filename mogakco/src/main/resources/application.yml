@@ -16,7 +16,7 @@ spring:
           github:
             client-id: ${github-id}
             client-secret: ${github-secret}
-            redirectUri: "http://3.38.8.89:8080/login/oauth2/code/"
+            redirectUri: ${github-callback}
             scope: user
   #          google:
   #            client-id:
