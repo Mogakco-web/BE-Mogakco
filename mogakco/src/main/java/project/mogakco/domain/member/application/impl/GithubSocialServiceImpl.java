@@ -45,7 +45,8 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		}
 
 		int responseCode = conn.getResponseCode();
-
+		System.out.println("response Github="+responseCode);
+		System.out.println("conn git="+conn);
 		String responseData = getResponse(conn, responseCode);
 
 		conn.disconnect();
