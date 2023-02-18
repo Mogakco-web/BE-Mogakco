@@ -54,7 +54,7 @@ public class SecurityConfig {
 				.authorizeRequests()
 
 				.antMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**").permitAll()
-				.antMatchers("/callback/**","swagger-ui/index.html","/oauth2/authorization/**").permitAll() // 회원가입 접근 가능
+				.antMatchers("/**").permitAll() // 회원가입 접근 가능
 				.anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
 				.and()
 				.oauth2Login()

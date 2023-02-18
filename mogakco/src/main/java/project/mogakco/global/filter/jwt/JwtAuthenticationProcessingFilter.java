@@ -25,7 +25,7 @@ import java.io.IOException;
 @Log4j2
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
-	private static final String NO_CHECK_URL = "/oauth2/**"; // "
+	private static final String NO_CHECK_URL = "/**"; // "
 	// /login"으로 들어오는 요청은 Filter 작동 X
 
 	private final JwtService jwtService;
