@@ -48,11 +48,11 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		String responseData = getResponse(conn, responseCode);
 
 		conn.disconnect();
+		System.out.println("responseData="+responseData);
 		JsonParser jsonParser=new JsonParser();
 		Object obj = jsonParser.parse(responseData);
 		JSONObject jso = (JSONObject) obj;
 		String authtoken = (String) jso.get("accessToken");
-		System.out.println(responseData);
 		return authtoken;
 	}
 
