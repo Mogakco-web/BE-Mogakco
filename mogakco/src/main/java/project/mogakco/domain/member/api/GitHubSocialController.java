@@ -26,6 +26,7 @@ public class GitHubSocialController {
 	@GetMapping("/authorization/github")
 	public void githubLogin(@PathParam("code")String code) throws IOException {
 		System.out.println("loginCode="+code);
+		githubSocialService.getAccessToken(code);
 	}
 
 	@DeleteMapping("/eliminate/authToken")
