@@ -30,7 +30,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		try {
 			CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
-			// User의 Role이 GUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
+			// User의 Role이 GyUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
 			/*if(oAuth2User.getRole() == Role.GUEST) {
 				String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
 				response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
