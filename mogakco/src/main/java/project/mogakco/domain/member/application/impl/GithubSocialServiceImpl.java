@@ -35,6 +35,7 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		conn.setRequestProperty("Accept", "application/json");
 		conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36");
 
+		System.out.println("code="+code);
 		// 이 부분에 client_id, client_secret, code를 넣어주자.
 		// 여기서 사용한 secret 값은 사용 후 바로 삭제하였다.
 		// 실제 서비스나 깃허브에 올릴 때 이 부분은 항상 주의하자.
