@@ -1,9 +1,11 @@
 package project.mogakco.domain.member.entity.member;
 
 import lombok.*;
+import project.mogakco.domain.timer.entity.Timer;
 import project.mogakco.global.domain.BaseEntity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -33,6 +35,9 @@ public class MemberSocial extends BaseEntity {
 	private String refreshToken;
 
 	private String password;
+
+	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial")
+	private List<Timer> timer;
 	public void updateRefreshToken(String updateRefreshToken){
 		this.refreshToken=updateRefreshToken;
 	}
