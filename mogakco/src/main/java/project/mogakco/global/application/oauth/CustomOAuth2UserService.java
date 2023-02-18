@@ -42,7 +42,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		 * userNameAttributeName은 이후에 nameAttributeKey로 설정된다.
 		 */
 		String registrationId = userRequest.getClientRegistration().getRegistrationId();
-		log.info();
+		log.info("****************************************");
+		log.info("access_token="+userRequest.getAccessToken());
+		log.info("*****************************************");
 		SocialType socialType = getSocialType(registrationId);
 		String userNameAttributeName = userRequest.getClientRegistration()
 				.getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName(); // OAuth2 로그인 시 키(PK)가 되는 값
