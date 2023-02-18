@@ -6,6 +6,9 @@ import lombok.Setter;
 import project.mogakco.domain.timer.application.service.TimerService;
 import project.mogakco.domain.timer.entity.Timer;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 @Getter
 @RequiredArgsConstructor
 public class TimerRecodeDTO {
@@ -25,5 +28,9 @@ public class TimerRecodeDTO {
 					.day_of_totalTime(day_of_totalTime)
 					.build();
 		}
+	}
+
+	public static class todayDateInfoDTO{
+		private LocalDate localDate;
 	}
 }

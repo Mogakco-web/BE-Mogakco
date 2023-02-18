@@ -9,6 +9,9 @@ import project.mogakco.domain.timer.dto.request.TimerRecodeDTO;
 import project.mogakco.domain.timer.entity.Timer;
 import project.mogakco.domain.timer.repo.TimerRepository;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Log4j2
 public class TimerServiceImpl implements TimerService {
@@ -20,6 +23,12 @@ public class TimerServiceImpl implements TimerService {
 		timerRecodeInfoToday.setDay_of_totalTime(sumOfDayTime(timerRecodeInfoToday));
 		Timer t = timerRepository.save(timerRecodeInfoToday.toEntity());
 		return new ResponseEntity<>(t, HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<?> getTodayInfo(String oauthId, LocalDate localDate) {
+		Timer timer = timerRepository.findByCreateDate(localDate).get();
+		return new ResponseEntity<>(timer,HttpStatus.OK);
 	}
 
 
