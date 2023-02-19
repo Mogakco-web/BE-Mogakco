@@ -1,24 +1,30 @@
 spring:
+  profiles:
+    include: oauth
   datasource:
-    url: jdbc:mariadb://localhost:3306/mogakco_local
     driver-class-name: org.mariadb.jdbc.Driver
-    username: root
-    password: 1234
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          github:
-#            client-id:
-#            client-secret:
-#          google:
-#            client-id:
-#            client-secret:
+    url: ${jdbc-url}
+    username: ${username}
+    password: ${password}
+
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${github-id}
+            client-secret: ${github-secret}
+            redirectUri: "{baseUrl}/auth/{registrationId}"
+            scope: user
+  #          google:
+  #            client-id:
+  #            client-secret:
 
 
   jpa:
     hibernate:
       ddl-auto: update
+    generate-ddl: true
     properties:
       hibernate:
         format_sql: true
