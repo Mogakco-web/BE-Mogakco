@@ -9,9 +9,11 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import project.mogakco.domain.member.dto.MemberDTO;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.member.entity.member.SocialType;
 import project.mogakco.domain.member.repository.MemberRepository;
+import project.mogakco.global.domain.dto.oauth.userinfo.OAuth2UserInfo;
 import project.mogakco.global.domain.entity.oauth.CustomOAuth2User;
 import project.mogakco.global.domain.entity.oauth.OAuthAttributes;
 
@@ -43,7 +45,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		 */
 		String registrationId = userRequest.getClientRegistration().getRegistrationId();
 		log.info("****************************************");
-		log.info("access_token="+ userRequest.getAccessToken().getTokenValue());
+		String authToken = userRequest.getAccessToken().getTokenValue();
+		log.info("access_token="+ authToken);
 		log.info("*****************************************");
 		SocialType socialType = getSocialType(registrationId);
 		String userNameAttributeName = userRequest.getClientRegistration()
@@ -53,7 +56,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		// socialType에 따라 유저 정보를 통해 OAuthAttributes 객체 생성
 		OAuthAttributes extractAttributes = OAuthAttributes.of(socialType, userNameAttributeName, attributes);
 
-		MemberSocial createdUser = getUser(extractAttributes, socialType); // getUser() 메소드로 User 객체 생성 후 반환
+		MemberSocial createdUser = getUser(extractAttributes, socialType,authToken); // getUser() 메소드로 User 객체 생성 후 반환
 
 		// DefaultOAuth2User를 구현한 CustomOAuth2User 객체를 생성해서 반환
 		return new CustomOAuth2User(
@@ -76,24 +79,32 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	 * SocialType과 attributes에 들어있는 소셜 로그인의 식별값 id를 통해 회원을 찾아 반환하는 메소드
 	 * 만약 찾은 회원이 있다면, 그대로 반환하고 없다면 saveUser()를 호출하여 회원을 저장한다.
 	 */
-	private MemberSocial getUser(OAuthAttributes attributes, SocialType socialType) {
+	private MemberSocial getUser(OAuthAttributes attributes, SocialType socialType,String authToken) {
 		MemberSocial findUser = memberRepository.findBySocialTypeAndOauthId(socialType,
 				attributes.getOauth2UserInfo().getId()).orElse(null);
 
 		if(findUser == null) {
-			return saveUser(attributes, socialType);
+			return saveUser(attributes, socialType,authToken);
+		}else {
+			return findUser.updateOAuthInfo(initializeInfo(attributes.getOauth2UserInfo(),authToken));
 		}
-		return findUser;
 	}
 
 	/**
 	 * OAuthAttributes의 toEntity() 메소드를 통해 빌더로 User 객체 생성 후 반환
 	 * 생성된 User 객체를 DB에 저장 : socialType, socialId, email, role 값만 있는 상태
 	 */
-	private MemberSocial saveUser(OAuthAttributes attributes, SocialType socialType) {
-		MemberSocial createdUser = attributes.toEntity(socialType, attributes.getOauth2UserInfo());
+	private MemberSocial saveUser(OAuthAttributes attributes, SocialType socialType,String authToken) {
+		MemberSocial createdUser = attributes.toEntity(socialType, attributes.getOauth2UserInfo(),authToken);
 		System.out.println("createdUser_seq="+createdUser.getMember_seq());
-			return memberRepository.save(createdUser);
+		return memberRepository.save(createdUser);
+	}
 
+	private MemberDTO.UpdateOAuthUser initializeInfo(OAuth2UserInfo oAuth2UserInfo,String authToken){
+		MemberDTO.UpdateOAuthUser updateOAuthUser=new MemberDTO.UpdateOAuthUser();
+		updateOAuthUser.setAuthToken(authToken);
+		updateOAuthUser.setImgUrl(oAuth2UserInfo.getImageUrl());
+		updateOAuthUser.setNickname(oAuth2UserInfo.getNickname());
+		return updateOAuthUser;
 	}
 }

@@ -1,6 +1,7 @@
 package project.mogakco.domain.member.entity.member;
 
 import lombok.*;
+import project.mogakco.domain.member.dto.MemberDTO;
 import project.mogakco.domain.timer.entity.Timer;
 import project.mogakco.global.domain.BaseEntity;
 
@@ -32,6 +33,8 @@ public class MemberSocial extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private SocialType socialType;
 
+	private String authToken;
+
 	private String refreshToken;
 
 	private String password;
@@ -40,5 +43,12 @@ public class MemberSocial extends BaseEntity {
 	private List<Timer> timer;
 	public void updateRefreshToken(String updateRefreshToken){
 		this.refreshToken=updateRefreshToken;
+	}
+
+	public MemberSocial updateOAuthInfo(MemberDTO.UpdateOAuthUser updateOAuthUser){
+		this.authToken=updateOAuthUser.getAuthToken();
+		this.member_imgUrl=updateOAuthUser.getImgUrl();
+		this.nickname=updateOAuthUser.getNickname();
+		return this;
 	}
 }
