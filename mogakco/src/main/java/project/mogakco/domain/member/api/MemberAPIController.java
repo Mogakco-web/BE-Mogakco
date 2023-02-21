@@ -24,6 +24,7 @@ public class MemberAPIController {
 	@GetMapping("/userInfo/one")
 	public ResponseEntity<?> getOneOfUserInfo(HttpServletResponse httpServletResponse){
 		String refreshToken = httpServletResponse.getHeader("Authorization_refresh");
+		System.out.println("HeaderRefresh="+refreshToken);
 		Optional<MemberSocial> member = memberRepository
 				.findByRefreshToken(refreshToken);
 		System.out.println("****="+member.get().getNickname());
