@@ -11,6 +11,7 @@ import project.mogakco.domain.member.dto.MemberDTO;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.member.repository.MemberRepository;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @RestController
@@ -21,13 +22,13 @@ public class MemberAPIController {
 	private final MemberRepository memberRepository;
 
 	@GetMapping("/userInfo/one")
-	public ResponseEntity<?> getOneOfUserInfo(@RequestBody MemberDTO.OnlyRefreshTokenDTO onlyRefreshTokenDTO){
-		System.out.println("request Refresh="+onlyRefreshTokenDTO.getRefreshToken());
+	public ResponseEntity<?> getOneOfUserInfo(HttpServletResponse httpServletResponse){
+		String refreshToken = httpServletResponse.getHeader("Authorization_refresh");
 		Optional<MemberSocial> member = memberRepository
-				.findByRefreshToken(onlyRefreshTokenDTO.getRefreshToken());
+				.findByRefreshToken(refreshToken);
 		System.out.println("****="+member.get().getNickname());
 		MemberSocial selectInfo
-				= memberRepository.findByRefreshToken(onlyRefreshTokenDTO.getRefreshToken()).get();
+				= memberRepository.findByRefreshToken(refreshToken).get();
 		return new ResponseEntity<>(selectInfo, HttpStatus.OK);
 	}
 }
