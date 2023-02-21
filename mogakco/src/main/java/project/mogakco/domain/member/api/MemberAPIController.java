@@ -19,7 +19,7 @@ public class MemberAPIController {
 	private final MemberRepository memberRepository;
 
 	@GetMapping("/userInfo/one")
-	public ResponseEntity<?> getOneOfUserInfo(@RequestHeader String refreshToken){
+	public ResponseEntity<?> getOneOfUserInfo(@RequestHeader("Authorization_refresh") String refreshToken){
 		System.out.println("HeaderRefresh="+refreshToken);
 		Optional<MemberSocial> member = memberRepository
 				.findByRefreshToken(refreshToken);
