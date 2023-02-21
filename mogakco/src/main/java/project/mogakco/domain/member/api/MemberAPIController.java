@@ -3,10 +3,7 @@ package project.mogakco.domain.member.api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import project.mogakco.domain.member.dto.MemberDTO;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.member.repository.MemberRepository;
@@ -22,8 +19,7 @@ public class MemberAPIController {
 	private final MemberRepository memberRepository;
 
 	@GetMapping("/userInfo/one")
-	public ResponseEntity<?> getOneOfUserInfo(HttpServletResponse httpServletResponse){
-		String refreshToken = httpServletResponse.getHeader("Authorization_refresh");
+	public ResponseEntity<?> getOneOfUserInfo(@RequestHeader String refreshToken){
 		System.out.println("HeaderRefresh="+refreshToken);
 		Optional<MemberSocial> member = memberRepository
 				.findByRefreshToken(refreshToken);
