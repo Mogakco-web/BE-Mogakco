@@ -105,6 +105,8 @@ public class JwtService {
 	}
 
 	public void updateRefreshToken(String nickname, String refreshToken) {
+		System.out.println("Refresh Nickname="+nickname);
+		System.out.println("RefereshToken="+refreshToken);
 		memberRepository.findByNickname(nickname)
 				.ifPresentOrElse(
 						member -> member.updateRefreshToken(refreshToken),
