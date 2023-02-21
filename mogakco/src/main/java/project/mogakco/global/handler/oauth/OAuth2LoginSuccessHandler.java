@@ -27,10 +27,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 		log.info("OAuth2 Login 성공!");
 		log.info("callback-git url : "+request.getRequestURI());
-		String authToken = githubSocialService.getAccessToken(request.getParameter("code"));
 		try {
 			CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-
+			log.info("OAuth2User="+oAuth2User);
 			// User의 Role이 GyUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
 			/*if(oAuth2User.getRole() == Role.GUEST) {
 				String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
@@ -43,7 +42,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 //                findUser.authorizeUser();
 			} else {*/
 			loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
-			response.sendRedirect("http://localhost:3000/callback?accessToken="+response.getHeader("Authorization")+"&refreshToken="+response.getHeader("Authorization_refresh")+"&authToken="+authToken);
+			response.sendRedirect("http://localhost:3000/callback?accessToken="+response.getHeader("Authorization")+"&refreshToken="+response.getHeader("Authorization_refresh"));
 			return;
 //			}
 		} catch (Exception e) {
