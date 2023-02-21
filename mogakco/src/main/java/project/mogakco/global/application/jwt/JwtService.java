@@ -39,12 +39,12 @@ public class JwtService {
 	private final MemberRepository memberRepository;
 
 
-	public String createAccessToken(String email) {
+	public String createAccessToken(String name) {
 		Date now = new Date();
 		return JWT.create()
 				.withSubject(ACCESS_TOKEN_SUBJECT)
 				.withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
-				.withClaim(EMAIL_CLAIM, email)
+				.withClaim(EMAIL_CLAIM, name)
 				.sign(Algorithm.HMAC512(secretKey));
 	}
 
@@ -104,8 +104,8 @@ public class JwtService {
 		response.setHeader(refreshHeader, refreshToken);
 	}
 
-	public void updateRefreshToken(String email, String refreshToken) {
-		memberRepository.findByEmail(email)
+	public void updateRefreshToken(String name, String refreshToken) {
+		memberRepository.findByEmail(name)
 				.ifPresentOrElse(
 						member -> member.updateRefreshToken(refreshToken),
 						() -> new Exception("일치하는 회원이 없습니다.")
