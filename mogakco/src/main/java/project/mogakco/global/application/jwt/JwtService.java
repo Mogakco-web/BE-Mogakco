@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import project.mogakco.domain.member.repository.MemberRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Getter
 @Log4j2
+@Transactional
 public class JwtService {
 
 	private String secretKey="Snd0QVBJU2VydmljZUFuZFdlYlNvY2tldFByb2plY3Q=";
@@ -105,8 +107,6 @@ public class JwtService {
 	}
 
 	public void updateRefreshToken(String nickname, String refreshToken) {
-		System.out.println("Refresh Nickname="+nickname);
-		System.out.println("RefereshToken="+refreshToken);
 		memberRepository.findByNickname(nickname)
 				.ifPresentOrElse(
 						member -> member.updateRefreshToken(refreshToken),

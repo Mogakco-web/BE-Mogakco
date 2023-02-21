@@ -29,7 +29,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		log.info("callback-git url : "+request.getRequestURI());
 		try {
 			CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-			log.info("OAuth2User="+oAuth2User.getAttributes());
+			log.info("OAuth2User="+oAuth2User.getAttributes().get("login"));
 			// User의 Role이 GyUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
 			/*if(oAuth2User.getRole() == Role.GUEST) {
 				String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
@@ -54,8 +54,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 	// TODO : 소셜 로그인 시에도 무조건 토큰 생성하지 말고 JWT 인증 필터처럼 RefreshToken 유/무에 따라 다르게 처리해보기
 	private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
-		System.out.println("OAuthSuccess UserInfo="+oAuth2User.getName());
-		String accessToken = jwtService.createAccessToken(oAuth2User.getName());
+		String accessToken = jwtService.createAccessToken((String) oAuth2User.getAttributes().get("login"));
 		String refreshToken = jwtService.createRefreshToken();
 		System.out.println("accessToken="+accessToken);
 		System.out.println("refreshToken="+refreshToken);
@@ -63,6 +62,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
 
 		jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-		jwtService.updateRefreshToken(oAuth2User.getName(), refreshToken);
+		jwtService.updateRefreshToken((String) oAuth2User.getAttributes().get("login"), refreshToken);
 	}
 }
