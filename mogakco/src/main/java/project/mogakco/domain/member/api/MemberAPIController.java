@@ -11,6 +11,8 @@ import project.mogakco.domain.member.dto.MemberDTO;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.member.repository.MemberRepository;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/v1/member")
 @RequiredArgsConstructor
@@ -20,6 +22,10 @@ public class MemberAPIController {
 
 	@GetMapping("/userInfo/one")
 	public ResponseEntity<?> getOneOfUserInfo(@RequestBody MemberDTO.OnlyRefreshTokenDTO onlyRefreshTokenDTO){
+		System.out.println("request Refresh="+onlyRefreshTokenDTO.getRefreshToken());
+		Optional<MemberSocial> member = memberRepository
+				.findByRefreshToken(onlyRefreshTokenDTO.getRefreshToken());
+		System.out.println("****="+member.get().getNickname());
 		MemberSocial selectInfo
 				= memberRepository.findByRefreshToken(onlyRefreshTokenDTO.getRefreshToken()).get();
 		return new ResponseEntity<>(selectInfo, HttpStatus.OK);
