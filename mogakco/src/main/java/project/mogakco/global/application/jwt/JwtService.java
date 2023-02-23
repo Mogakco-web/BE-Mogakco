@@ -74,6 +74,7 @@ public class JwtService {
 	}
 
 	public Optional<String> extracUserInfo(HttpServletRequest request) {
+		log.info("userInfoReqeuest="+request.getHeader("userInfo"));
 		return Optional.ofNullable(request.getHeader("userInfo"));
 	}
 
