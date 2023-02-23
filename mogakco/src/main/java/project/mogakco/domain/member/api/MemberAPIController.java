@@ -28,4 +28,8 @@ public class MemberAPIController {
 				= memberRepository.findByRefreshToken(refreshToken).get();
 		return new ResponseEntity<>(selectInfo, HttpStatus.OK);
 	}
+
+	@GetMapping("/userInfo/access")
+	public void getOneOfUserInfoAccess(){
+	}
 }

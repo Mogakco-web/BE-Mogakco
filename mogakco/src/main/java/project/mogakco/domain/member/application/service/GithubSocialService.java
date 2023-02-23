@@ -8,5 +8,5 @@ public interface GithubSocialService {
 	String getAccessToken(String code) throws IOException;
 
 	void access(String access_token) throws IOException;
-//	void logoutByDeleteToken(String git_authToken);
+	void logoutByDeleteToken(String git_authToken);
 }

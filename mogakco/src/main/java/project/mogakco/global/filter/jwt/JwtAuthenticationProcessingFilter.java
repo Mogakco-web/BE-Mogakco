@@ -25,7 +25,7 @@ import java.io.IOException;
 @Log4j2
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
-	private static final String NO_CHECK_URL = "/**"; // "
+	private static final String NO_CHECK_URL = "/oauth2/authorization/**"; // "
 	// /login"으로 들어오는 요청은 Filter 작동 X
 
 	private final JwtService jwtService;
@@ -106,8 +106,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		log.info("checkAccessTokenAndAuthentication() 호출");
 		jwtService.extractAccessToken(request)
 				.filter(jwtService::isTokenValid)
-				.ifPresent(accessToken -> jwtService.extractEmail(accessToken)
-						.ifPresent(email -> memberRepository.findByEmail(email)
+				.ifPresent(accessToken -> jwtService.extractNickname(accessToken)
+						.ifPresent(nickname -> memberRepository.findByNickname(nickname)
 								.ifPresent(this::saveAuthentication)));
 
 		filterChain.doFilter(request, response);
@@ -135,7 +135,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		}
 
 		UserDetails userDetailsUser = User.builder()
-				.username(member.getEmail())
+				.username(member.getNickname())
 				.password(password)
 				.roles(member.getRole().name())
 				.build();

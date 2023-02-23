@@ -37,6 +37,6 @@ public class GitHubSocialController {
 
 	@DeleteMapping("/eliminate/authToken")
 	public void githubLogout(@PathParam("authToken")String authToken){
-//		githubSocialService.logoutByDeleteToken(authToken);
+		githubSocialService.logoutByDeleteToken(authToken);
 	}
 }

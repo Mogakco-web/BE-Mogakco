@@ -5,7 +5,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.mogakco.domain.member.repository.MemberRepository;
@@ -35,7 +34,7 @@ public class JwtService {
 
 	private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
 	private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
-	private static final String EMAIL_CLAIM = "email";
+	private static final String NICKNAME_CLAIM = "email";
 	private static final String BEARER = "Bearer ";
 
 	private final MemberRepository memberRepository;
@@ -46,7 +45,7 @@ public class JwtService {
 		return JWT.create()
 				.withSubject(ACCESS_TOKEN_SUBJECT)
 				.withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
-				.withClaim(EMAIL_CLAIM, name)
+				.withClaim(NICKNAME_CLAIM, name)
 				.sign(Algorithm.HMAC512(secretKey));
 	}
 
@@ -80,17 +79,20 @@ public class JwtService {
 	}
 
 		public Optional<String> extractAccessToken(HttpServletRequest request) {
-		return Optional.ofNullable(request.getHeader(accessHeader))
-				.filter(refreshToken -> refreshToken.startsWith(BEARER))
-				.map(refreshToken -> refreshToken.replace(BEARER, ""));
+			System.out.println("HeaderAccess="+request.getHeader(accessHeader));
+			Optional<String> s = Optional.ofNullable(request.getHeader(accessHeader))
+					.filter(refreshToken -> refreshToken.startsWith(BEARER))
+					.map(refreshToken -> refreshToken.replace(BEARER, ""));
+			System.out.println("s="+s);
+			return s;
 	}
 
-	public Optional<String> extractEmail(String accessToken) {
+	public Optional<String> extractNickname(String accessToken) {
 		try {
 			return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
 					.build()
 					.verify(accessToken)
-					.getClaim(EMAIL_CLAIM)
+					.getClaim(NICKNAME_CLAIM)
 					.asString());
 		} catch (Exception e) {
 			log.error("액세스 토큰이 유효하지 않습니다.");
@@ -115,6 +117,7 @@ public class JwtService {
 	}
 
 	public boolean isTokenValid(String token) {
+		System.out.println("token="+token);
 		try {
 			JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
 			return true;
