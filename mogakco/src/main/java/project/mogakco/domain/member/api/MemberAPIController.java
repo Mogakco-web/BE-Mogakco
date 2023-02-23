@@ -25,7 +25,7 @@ public class MemberAPIController {
 
 
 	@GetMapping("/userInfo/one")
-	public ResponseEntity<?> getOneOfUserInfo(@RequestHeader("Authorization")String accessToken){
+	public ResponseEntity<?> getOneOfUserInfo(@RequestHeader("userInfo")String accessToken){
 		String user_Nickname = jwtService.extractNickname(accessToken).get();
 		MemberSocial selectInfo = memberService.getMemberInfoByNickname(user_Nickname);
 

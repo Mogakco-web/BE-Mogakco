@@ -65,7 +65,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
 		if (jwtService.extracUserInfo(request).isPresent()){
 			return;
-		}
+		};
 
 
 		// 리프레시 토큰이 요청 헤더에 존재했다면, 사용자가 AccessToken이 만료되어서
