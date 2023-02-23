@@ -2,6 +2,7 @@ package project.mogakco.global.application.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -72,6 +73,10 @@ public class JwtService {
 		log.info("Access Token, Refresh Token 헤더 설정 완료");
 	}
 
+	public Optional<String> extracUserInfo(HttpServletRequest request) {
+		return Optional.ofNullable(request.getHeader("userInfo"));
+	}
+
 	public Optional<String> extractRefreshToken(HttpServletRequest request) {
 		return Optional.ofNullable(request.getHeader(refreshHeader))
 				.filter(refreshToken -> refreshToken.startsWith(BEARER))
@@ -119,7 +124,8 @@ public class JwtService {
 	public boolean isTokenValid(String token) {
 		System.out.println("token="+token);
 		try {
-			JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+			System.out.println("verify="+verify);
 			return true;
 		} catch (Exception e) {
 			log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
