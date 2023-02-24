@@ -1,17 +1,20 @@
 package project.mogakco.domain.member.application.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import project.mogakco.domain.member.application.service.GithubSocialService;
 import project.mogakco.domain.member.dto.GitHubResponseDTO;
+import project.mogakco.domain.member.entity.member.MemberSocial;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -22,12 +25,16 @@ import java.util.Map;
 
 @Service
 @Log4j2
+@RequiredArgsConstructor
+@Transactional
 public class GithubSocialServiceImpl implements GithubSocialService {
 
 	@Value("${spring.security.oauth2.client.registration.github.client-id}")
 	private String client_id;
 	@Value("${spring.security.oauth2.client.registration.github.client-secret}")
 	private String client_secret;
+
+	private final MemberServiceImpl memberService;
 
 	@Override
 	public String getAccessToken(String code) throws IOException {
@@ -85,9 +92,10 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 				Void.class,
 				client_id
 		);
-
+		System.out.println("Response="+response.getStatusCode());
 		if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
-			// 로그아웃이 성공한 경우 처리할 작업
+			MemberSocial findM = memberService.getMemberInfoByAuthToken(git_authToken);
+			findM.updateInfoByLogout(null,null);
 		}
 	}
 	@Override

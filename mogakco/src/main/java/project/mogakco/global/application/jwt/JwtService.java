@@ -3,9 +3,12 @@ package project.mogakco.global.application.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.mogakco.domain.member.repository.MemberRepository;
@@ -132,4 +135,6 @@ public class JwtService {
 			log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
 			return false;
 		}
-	}}
+	}
+
+}

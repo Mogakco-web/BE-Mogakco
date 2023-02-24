@@ -18,4 +18,8 @@ public class MemberServiceImpl {
 	public MemberSocial getMemberInfoByNickname(String nickname){
 		return memberRepository.findByNickname(nickname).get();
 	}
+
+	public MemberSocial getMemberInfoByAuthToken(String authToken){
+		return memberRepository.findByAuthToken(authToken).get();
+	}
 }

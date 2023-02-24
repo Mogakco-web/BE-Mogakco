@@ -51,4 +51,13 @@ public class MemberSocial extends BaseEntity {
 		this.nickname=updateOAuthUser.getNickname();
 		return this;
 	}
+
+	public void updateAuthToken(String authToken){
+		this.authToken=authToken;
+	}
+
+	public void updateInfoByLogout(String refreshToken,String authToken){
+		updateRefreshToken(refreshToken);
+		updateAuthToken(authToken);
+	}
 }
