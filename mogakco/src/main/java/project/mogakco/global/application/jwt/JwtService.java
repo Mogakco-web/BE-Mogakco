@@ -127,6 +127,11 @@ public class JwtService {
 
 	public boolean isTokenValid(String token) {
 		System.out.println("token="+token);
+
+		String payload1 = JWT.decode(token).getPayload();
+		log.info("decode payload="+payload1);
+		String payload = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token).getPayload();
+		log.info("payload="+payload);
 		try {
 			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
 			System.out.println("verify="+verify);
