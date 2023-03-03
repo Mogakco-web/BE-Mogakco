@@ -22,4 +22,8 @@ public class MemberServiceImpl {
 	public MemberSocial getMemberInfoByAuthToken(String authToken){
 		return memberRepository.findByAuthToken(authToken).get();
 	}
+
+	public MemberSocial getMemberInfoByOAuthId(String oauthId){
+		return memberRepository.findByOauthId(oauthId).orElse(null);
+	}
 }

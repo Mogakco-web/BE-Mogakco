@@ -19,7 +19,7 @@ public class ToDo extends BaseEntity {
 
 	private String todo_title;
 
-	private String todo_text;
+	private String todo_contents;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_seq")
@@ -28,4 +28,9 @@ public class ToDo extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_seq")
 	private MemberSocial memberSocial;
+
+	public ToDo writeContents(String todo_contents){
+		this.todo_contents=todo_contents;
+		return this;
+	}
 }

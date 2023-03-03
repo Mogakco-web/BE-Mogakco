@@ -40,7 +40,7 @@ public class MemberSocial extends BaseEntity {
 
 	private String password;
 
-	@OneToMany(fetch = FetchType.LAZY,mappedBy = "")
+	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial")
 	private List<ToDo> toDoList;
 
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial")
