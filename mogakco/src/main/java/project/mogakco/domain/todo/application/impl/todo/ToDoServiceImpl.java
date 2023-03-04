@@ -2,6 +2,8 @@ package project.mogakco.domain.todo.application.impl.todo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.mogakco.domain.member.application.impl.MemberServiceImpl;
@@ -10,6 +12,8 @@ import project.mogakco.domain.todo.application.service.todo.ToDoService;
 import project.mogakco.domain.todo.dto.request.ToDoDTO;
 import project.mogakco.domain.todo.entity.ToDo;
 import project.mogakco.domain.todo.repo.ToDoRepository;
+
+import java.util.Optional;
 
 @Service
 @Log4j2
@@ -34,7 +38,22 @@ public class ToDoServiceImpl implements ToDoService {
 		);
 	}
 
-	public ToDo writeContentsOneToDoTap(Long todo_seq,String write_contents){
-		return toDoRepository.findById(todo_seq).get().writeContents(write_contents);
+	@Transactional
+	public ToDo writeContentsOneToDoTap(ToDoDTO.ToDoWriteContentsDTO toDoWriteContentsDTO){
+		return toDoRepository.findById(toDoWriteContentsDTO.getTodo_seq()).get().writeContents(toDoWriteContentsDTO.getTodo_contents());
 	}
+
+	@Transactional
+	public ResponseEntity<?> eliminateOneToDoTap(ToDoDTO.ToDoEliminateDTO toDoEliminateDTO){
+		Optional<ToDo> findT =
+				toDoRepository.findById(toDoEliminateDTO.getTodo_seq());
+
+		if (findT.isPresent()){
+			toDoRepository.delete(findT.get());
+			return new ResponseEntity<>("todo_eliminate", HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>("Bad sequence",HttpStatus.BAD_REQUEST);
+		}
+	}
+
 }

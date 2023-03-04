@@ -3,6 +3,7 @@ package project.mogakco.domain.member.entity.member;
 import lombok.*;
 import project.mogakco.domain.member.dto.MemberDTO;
 import project.mogakco.domain.timer.entity.Timer;
+import project.mogakco.domain.todo.entity.Category;
 import project.mogakco.domain.todo.entity.ToDo;
 import project.mogakco.global.domain.BaseEntity;
 
@@ -48,6 +49,9 @@ public class MemberSocial extends BaseEntity {
 	public void updateRefreshToken(String updateRefreshToken){
 		this.refreshToken=updateRefreshToken;
 	}
+
+	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial")
+	public List<Category> categories;
 
 	public MemberSocial updateOAuthInfo(MemberDTO.UpdateOAuthUser updateOAuthUser){
 		this.authToken=updateOAuthUser.getAuthToken();

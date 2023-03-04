@@ -1,6 +1,7 @@
 package project.mogakco.domain.todo.entity;
 
 import lombok.*;
+import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.global.domain.BaseEntity;
 
 import javax.persistence.*;
@@ -17,8 +18,12 @@ public class Category extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long category_seq;
 
-	private String category_name;
+	private String categoryName;
 
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "category",cascade = CascadeType.ALL)
 	private List<ToDo> toDo;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_seq")
+	private MemberSocial memberSocial;
 }
