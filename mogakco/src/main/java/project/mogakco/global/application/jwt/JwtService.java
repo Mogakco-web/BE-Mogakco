@@ -2,57 +2,70 @@ package project.mogakco.global.application.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import project.mogakco.domain.member.repository.MemberRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
+import java.util.TimeZone;
 
 @Service
 @RequiredArgsConstructor
 @Getter
 @Log4j2
+@Transactional
 public class JwtService {
 
-	private String secretKey="Snd0QVBJU2VydmljZUFuZFdlYlNvY2tldFByb2plY3Q=";
+	@Value("${jwt.secret}")
+	private String secretKey;
 
-	private Long accessTokenExpirationPeriod=86400L;
+	@Value("${jwt.access.expiration}")
+	private int accessTokenExpirationPeriod;
 
-	private Long refreshTokenExpirationPeriod=604800L;
+	@Value("${jwt.refresh.expiration}")
+	private int refreshTokenExpirationPeriod;
 
-	private String accessHeader="Authorization";
+	@Value("${jwt.access.header}")
+	private String accessHeader;
 
-	private String refreshHeader="Authorization_refresh";
+	@Value("${jwt.refresh.header}")
+	private String refreshHeader;
 
 
 	private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
 	private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
-	private static final String EMAIL_CLAIM = "email";
+	private static final String NICKNAME_CLAIM = "email";
 	private static final String BEARER = "Bearer ";
 
 	private final MemberRepository memberRepository;
 
 
-	public String createAccessToken(String email) {
-		Date now = new Date();
+	public String createAccessToken(String name) {
 		return JWT.create()
 				.withSubject(ACCESS_TOKEN_SUBJECT)
-				.withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
-				.withClaim(EMAIL_CLAIM, email)
+				.withExpiresAt(changeDateStandardToSeoul("access"))
+				.withClaim(NICKNAME_CLAIM, name)
 				.sign(Algorithm.HMAC512(secretKey));
 	}
 
 	public String createRefreshToken() {
-		Date now = new Date();
 		return JWT.create()
 				.withSubject(REFRESH_TOKEN_SUBJECT)
-				.withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
+				.withExpiresAt(changeDateStandardToSeoul("refresh"))
 				.sign(Algorithm.HMAC512(secretKey));
 	}
 
@@ -71,6 +84,11 @@ public class JwtService {
 		log.info("Access Token, Refresh Token 헤더 설정 완료");
 	}
 
+	public Optional<String> extracUserInfo(HttpServletRequest request) {
+		log.info("userInfoReqeuest="+request.getHeader("userInfo"));
+		return Optional.ofNullable(request.getHeader("userInfo"));
+	}
+
 	public Optional<String> extractRefreshToken(HttpServletRequest request) {
 		return Optional.ofNullable(request.getHeader(refreshHeader))
 				.filter(refreshToken -> refreshToken.startsWith(BEARER))
@@ -78,17 +96,20 @@ public class JwtService {
 	}
 
 		public Optional<String> extractAccessToken(HttpServletRequest request) {
-		return Optional.ofNullable(request.getHeader(accessHeader))
-				.filter(refreshToken -> refreshToken.startsWith(BEARER))
-				.map(refreshToken -> refreshToken.replace(BEARER, ""));
+			System.out.println("HeaderAccess="+request.getHeader(accessHeader));
+			Optional<String> s = Optional.ofNullable(request.getHeader(accessHeader))
+					.filter(refreshToken -> refreshToken.startsWith(BEARER))
+					.map(refreshToken -> refreshToken.replace(BEARER, ""));
+			System.out.println("s="+s);
+			return s;
 	}
 
-	public Optional<String> extractEmail(String accessToken) {
+	public Optional<String> extractNickname(String accessToken) {
 		try {
 			return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
 					.build()
 					.verify(accessToken)
-					.getClaim(EMAIL_CLAIM)
+					.getClaim(NICKNAME_CLAIM)
 					.asString());
 		} catch (Exception e) {
 			log.error("액세스 토큰이 유효하지 않습니다.");
@@ -104,8 +125,8 @@ public class JwtService {
 		response.setHeader(refreshHeader, refreshToken);
 	}
 
-	public void updateRefreshToken(String email, String refreshToken) {
-		memberRepository.findByEmail(email)
+	public void updateRefreshToken(String nickname, String refreshToken) {
+		memberRepository.findByNickname(nickname)
 				.ifPresentOrElse(
 						member -> member.updateRefreshToken(refreshToken),
 						() -> new Exception("일치하는 회원이 없습니다.")
@@ -113,11 +134,35 @@ public class JwtService {
 	}
 
 	public boolean isTokenValid(String token) {
+		System.out.println("token="+token);
+
+		String payload1 = JWT.decode(token).getPayload();
+		log.info("decode payload="+payload1);
+		String payload = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token).getPayload();
+		log.info("payload="+payload);
 		try {
-			JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+			System.out.println("verify="+verify);
 			return true;
 		} catch (Exception e) {
 			log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
 			return false;
 		}
-	}}
+	}
+
+	private Date changeDateStandardToSeoul(String token_type){
+		TimeZone seoulTimeZone = TimeZone.getTimeZone("Asia/Seoul");
+
+		if (token_type.equals("access")){
+			Date access = new Date(System.currentTimeMillis() + accessTokenExpirationPeriod * 1000);
+			access.setTime(access.getTime()+seoulTimeZone.getOffset(access.getTime()));
+			System.out.println("log1="+access.getTime());
+			return access;
+		}else {
+			Date refresh = new Date(System.currentTimeMillis() + refreshTokenExpirationPeriod * 1000);
+			refresh.setTime(refresh.getTime()+seoulTimeZone.getOffset(refresh.getTime()));
+			System.out.println("refresh="+refresh.getTime());
+			return refresh;
+		}
+	}
+}

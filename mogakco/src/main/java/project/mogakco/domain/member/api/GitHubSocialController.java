@@ -24,11 +24,15 @@ public class GitHubSocialController {
 	private final GithubSocialService githubSocialService;
 
 	@GetMapping("/authorization/github")
-	public ResponseEntity<?> githubLogin(@PathParam("code")String code) throws IOException {
+	public void githubLogin(@PathParam("code")String code) throws IOException {
 		System.out.println("loginCode="+code);
+		githubSocialService.getAccessToken(code);
+	}
 
-		MemberSocial loginInfo = githubSocialService.getAccessToken(code);
-		return new ResponseEntity<>(loginInfo,HttpStatus.OK);
+	@GetMapping("/select/git/userInfo")
+	public void selectGitUserInfo(@PathParam("access_token")String access_token) throws IOException{
+		System.out.println("access_token="+access_token);
+		githubSocialService.access(access_token);
 	}
 
 	@DeleteMapping("/eliminate/authToken")
