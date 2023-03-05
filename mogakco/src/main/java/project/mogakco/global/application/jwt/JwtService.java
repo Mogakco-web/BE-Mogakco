@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,8 +16,12 @@ import project.mogakco.domain.member.repository.MemberRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
+import java.util.TimeZone;
 
 @Service
 @RequiredArgsConstructor
@@ -25,15 +30,20 @@ import java.util.Optional;
 @Transactional
 public class JwtService {
 
-	private String secretKey="Snd0QVBJU2VydmljZUFuZFdlYlNvY2tldFByb2plY3Q=";
+	@Value("${jwt.secret}")
+	private String secretKey;
 
-	private Long accessTokenExpirationPeriod=86400L;
+	@Value("${jwt.access.expiration}")
+	private int accessTokenExpirationPeriod;
 
-	private Long refreshTokenExpirationPeriod=604800L;
+	@Value("${jwt.refresh.expiration}")
+	private int refreshTokenExpirationPeriod;
 
-	private String accessHeader="Authorization";
+	@Value("${jwt.access.header}")
+	private String accessHeader;
 
-	private String refreshHeader="Authorization_refresh";
+	@Value("${jwt.refresh.header}")
+	private String refreshHeader;
 
 
 	private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
@@ -45,19 +55,17 @@ public class JwtService {
 
 
 	public String createAccessToken(String name) {
-		Date now = new Date();
 		return JWT.create()
 				.withSubject(ACCESS_TOKEN_SUBJECT)
-				.withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
+				.withExpiresAt(changeDateStandardToSeoul("access"))
 				.withClaim(NICKNAME_CLAIM, name)
 				.sign(Algorithm.HMAC512(secretKey));
 	}
 
 	public String createRefreshToken() {
-		Date now = new Date();
 		return JWT.create()
 				.withSubject(REFRESH_TOKEN_SUBJECT)
-				.withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
+				.withExpiresAt(changeDateStandardToSeoul("refresh"))
 				.sign(Algorithm.HMAC512(secretKey));
 	}
 
@@ -142,4 +150,19 @@ public class JwtService {
 		}
 	}
 
+	private Date changeDateStandardToSeoul(String token_type){
+		TimeZone seoulTimeZone = TimeZone.getTimeZone("Asia/Seoul");
+
+		if (token_type.equals("access")){
+			Date access = new Date(System.currentTimeMillis() + accessTokenExpirationPeriod * 1000);
+			access.setTime(access.getTime()+seoulTimeZone.getOffset(access.getTime()));
+			System.out.println("log1="+access.getTime());
+			return access;
+		}else {
+			Date refresh = new Date(System.currentTimeMillis() + refreshTokenExpirationPeriod * 1000);
+			refresh.setTime(refresh.getTime()+seoulTimeZone.getOffset(refresh.getTime()));
+			System.out.println("refresh="+refresh.getTime());
+			return refresh;
+		}
+	}
 }

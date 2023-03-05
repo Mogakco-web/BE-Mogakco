@@ -1,0 +1,10 @@
+jwt:
+  secret: ${token-secret}
+
+  access:
+    expiration: 86400 #3600*24
+    header: Authorization
+
+  refresh:
+    expiration: 604800 #3600*24*7
+    header: Authorization_refresh
