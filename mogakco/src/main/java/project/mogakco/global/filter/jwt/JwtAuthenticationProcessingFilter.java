@@ -30,7 +30,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
 	private static final String[] NO_CHECK_URL={
 			"/oauth2/authorization/github",
-			"/login/oauth2/code/github"
+			"/login/oauth2/code/github",
+			"/swagger-ui/index.html"
 	};
 	// /login"으로 들어오는 요청은 Filter 작동 X
 
