@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.mogakco.domain.member.repository.MemberRepository;
 import project.mogakco.global.exception.TokenException;
-import project.mogakco.global.handler.exception.GlobalExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,7 +50,6 @@ public class JwtService {
 
 	private final MemberRepository memberRepository;
 
-	private final GlobalExceptionHandler globalExceptionHandler;
 
 
 	public String createAccessToken(String name) {

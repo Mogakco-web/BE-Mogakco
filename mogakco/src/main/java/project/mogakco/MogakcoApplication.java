@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import project.mogakco.global.handler.exception.GlobalExceptionHandler;
 
 import javax.annotation.PostConstruct;
 
