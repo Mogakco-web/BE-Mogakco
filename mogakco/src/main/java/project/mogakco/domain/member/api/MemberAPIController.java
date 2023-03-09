@@ -13,6 +13,7 @@ import project.mogakco.domain.member.repository.MemberRepository;
 import project.mogakco.global.application.jwt.JwtService;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.server.PathParam;
 import java.util.Optional;
 
 @RestController
@@ -39,4 +40,5 @@ public class MemberAPIController {
 	@GetMapping("/userInfo/access")
 	public void getOneOfUserInfoAccess(){
 	}
+
 }

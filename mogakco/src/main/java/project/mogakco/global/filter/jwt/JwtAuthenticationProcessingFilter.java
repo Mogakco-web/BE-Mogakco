@@ -30,8 +30,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
 	private static final String[] NO_CHECK_URL={
 			"/oauth2/authorization/github",
-			"/login/oauth2/code/github",
-			"/swagger-ui/index.html"
+			"/login/oauth2/code/github"
 	};
 	// /login"으로 들어오는 요청은 Filter 작동 X
 
@@ -45,6 +44,10 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		System.out.println("URI="+request.getRequestURI());
 		String requestURI = request.getRequestURI();
+		String substring = requestURI.substring(0, 11);
+		if(substring.equals("/swagger-ui")){
+			return;
+		}
 		for (int i=0;i<NO_CHECK_URL.length;i++){
 			if (requestURI.equals(NO_CHECK_URL[i])){
 				filterChain.doFilter(request, response); // "/login" 요청이 들어오면, 다음 필터 호출
@@ -63,6 +66,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		String refreshToken = jwtService.extractRefreshToken(request)
 				.filter(jwtService::isTokenValid)
 				.orElse(null);
+
 
 //		if (jwtService.extracUserInfo(request).isPresent()){
 //			return;
@@ -131,7 +135,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 				.ifPresent(accessToken -> jwtService.extractNickname(accessToken)
 						.ifPresent(nickname -> memberRepository.findByNickname(nickname)
 								.ifPresent(this::saveAuthentication)));
-
+		if (!jwtService.isTokenExpired(response,jwtService.extractAccessToken(request).get())){
+			log.info("Access토큰 만료되어 들어옴");
+		}
 		filterChain.doFilter(request, response);
 	}
 

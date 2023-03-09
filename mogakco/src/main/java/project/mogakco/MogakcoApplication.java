@@ -3,9 +3,10 @@ package project.mogakco;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.context.annotation.PropertySources;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import project.mogakco.global.handler.exception.GlobalExceptionHandler;
 
 import javax.annotation.PostConstruct;
 

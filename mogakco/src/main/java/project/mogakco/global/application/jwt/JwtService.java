@@ -2,24 +2,21 @@ package project.mogakco.global.application.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.mogakco.domain.member.repository.MemberRepository;
 import project.mogakco.global.exception.TokenException;
+import project.mogakco.global.handler.exception.GlobalExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -54,6 +51,8 @@ public class JwtService {
 
 	private final MemberRepository memberRepository;
 
+	private final GlobalExceptionHandler globalExceptionHandler;
+
 
 	public String createAccessToken(String name) {
 		return JWT.create()
@@ -71,9 +70,10 @@ public class JwtService {
 	}
 
 	public void sendAccessToken(HttpServletResponse response, String accessToken) {
-		response.setStatus(HttpServletResponse.SC_OK);
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
 		response.setHeader(accessHeader, accessToken);
+		response.setHeader("ReIssued Token","yes");
 		log.info("재발급된 Access Token : {}", accessToken);
 	}
 
@@ -84,6 +84,7 @@ public class JwtService {
 		setRefreshTokenHeader(response, refreshToken);
 		log.info("Access Token, Refresh Token 헤더 설정 완료");
 	}
+
 
 	public Optional<String> extracUserInfo(HttpServletRequest request) {
 		log.info("userInfoReqeuest="+request.getHeader("userInfo"));
@@ -135,16 +136,28 @@ public class JwtService {
 	}
 
 	public boolean isTokenValid(String token) {
-		System.out.println("token="+token);
-
 		try {
 			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
-			System.out.println("verify="+verify);
 			return true;
 		} catch (Exception e) {
 			log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
-			throw new TokenException("유효하지 않은 토큰");
+			return false;
 		}
+	}
+
+	public boolean isTokenExpired(HttpServletResponse response,String token) throws TokenException{
+		try {
+			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+			long time = verify.getExpiresAt().getTime();
+			if (isExpiredToken(time)){
+				throw new TokenException("만료토큰",HttpStatus.UNAUTHORIZED);
+			}
+			return true;
+		}catch (TokenException e){
+			log.info("EXPIRED EXCEPTION");
+			sendAccessToken(response,token);
+		}
+		return false;
 	}
 
 	private Date changeDateStandardToSeoul(String token_type){
@@ -161,5 +174,14 @@ public class JwtService {
 			System.out.println("refresh="+refresh.getTime());
 			return refresh;
 		}
+	}
+
+	private boolean isExpiredToken(long compare_time){
+		TimeZone seoulTimeZone = TimeZone.getTimeZone("Asia/Seoul");
+
+		Date now=new Date();
+		now.setTime(now.getTime()+seoulTimeZone.getOffset(now.getTime()));
+		System.out.println("nowTime="+now.getTime());
+		return compare_time<now.getTime();
 	}
 }

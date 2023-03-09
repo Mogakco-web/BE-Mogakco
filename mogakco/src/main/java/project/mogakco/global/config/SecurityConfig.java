@@ -29,7 +29,7 @@ import project.mogakco.global.handler.oauth.OAuth2LoginSuccessHandler;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecurityConfig{
 	private final LoginService loginService;
 	private final JwtService jwtService;
 	private final MemberRepository memberRepository;
@@ -53,9 +53,10 @@ public class SecurityConfig {
 
 				.authorizeRequests()
 
+				.antMatchers("/swagger-ui/**", "/v3/api-docs/**","swagger-ui/null/swagger-resources/configuration/ui").permitAll() // Swagger UI 접근 권한 추가
 				.antMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**").permitAll()
-				.antMatchers("/oauth2/authorization/**","/swagger-ui/index.html").permitAll() // 회원가입 접근 가능
-				.anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
+				.antMatchers("/oauth2/authorization/**").permitAll()
+				.anyRequest().authenticated()
 				.and()
 				.oauth2Login()
 				.successHandler(oAuth2LoginSuccessHandler) // 동의하고 계속하기를 눌렀을 때 Handler 설정
