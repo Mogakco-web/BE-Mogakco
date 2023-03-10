@@ -28,25 +28,31 @@ public class ToDoServiceImpl implements ToDoService {
 	private final MemberServiceImpl memberService;
 
 	@Transactional
-	public ToDo createOneToDoTap(ToDoDTO.ToDoCreateDTO toDoCreateDTO, String oauthId){
+	public ToDo createOneToDoTap(ToDoDTO.ToDoCreateDTO toDoCreateDTO){
 		return toDoRepository.save(
 				ToDo.builder()
 						.todo_title(toDoCreateDTO.getTodo_title())
 						.category(categoryService.getCategoryInfoName(toDoCreateDTO.getCategory_name()))
-						.memberSocial(memberService.getMemberInfoByOAuthId(oauthId))
+						.memberSocial(memberService.getMemberInfoByOAuthId(toDoCreateDTO.getOauthId()))
 						.build()
 		);
 	}
 
 	@Transactional
 	public ToDo writeContentsOneToDoTap(ToDoDTO.ToDoWriteContentsDTO toDoWriteContentsDTO){
-		return toDoRepository.findById(toDoWriteContentsDTO.getTodo_seq()).get().writeContents(toDoWriteContentsDTO.getTodo_contents());
+		return toDoRepository.findByTodoSeqAndMemberSocial(toDoWriteContentsDTO.getTodoSeq(),
+						memberService.getMemberInfoByOAuthId(toDoWriteContentsDTO.getOauthId()))
+							.get()
+								.writeContents(toDoWriteContentsDTO.getTodo_contents());
 	}
 
 	@Transactional
 	public ResponseEntity<?> eliminateOneToDoTap(ToDoDTO.ToDoEliminateDTO toDoEliminateDTO){
 		Optional<ToDo> findT =
-				toDoRepository.findById(toDoEliminateDTO.getTodo_seq());
+				toDoRepository.findByTodoSeqAndMemberSocial(
+						toDoEliminateDTO.getTodoSeq(),
+						memberService.getMemberInfoByOAuthId(toDoEliminateDTO.getOauthId())
+				);
 
 		if (findT.isPresent()){
 			toDoRepository.delete(findT.get());
@@ -55,5 +61,6 @@ public class ToDoServiceImpl implements ToDoService {
 			return new ResponseEntity<>("Bad sequence",HttpStatus.BAD_REQUEST);
 		}
 	}
+
 
 }

@@ -15,7 +15,7 @@ public class ToDo extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long todo_seq;
+	private Long todoSeq;
 
 	private String todo_title;
 

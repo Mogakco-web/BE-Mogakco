@@ -26,4 +26,9 @@ public class Category extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_seq")
 	private MemberSocial memberSocial;
+
+	public Category changeCategoryName(String categoryName){
+		this.categoryName=categoryName;
+		return this;
+	}
 }

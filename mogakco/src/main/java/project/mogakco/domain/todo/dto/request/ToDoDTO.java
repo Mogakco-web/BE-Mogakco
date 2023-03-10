@@ -15,12 +15,14 @@ public class ToDoDTO {
 
 	@Getter
 	public static class ToDoWriteContentsDTO{
-		private Long todo_seq;
+		private Long todoSeq;
 		private String todo_contents;
+		private String oauthId;
 	}
 
 	@Getter
 	public static class ToDoEliminateDTO {
-		private Long todo_seq;
+		private Long todoSeq;
+		private String oauthId;
 	}
 }
