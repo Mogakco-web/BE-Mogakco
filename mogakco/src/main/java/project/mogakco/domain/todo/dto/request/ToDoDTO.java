@@ -8,6 +8,7 @@ public class ToDoDTO {
 
 	@Getter
 	public static class ToDoCreateDTO{
+		private String oauthId;
 		private String todo_title;
 		private String category_name;
 	}
