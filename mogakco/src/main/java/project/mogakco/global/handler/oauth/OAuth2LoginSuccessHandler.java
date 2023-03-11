@@ -5,7 +5,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.member.application.service.GithubSocialService;
+import project.mogakco.domain.member.entity.member.MemberSocial;
+import project.mogakco.domain.todo.application.service.category.CategoryService;
 import project.mogakco.global.application.jwt.JwtService;
 import project.mogakco.global.domain.entity.oauth.CustomOAuth2User;
 
@@ -21,6 +24,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 	private final JwtService jwtService;
 	private final GithubSocialService githubSocialService;
+	private final CategoryService categoryService;
+	private final MemberServiceImpl memberService;
 //    private final UserRepository userRepository;
 
 	@Override
@@ -42,6 +47,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 //                findUser.authorizeUser();
 			} else {*/
 			loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
+			initializeCategorySettings((String) oAuth2User.getAttributes().get("login"));
 			response.sendRedirect("http://localhost:3000/callback?accessToken="+response.getHeader("Authorization")+"&refreshToken="+response.getHeader("Authorization_refresh"));
 			return;
 //			}
@@ -63,5 +69,14 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 		jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
 		jwtService.updateRefreshToken((String) oAuth2User.getAttributes().get("login"), refreshToken);
+	}
+
+	private MemberSocial initializeCategorySettings(String nickname){
+		MemberSocial findM = memberService.getMemberInfoByNickname(nickname);
+		if (categoryService.getCategoryInfoNameAndMember(findM)){
+			categoryService.initializeBasicCategory(findM);
+		}
+
+		return findM;
 	}
 }
