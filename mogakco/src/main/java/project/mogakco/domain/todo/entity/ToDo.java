@@ -17,7 +17,7 @@ public class ToDo extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long todoSeq;
 
-	private String todo_title;
+	private String todoTitle;
 
 	private String todo_contents;
 
@@ -31,6 +31,11 @@ public class ToDo extends BaseEntity {
 
 	public ToDo writeContents(String todo_contents){
 		this.todo_contents=todo_contents;
+		return this;
+	}
+
+	public ToDo changeTitleTodo(String todoTitle){
+		this.todoTitle =todoTitle;
 		return this;
 	}
 }

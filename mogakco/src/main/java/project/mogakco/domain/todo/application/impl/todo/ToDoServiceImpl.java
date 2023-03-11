@@ -28,10 +28,11 @@ public class ToDoServiceImpl implements ToDoService {
 	private final MemberServiceImpl memberService;
 
 	@Transactional
+	@Override
 	public ToDo createOneToDoTap(ToDoDTO.ToDoCreateDTO toDoCreateDTO){
 		return toDoRepository.save(
 				ToDo.builder()
-						.todo_title(toDoCreateDTO.getTodo_title())
+						.todoTitle(toDoCreateDTO.getTodo_title())
 						.category(categoryService.getCategoryInfoName(toDoCreateDTO.getCategory_name()))
 						.memberSocial(memberService.getMemberInfoByOAuthId(toDoCreateDTO.getOauthId()))
 						.build()
@@ -39,6 +40,7 @@ public class ToDoServiceImpl implements ToDoService {
 	}
 
 	@Transactional
+	@Override
 	public ToDo writeContentsOneToDoTap(ToDoDTO.ToDoWriteContentsDTO toDoWriteContentsDTO){
 		return toDoRepository.findByTodoSeqAndMemberSocial(toDoWriteContentsDTO.getTodoSeq(),
 						memberService.getMemberInfoByOAuthId(toDoWriteContentsDTO.getOauthId()))
@@ -47,6 +49,7 @@ public class ToDoServiceImpl implements ToDoService {
 	}
 
 	@Transactional
+	@Override
 	public ResponseEntity<?> eliminateOneToDoTap(ToDoDTO.ToDoEliminateDTO toDoEliminateDTO){
 		Optional<ToDo> findT =
 				toDoRepository.findByTodoSeqAndMemberSocial(
@@ -60,6 +63,18 @@ public class ToDoServiceImpl implements ToDoService {
 		}else {
 			return new ResponseEntity<>("Bad sequence",HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	@Override
+	@Transactional
+	public ToDo changeTitleTodo(ToDoDTO.ChangTitleDTO changTitleDTO) {
+		Optional<ToDo> findT =
+				toDoRepository.findByTodoSeqAndMemberSocial(
+						changTitleDTO.getTodoSeq(),
+						memberService.getMemberInfoByOAuthId(changTitleDTO.getOauthId())
+				);
+
+		return findT.map(toDo -> toDo.changeTitleTodo(changTitleDTO.getChangeTitle())).orElse(null);
 	}
 
 

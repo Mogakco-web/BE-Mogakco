@@ -25,4 +25,11 @@ public class ToDoDTO {
 		private Long todoSeq;
 		private String oauthId;
 	}
+
+	@Getter
+	public static class ChangTitleDTO {
+		private Long todoSeq;
+		private String oauthId;
+		private String changeTitle;
+	}
 }
