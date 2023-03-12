@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import project.mogakco.domain.member.application.impl.GithubSocialServiceImpl;
 import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.member.entity.member.MemberSocial;
@@ -17,6 +19,8 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Log4j2
+@Service
+@Transactional(readOnly = true)
 public class TimerServiceImpl implements TimerService {
 
 	private final TimerRepository timerRepository;
@@ -24,6 +28,7 @@ public class TimerServiceImpl implements TimerService {
 	private final MemberServiceImpl memberService;
 
 	@Override
+	@Transactional
 	public ResponseEntity<?> recodeTimeToday(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday) {
 		MemberSocial findM = memberService.getMemberInfoByOAuthId(timerRecodeInfoToday.getUser_oauthId());
 		Optional<Timer> findT = timerRepository.findByCreateDateAndMemberSocial(timerRecodeInfoToday.getLocalDate(),findM);
