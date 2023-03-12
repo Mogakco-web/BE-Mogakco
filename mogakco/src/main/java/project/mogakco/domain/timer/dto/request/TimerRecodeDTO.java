@@ -3,11 +3,8 @@ package project.mogakco.domain.timer.dto.request;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import project.mogakco.domain.timer.application.service.TimerService;
-import project.mogakco.domain.timer.entity.Timer;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Getter
 @RequiredArgsConstructor
@@ -19,18 +16,22 @@ public class TimerRecodeDTO {
 		private String hours;
 		private String minute;
 		private String second;
+		private LocalDate localDate;
 		private String user_oauthId;
-		private long day_of_totalTime;
 
-		public Timer toEntity(){
-			return Timer.builder()
-					.recodeTime(hours+":"+minute+":"+second)
-					.day_of_totalTime(day_of_totalTime)
-					.build();
-		}
 	}
 
+	@Getter
 	public static class todayDateInfoDTO{
+		private String oauthId;
 		private LocalDate localDate;
 	}
+
+	@Getter
+	public static class diffYesterdayDateCompareDTO{
+		private String oauthId;
+		private LocalDate todayDateInfo;
+		private LocalDate yesterdayDateInfo;
+	}
+
 }

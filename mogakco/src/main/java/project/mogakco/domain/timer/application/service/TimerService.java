@@ -8,6 +8,7 @@ import java.time.LocalDate;
 public interface TimerService {
 	ResponseEntity<?> recodeTimeToday(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday);
 
-	ResponseEntity<?> getTodayInfo(String oauthId, LocalDate localDate);
+	ResponseEntity<?> getTodayInfo(TimerRecodeDTO.todayDateInfoDTO todayDateInfoDTO);
 
+	ResponseEntity<?> getDiffYesterdayInfo(TimerRecodeDTO.diffYesterdayDateCompareDTO diffYesterdayDateCompareDTO);
 }
