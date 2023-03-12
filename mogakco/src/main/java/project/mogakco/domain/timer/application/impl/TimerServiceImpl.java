@@ -27,8 +27,13 @@ public class TimerServiceImpl implements TimerService {
 		MemberSocial findM = githubSocialService.findByOAuthId(timerRecodeInfoToday.getUser_oauthId());
 		Optional<Timer> findT = timerRepository.findByCreateDateAndMemberSocial(timerRecodeInfoToday.getLocalDate(),findM);
 		if (findT.isEmpty()){
-			timerRecodeInfoToday.setDay_of_totalTime(sumOfDayTime(timerRecodeInfoToday));
-			Timer t = timerRepository.save(timerRecodeInfoToday.toEntity());
+			Timer t = timerRepository.save(
+					Timer.builder()
+							.recodeTime(changeTimeFormatToString(timerRecodeInfoToday))
+							.memberSocial(findM)
+							.day_of_totalTime(sumOfDayTime(timerRecodeInfoToday))
+							.build()
+			);
 			return new ResponseEntity<>(t, HttpStatus.OK);
 		}else {
 			Timer t = findT.get().updateRecodeInfo(timeInfoToStringFormat(timerRecodeInfoToday), sumOfDayTime(timerRecodeInfoToday));
@@ -89,5 +94,11 @@ public class TimerServiceImpl implements TimerService {
 		long second=diffRecode;
 
 		return hours+"시간"+minute+"분"+second+"초";
+	}
+
+	private String changeTimeFormatToString(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday){
+		return timerRecodeInfoToday.getHours()+":"
+				+timerRecodeInfoToday.getMinute()+":"
+				+timerRecodeInfoToday.getSecond();
 	}
 }
