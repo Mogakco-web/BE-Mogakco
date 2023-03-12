@@ -2,6 +2,7 @@ package project.mogakco.domain.member.entity.member;
 
 import lombok.*;
 import project.mogakco.domain.member.dto.MemberDTO;
+import project.mogakco.domain.member.dto.MemberResponseDTO;
 import project.mogakco.domain.timer.entity.Timer;
 import project.mogakco.domain.todo.entity.Category;
 import project.mogakco.domain.todo.entity.ToDo;
@@ -67,5 +68,20 @@ public class MemberSocial extends BaseEntity {
 	public void updateInfoByLogout(String refreshToken,String authToken){
 		updateRefreshToken(refreshToken);
 		updateAuthToken(authToken);
+	}
+
+	public MemberResponseDTO toDTO(){
+		return MemberResponseDTO
+				.builder()
+				.member_seq(member_seq)
+				.authToken(authToken)
+				.member_imgUrl(member_imgUrl)
+				.email(email)
+				.nickname(nickname)
+				.oauthId(oauthId)
+				.socialType(socialType)
+				.refreshToken(refreshToken)
+				.role(role)
+				.build();
 	}
 }
