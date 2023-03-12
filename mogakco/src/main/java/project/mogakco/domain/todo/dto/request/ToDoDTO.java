@@ -1,16 +1,26 @@
 package project.mogakco.domain.todo.dto.request;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import project.mogakco.domain.todo.entity.ToDo;
 
 @Getter
+@RequiredArgsConstructor
 public class ToDoDTO {
 
 	@Getter
 	public static class ToDoCreateDTO{
 		private String oauthId;
-		private String todo_title;
-		private String category_name;
+		private String todoTitle;
+		private String categoryName;
+
+
+		/*private ToDo toEntity() {
+			return ToDo.builder()
+
+					.build()
+		}*/
 	}
 
 	@Getter

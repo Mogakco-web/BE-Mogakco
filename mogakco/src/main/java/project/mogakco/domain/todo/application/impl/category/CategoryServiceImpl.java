@@ -72,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public boolean getCategoryInfoNameAndMember(MemberSocial memberSocial) {
-		return categoryRepository.findByCategoryNameAndMemberSocial("ToDo",memberSocial).isEmpty();
+		return categoryRepository.findByCategoryNameAndMemberSocial("ToDo",memberSocial).isPresent();
 	}
 
 	@Override

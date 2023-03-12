@@ -2,13 +2,14 @@ package project.mogakco.domain.todo.application.service.todo;
 
 import org.springframework.http.ResponseEntity;
 import project.mogakco.domain.todo.dto.request.ToDoDTO;
+import project.mogakco.domain.todo.dto.response.ToDoResponseDTO;
 import project.mogakco.domain.todo.entity.ToDo;
 
 import java.util.List;
 
 public interface ToDoService {
 
-	ToDo createOneToDoTap(ToDoDTO.ToDoCreateDTO toDoCreateDTO);
+	ToDoResponseDTO createOneToDoTap(ToDoDTO.ToDoCreateDTO toDoCreateDTO);
 
 	ToDo writeContentsOneToDoTap(ToDoDTO.ToDoWriteContentsDTO toDoWriteContentsDTO);
 

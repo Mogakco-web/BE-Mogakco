@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.mogakco.domain.todo.application.service.todo.ToDoService;
 import project.mogakco.domain.todo.dto.request.ToDoDTO;
+import project.mogakco.domain.todo.dto.response.ToDoResponseDTO;
 import project.mogakco.domain.todo.entity.ToDo;
 
 @RestController
@@ -17,16 +18,23 @@ public class ToDoAPIController {
 
 	private final ToDoService toDoService;
 
-	@PostMapping
-	public ResponseEntity<?> createOneTodoTap(@RequestBody ToDoDTO.ToDoCreateDTO toDoCreateDTO){
-		ToDo createTodo = toDoService.createOneToDoTap(toDoCreateDTO);
-		return new ResponseEntity<>(createTodo, HttpStatus.OK);
+	@PostMapping("/create")
+	public ToDoResponseDTO createOneTodoTap(@RequestBody ToDoDTO.ToDoCreateDTO toDoCreateDTO){
+		System.out.println("TODOCREATE===================");
+		System.out.println(toDoCreateDTO.getCategoryName());
+		System.out.println(toDoCreateDTO.getOauthId());
+		System.out.println(toDoCreateDTO.getTodoTitle());
+		ToDoResponseDTO responseDTO = toDoService.createOneToDoTap(toDoCreateDTO);
+		return responseDTO;
+//		return new ResponseEntity<>(createdToDo,HttpStatus.OK);
+		/*ToDoResponseDTO createdTodo = toDoService.createOneToDoTap(toDoCreateDTO);
+		return new ResponseEntity<>(createdTodo, HttpStatus.OK);*/
 	}
 
 	@PostMapping("/contents")
 	public ResponseEntity<?> writeContents(@RequestBody ToDoDTO.ToDoWriteContentsDTO writeContentsDTO){
 		ToDo writeToDO = toDoService.writeContentsOneToDoTap(writeContentsDTO);
-		return new ResponseEntity<>(writeContentsDTO,HttpStatus.OK);
+		return new ResponseEntity<>(writeToDO,HttpStatus.OK);
 	}
 
 	@PutMapping

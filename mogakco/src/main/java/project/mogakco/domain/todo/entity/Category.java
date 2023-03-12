@@ -2,6 +2,7 @@ package project.mogakco.domain.todo.entity;
 
 import lombok.*;
 import project.mogakco.domain.member.entity.member.MemberSocial;
+import project.mogakco.domain.todo.dto.CategoryResponseDTO;
 import project.mogakco.global.domain.BaseEntity;
 
 import javax.persistence.*;
@@ -30,5 +31,13 @@ public class Category extends BaseEntity {
 	public Category changeCategoryName(String categoryName){
 		this.categoryName=categoryName;
 		return this;
+	}
+
+	public CategoryResponseDTO toDTO(){
+		return CategoryResponseDTO.builder()
+				.category_seq(category_seq)
+				.categoryName(categoryName)
+				.memberSocial(memberSocial)
+				.build();
 	}
 }
