@@ -2,22 +2,29 @@ package project.mogakco.domain.timer.api;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import project.mogakco.domain.timer.application.service.TimerService;
 import project.mogakco.domain.timer.dto.request.TimerRecodeDTO;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/timer")
+@RequiredArgsConstructor
 public class TimerAPIController {
 
 	private final TimerService timerService;
 
-	@PostMapping("/recodeTime")
-	public ResponseEntity<?> recodeTimeToLearn(@RequestBody TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday){
+	@PostMapping("/recode")
+	public ResponseEntity<?> recodeTodayTimeInfo(@RequestBody TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday){
 		return timerService.recodeTimeToday(timerRecodeInfoToday);
+	}
+
+	@GetMapping("/todayInfo")
+	public ResponseEntity<?> getTodayInfo(@RequestBody TimerRecodeDTO.todayDateInfoDTO todayDateInfoDTO){
+		return timerService.getTodayInfo(todayDateInfoDTO);
+	}
+
+	@GetMapping("/compareYes")
+	public ResponseEntity<?> getInfoCompareYesterDay(@RequestBody TimerRecodeDTO.diffYesterdayDateCompareDTO diffYesterdayDateCompareDTO){
+		return timerService.getDiffYesterdayInfo(diffYesterdayDateCompareDTO);
 	}
 }

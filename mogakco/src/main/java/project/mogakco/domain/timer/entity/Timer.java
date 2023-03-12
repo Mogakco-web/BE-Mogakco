@@ -24,4 +24,10 @@ public class Timer extends BaseEntity {
 	private String recodeTime;
 
 	private long day_of_totalTime;
+
+	public Timer updateRecodeInfo(String recodeTime, long day_of_totalTime){
+		this.recodeTime=recodeTime;
+		this.day_of_totalTime+=day_of_totalTime;
+		return this;
+	}
 }
