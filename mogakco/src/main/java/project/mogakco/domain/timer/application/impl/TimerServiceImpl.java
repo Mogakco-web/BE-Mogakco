@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import project.mogakco.domain.member.application.impl.GithubSocialServiceImpl;
+import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.timer.application.service.TimerService;
 import project.mogakco.domain.timer.dto.request.TimerRecodeDTO;
@@ -20,11 +21,11 @@ public class TimerServiceImpl implements TimerService {
 
 	private final TimerRepository timerRepository;
 
-	private final GithubSocialServiceImpl githubSocialService;
+	private final MemberServiceImpl memberService;
 
 	@Override
 	public ResponseEntity<?> recodeTimeToday(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday) {
-		MemberSocial findM = githubSocialService.findByOAuthId(timerRecodeInfoToday.getUser_oauthId());
+		MemberSocial findM = memberService.getMemberInfoByOAuthId(timerRecodeInfoToday.getUser_oauthId());
 		Optional<Timer> findT = timerRepository.findByCreateDateAndMemberSocial(timerRecodeInfoToday.getLocalDate(),findM);
 		if (findT.isEmpty()){
 			Timer t = timerRepository.save(
@@ -43,14 +44,14 @@ public class TimerServiceImpl implements TimerService {
 
 	@Override
 	public ResponseEntity<?> getTodayInfo(TimerRecodeDTO.todayDateInfoDTO todayDateInfoDTO) {
-		MemberSocial findM = githubSocialService.findByOAuthId(todayDateInfoDTO.getOauthId());
+		MemberSocial findM = memberService.getMemberInfoByOAuthId(todayDateInfoDTO.getOauthId());
 		Timer timer = timerRepository.findByCreateDateAndMemberSocial(todayDateInfoDTO.getLocalDate(),findM).get();
 		return new ResponseEntity<>(timer.getDay_of_totalTime(),HttpStatus.OK);
 	}
 
 	@Override
 	public ResponseEntity<?> getDiffYesterdayInfo(TimerRecodeDTO.diffYesterdayDateCompareDTO diffYesterdayDateCompareDTO) {
-		MemberSocial findM = githubSocialService.findByOAuthId(diffYesterdayDateCompareDTO.getOauthId());
+		MemberSocial findM = memberService.getMemberInfoByOAuthId(diffYesterdayDateCompareDTO.getOauthId());
 		long todayRecode = timerRepository.findByCreateDateAndMemberSocial(diffYesterdayDateCompareDTO.getTodayDateInfo(), findM)
 				.get().getDay_of_totalTime();
 		long yesterDayRecode= timerRepository.findByCreateDateAndMemberSocial(diffYesterdayDateCompareDTO.getYesterdayDateInfo(), findM)
