@@ -1,24 +1,18 @@
 spring:
   profiles:
-    include: oauth
+    include:
+      - jwt
+      - oauth
+    active: jwt, oauth
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: ${jdbc-url}
     username: ${username}
     password: ${password}
 
-  security:
-    oauth2:
-      client:
-        registration:
-          github:
-            client-id: ${github-id}
-            client-secret: ${github-secret}
-            redirectUri: "{baseUrl}/auth/{registrationId}"
-            scope: user
-  #          google:
-  #            client-id:
-  #            client-secret:
+  config:
+    name: application,application-jwt,application-oauth
+    location: classpath:/application.yml,classpath:/application-jwt.yml,classpath:/application-oauth.yml
 
 
   jpa:

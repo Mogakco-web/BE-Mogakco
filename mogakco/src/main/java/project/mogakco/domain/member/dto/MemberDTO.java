@@ -10,4 +10,12 @@ public class MemberDTO {
 	public static class OnlyRefreshTokenDTO{
 		private String refreshToken;
 	}
+
+	@Getter
+	@Setter
+	public static class UpdateOAuthUser{
+		private String imgUrl;
+		private String nickname;
+		private String authToken;
+	}
 }

@@ -9,8 +9,10 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<MemberSocial,Long> {
 	Optional<MemberSocial> findByOauthId(String id);
+	Optional<MemberSocial> findByNickname(String nickname);
 	Optional<MemberSocial> findByEmail(String email);
 	Optional<MemberSocial> findByRefreshToken(String refreshToken);
+	Optional<MemberSocial> findByAuthToken(String authToken);
 
 	Optional<MemberSocial> findBySocialTypeAndOauthId(SocialType socialType, String oauthId);
 }

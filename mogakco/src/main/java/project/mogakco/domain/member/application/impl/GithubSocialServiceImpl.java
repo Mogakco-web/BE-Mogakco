@@ -2,31 +2,39 @@ package project.mogakco.domain.member.application.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 import project.mogakco.domain.member.application.service.GithubSocialService;
 import project.mogakco.domain.member.dto.GitHubResponseDTO;
 import project.mogakco.domain.member.entity.member.MemberSocial;
-import project.mogakco.domain.member.repository.MemberRepository;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 
 @Service
 @Log4j2
 @RequiredArgsConstructor
+@Transactional
 public class GithubSocialServiceImpl implements GithubSocialService {
-
-	private final MemberRepository memberRepository;
 
 	@Value("${spring.security.oauth2.client.registration.github.client-id}")
 	private String client_id;
 	@Value("${spring.security.oauth2.client.registration.github.client-secret}")
 	private String client_secret;
+
+	private final MemberServiceImpl memberService;
 
 	@Override
 	public String getAccessToken(String code) throws IOException {
@@ -53,25 +61,43 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		System.out.println("responseData="+responseData);
 
 		conn.disconnect();
+		/*System.out.println("responseData="+responseData);
+		JsonParser jsonParser=new JsonParser();
+		Object obj = jsonParser.parse(responseData);
+		JSONObject jso = (JSONObject) obj;
+		String authtoken = (String) jso.get("accessToken");
+		return authtoken;*/
 		return null;
 	}
 
-	/*@SneakyThrows
+	@SneakyThrows
 	@Override
 	public void logoutByDeleteToken(String git_authToken){
-		URL url = new URL("https://api.github.com/applications/"+client_id+"/token");
+		System.out.println("Git AuthToken="+git_authToken);
+		RestTemplate restTemplate = new RestTemplate();
 
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setDoInput(true);
-		conn.setDoOutput(true);
-		conn.setRequestMethod("DELETE");
-		conn.setRequestProperty("Accept", "application/json");
-		conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36");
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", "Basic " + Base64Utils.encodeToString((client_id + ":" + client_secret).getBytes()));
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
+		Map<String, String> requestBody = new HashMap<>();
+		requestBody.put("access_token", git_authToken);
 
-		String response = getResponse(conn, conn.getResponseCode());
-		System.out.println(response);
-	}*/
+		HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+		ResponseEntity<Void> response = restTemplate.exchange(
+				"https://api.github.com/applications/"+client_id+"/token",
+				HttpMethod.DELETE,
+				requestEntity,
+				Void.class,
+				client_id
+		);
+		System.out.println("Response="+response.getStatusCode());
+		if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
+			MemberSocial findM = memberService.getMemberInfoByAuthToken(git_authToken);
+			findM.updateInfoByLogout(null,null);
+		}
+	}
 	@Override
 	public void access(String access_token) throws IOException{
 		/*ObjectMapper objectMapper = new ObjectMapper();
@@ -127,7 +153,5 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		return gitHubResponseDTO;
 	}
 
-	public MemberSocial findByOAuthId(String oauthId){
-		return memberRepository.findByOauthId(oauthId).get();
-	}
+
 }

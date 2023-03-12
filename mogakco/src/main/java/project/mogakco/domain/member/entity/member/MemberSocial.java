@@ -1,9 +1,14 @@
 package project.mogakco.domain.member.entity.member;
 
 import lombok.*;
+import project.mogakco.domain.member.dto.MemberDTO;
+import project.mogakco.domain.timer.entity.Timer;
+import project.mogakco.domain.todo.entity.Category;
+import project.mogakco.domain.todo.entity.ToDo;
 import project.mogakco.global.domain.BaseEntity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,10 +35,37 @@ public class MemberSocial extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private SocialType socialType;
 
+	private String authToken;
+
 	private String refreshToken;
 
 	private String password;
+
+	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial")
+	private List<ToDo> toDoList;
+
+	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial")
+	private List<Timer> timer;
 	public void updateRefreshToken(String updateRefreshToken){
 		this.refreshToken=updateRefreshToken;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial")
+	public List<Category> categories;
+
+	public MemberSocial updateOAuthInfo(MemberDTO.UpdateOAuthUser updateOAuthUser){
+		this.authToken=updateOAuthUser.getAuthToken();
+		this.member_imgUrl=updateOAuthUser.getImgUrl();
+		this.nickname=updateOAuthUser.getNickname();
+		return this;
+	}
+
+	public void updateAuthToken(String authToken){
+		this.authToken=authToken;
+	}
+
+	public void updateInfoByLogout(String refreshToken,String authToken){
+		updateRefreshToken(refreshToken);
+		updateAuthToken(authToken);
 	}
 }
