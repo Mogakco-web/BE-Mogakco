@@ -18,12 +18,12 @@ public class TimerAPIController {
 		return timerService.recodeTimeToday(timerRecodeInfoToday);
 	}
 
-	@PostMapping("/todayInfo")
+	@GetMapping("/todayInfo")
 	public ResponseEntity<?> getTodayInfo(@RequestBody TimerRecodeDTO.todayDateInfoDTO todayDateInfoDTO){
 		return timerService.getTodayInfo(todayDateInfoDTO);
 	}
 
-	@PostMapping("/compareYes")
+	@GetMapping("/compareYes")
 	public ResponseEntity<?> getInfoCompareYesterDay(@RequestBody TimerRecodeDTO.diffYesterdayDateCompareDTO diffYesterdayDateCompareDTO){
 		return timerService.getDiffYesterdayInfo(diffYesterdayDateCompareDTO);
 	}
