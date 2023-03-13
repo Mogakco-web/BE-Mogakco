@@ -17,7 +17,7 @@ public class TimerRecodeDTO {
 		private String minute;
 		private String second;
 		private LocalDate localDate;
-		private String user_oauthId;
+		private String oauthId;
 
 	}
 

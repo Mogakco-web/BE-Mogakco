@@ -2,6 +2,7 @@ package project.mogakco.domain.timer.entity;
 
 import lombok.*;
 import project.mogakco.domain.member.entity.member.MemberSocial;
+import project.mogakco.domain.timer.dto.response.TimerResponseDTO;
 import project.mogakco.global.domain.BaseEntity;
 
 import javax.persistence.*;
@@ -29,5 +30,14 @@ public class Timer extends BaseEntity {
 		this.recodeTime=recodeTime;
 		this.day_of_totalTime+=day_of_totalTime;
 		return this;
+	}
+
+	public TimerResponseDTO.RecodeTime toDTO(){
+		return TimerResponseDTO.RecodeTime.builder()
+				.timer_seq(timer_seq)
+				.day_of_totalTime(day_of_totalTime)
+				.member_Seq(memberSocial.getMember_seq())
+				.recodeTime(recodeTime)
+				.build();
 	}
 }

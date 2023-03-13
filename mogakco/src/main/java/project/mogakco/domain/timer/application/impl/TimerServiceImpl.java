@@ -11,6 +11,7 @@ import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.timer.application.service.TimerService;
 import project.mogakco.domain.timer.dto.request.TimerRecodeDTO;
+import project.mogakco.domain.timer.dto.response.TimerResponseDTO;
 import project.mogakco.domain.timer.entity.Timer;
 import project.mogakco.domain.timer.repo.TimerRepository;
 
@@ -30,7 +31,7 @@ public class TimerServiceImpl implements TimerService {
 	@Override
 	@Transactional
 	public ResponseEntity<?> recodeTimeToday(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday) {
-		MemberSocial findM = memberService.getMemberInfoByOAuthId(timerRecodeInfoToday.getUser_oauthId());
+		MemberSocial findM = memberService.getMemberInfoByOAuthId(timerRecodeInfoToday.getOauthId());
 		Optional<Timer> findT = timerRepository.findByCreateDateAndMemberSocial(timerRecodeInfoToday.getLocalDate(),findM);
 		if (findT.isEmpty()){
 			Timer t = timerRepository.save(
@@ -40,10 +41,12 @@ public class TimerServiceImpl implements TimerService {
 							.day_of_totalTime(sumOfDayTime(timerRecodeInfoToday))
 							.build()
 			);
-			return new ResponseEntity<>(t, HttpStatus.OK);
+			TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
+			return new ResponseEntity<>(recodeTime, HttpStatus.OK);
 		}else {
 			Timer t = findT.get().updateRecodeInfo(timeInfoToStringFormat(timerRecodeInfoToday), sumOfDayTime(timerRecodeInfoToday));
-			return new ResponseEntity<>(t,HttpStatus.OK);
+			TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
+			return new ResponseEntity<>(recodeTime,HttpStatus.OK);
 		}
 	}
 

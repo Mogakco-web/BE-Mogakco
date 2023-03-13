@@ -24,6 +24,7 @@ public class MemberServiceImpl {
 	}
 
 	public MemberSocial getMemberInfoByOAuthId(String oauthId){
+		log.info("FindOAUTHID="+oauthId);
 		return memberRepository.findByOauthId(oauthId).orElse(null);
 	}
 }

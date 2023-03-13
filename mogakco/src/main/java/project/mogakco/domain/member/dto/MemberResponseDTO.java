@@ -7,7 +7,6 @@ import project.mogakco.domain.member.entity.member.MemberRole;
 import project.mogakco.domain.member.entity.member.SocialType;
 
 
-@Setter
 @Builder
 @Getter
 public class MemberResponseDTO {
