@@ -33,14 +33,13 @@ public class ToDoAPIController {
 
 	@PostMapping("/contents")
 	public ResponseEntity<?> writeContents(@RequestBody ToDoDTO.ToDoWriteContentsDTO writeContentsDTO){
-		ToDo writeToDO = toDoService.writeContentsOneToDoTap(writeContentsDTO);
-		return new ResponseEntity<>(writeToDO,HttpStatus.OK);
+		return toDoService.writeContentsOneToDoTap(writeContentsDTO);
 	}
 
 	@PutMapping
 	public ResponseEntity<?> changeTitleTodo(@RequestBody ToDoDTO.ChangTitleDTO changTitleDTO){
-		ToDo changeTitle = toDoService.changeTitleTodo(changTitleDTO);
-		return new ResponseEntity<>(changeTitle,HttpStatus.OK);
+		ToDoResponseDTO responseDTO = toDoService.changeTitleTodo(changTitleDTO);
+		return new ResponseEntity<>(responseDTO,HttpStatus.OK);
 	}
 
 	@DeleteMapping

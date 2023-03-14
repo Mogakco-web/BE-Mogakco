@@ -44,7 +44,7 @@ public class TimerServiceImpl implements TimerService {
 			TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
 			return new ResponseEntity<>(recodeTime, HttpStatus.OK);
 		}else {
-			Timer t = findT.get().updateRecodeInfo(timeInfoToStringFormat(timerRecodeInfoToday), sumOfDayTime(timerRecodeInfoToday));
+			Timer t = findT.get().updateRecodeInfo(timeInfoToStringFormat(findT.get().getRecodeTime(),timerRecodeInfoToday), sumOfDayTime(timerRecodeInfoToday));
 			TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
 			return new ResponseEntity<>(recodeTime,HttpStatus.OK);
 		}
@@ -62,9 +62,13 @@ public class TimerServiceImpl implements TimerService {
 		MemberSocial findM = memberService.getMemberInfoByOAuthId(diffYesterdayDateCompareDTO.getOauthId());
 		long todayRecode = timerRepository.findByCreateDateAndMemberSocial(diffYesterdayDateCompareDTO.getTodayDateInfo(), findM)
 				.get().getDay_of_totalTime();
-		long yesterDayRecode= timerRepository.findByCreateDateAndMemberSocial(diffYesterdayDateCompareDTO.getYesterdayDateInfo(), findM)
-				.get().getDay_of_totalTime();
-		return calculateTimeDiff(todayRecode,yesterDayRecode);
+		if (timerRepository.findByCreateDateAndMemberSocial(diffYesterdayDateCompareDTO.getYesterdayDateInfo(),findM).isEmpty()){
+			return new ResponseEntity<>("오늘이 첫 공부",HttpStatus.OK);
+		}else {
+			long yesterDayRecode= timerRepository.findByCreateDateAndMemberSocial(diffYesterdayDateCompareDTO.getYesterdayDateInfo(), findM)
+					.get().getDay_of_totalTime();
+			return calculateTimeDiff(todayRecode,yesterDayRecode);
+		}
 	}
 
 
@@ -76,9 +80,13 @@ public class TimerServiceImpl implements TimerService {
 		return hours_sec+minute_sec+sec_sec;
 	}
 
-	private String timeInfoToStringFormat(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday){
-		String recodeTime=timerRecodeInfoToday.getHours()+":"+timerRecodeInfoToday.getMinute()+":"+timerRecodeInfoToday.getSecond();
-		return recodeTime;
+	private String timeInfoToStringFormat(String own_recode,TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday){
+		String[] hms = own_recode.split(":");
+		return Integer.parseInt(hms[0]) + Integer.parseInt(timerRecodeInfoToday.getHours())
+				+ ":" +
+				Integer.parseInt(hms[1]) + Integer.parseInt(timerRecodeInfoToday.getMinute())
+				+ ":" +
+				Integer.parseInt(hms[2]) + Integer.parseInt(timerRecodeInfoToday.getSecond());
 	}
 
 	private ResponseEntity<?> calculateTimeDiff(long todayRecode,long yesterdayRecode){
@@ -110,4 +118,8 @@ public class TimerServiceImpl implements TimerService {
 				+timerRecodeInfoToday.getMinute()+":"
 				+timerRecodeInfoToday.getSecond();
 	}
+
+/*	public ResponseEntity<?> getDiffWeekInfo(){
+
+	}*/
 }

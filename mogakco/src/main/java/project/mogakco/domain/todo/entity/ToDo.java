@@ -40,4 +40,14 @@ public class ToDo extends BaseEntity {
 		return this;
 	}
 
+	public ToDoResponseDTO toDTO(){
+		return ToDoResponseDTO
+				.builder()
+				.todoSeq(todoSeq)
+				.todoTitle(todoTitle)
+				.todoContents(todoContents)
+				.categoryId(category.getCategory_seq())
+				.memberId(memberSocial.getMember_seq())
+				.build();
+	}
 }

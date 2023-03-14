@@ -11,9 +11,9 @@ public interface ToDoService {
 
 	ToDoResponseDTO createOneToDoTap(ToDoDTO.ToDoCreateDTO toDoCreateDTO);
 
-	ToDo writeContentsOneToDoTap(ToDoDTO.ToDoWriteContentsDTO toDoWriteContentsDTO);
+	ResponseEntity<?> writeContentsOneToDoTap(ToDoDTO.ToDoWriteContentsDTO toDoWriteContentsDTO);
 
 	ResponseEntity<?> eliminateOneToDoTap(ToDoDTO.ToDoEliminateDTO toDoEliminateDTO);
 
-	ToDo changeTitleTodo(ToDoDTO.ChangTitleDTO changTitleDTO);
+	ToDoResponseDTO changeTitleTodo(ToDoDTO.ChangTitleDTO changTitleDTO);
 }
