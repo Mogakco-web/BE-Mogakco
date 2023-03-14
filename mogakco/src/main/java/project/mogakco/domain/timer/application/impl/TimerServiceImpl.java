@@ -32,6 +32,7 @@ public class TimerServiceImpl implements TimerService {
 	@Transactional
 	public ResponseEntity<?> recodeTimeToday(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday) {
 		MemberSocial findM = memberService.getMemberInfoByOAuthId(timerRecodeInfoToday.getOauthId());
+		System.out.println(timerRecodeInfoToday.getLocalDate());
 		Optional<Timer> findT = timerRepository.findByCreateDateAndMemberSocial(timerRecodeInfoToday.getLocalDate(),findM);
 		if (findT.isEmpty()){
 			Timer t = timerRepository.save(
@@ -44,6 +45,7 @@ public class TimerServiceImpl implements TimerService {
 			TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
 			return new ResponseEntity<>(recodeTime, HttpStatus.OK);
 		}else {
+			log.info("중복저장");
 			Timer t = findT.get().updateRecodeInfo(timeInfoToStringFormat(findT.get().getRecodeTime(),timerRecodeInfoToday), sumOfDayTime(timerRecodeInfoToday));
 			TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
 			return new ResponseEntity<>(recodeTime,HttpStatus.OK);
