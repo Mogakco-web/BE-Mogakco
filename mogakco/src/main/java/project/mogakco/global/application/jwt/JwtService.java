@@ -70,7 +70,9 @@ public class JwtService {
 				.sign(Algorithm.HMAC512(secretKey));
 	}
 
-	public void sendAccessToken(String accessToken) {
+	public void sendAccessToken(HttpServletResponse response,String accessToken) {
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		response.setHeader("ReIssued Token","yes");
 	}
 
 
@@ -132,23 +134,13 @@ public class JwtService {
 				);
 	}
 
-	@SneakyThrows
-	public boolean isTokenValid(HttpServletResponse response, String token) {
+	public boolean isTokenValid(String token) {
 		try {
 			log.info("토큰 검증 진입");
 			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
-			long expiredTime = verify.getExpiresAt().getTime();
-			System.out.println("Expried="+expiredTime);
-			System.out.println("NOW="+ LocalDate.now());
-			if(isExpiredToken(expiredTime)){
-				throw new TokenExpiredException("Token Expired",null);
-			}
 			return true;
-		} catch (TokenExpiredException e) {
-			log.info("EXPIRED EXCEPTION");
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-			return false;
-		} catch (Exception e){
+		}
+		catch (Exception e){
 			log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
 			return false;
 		}
@@ -177,6 +169,23 @@ public class JwtService {
 		now.setTime(now.getTime()+seoulTimeZone.getOffset(now.getTime()));
 		System.out.println("nowTime="+now.getTime());
 		return compare_time < now.getTime();
+	}
+
+	public boolean isTokenExpired(HttpServletResponse response, String token) {
+		try {
+			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+			long expiredTime = verify.getExpiresAt().getTime();
+			System.out.println("Expried="+expiredTime);
+			System.out.println("NOW="+ LocalDate.now());
+			if(isExpiredToken(expiredTime)){
+				throw new TokenException("Token Expired",HttpStatus.UNAUTHORIZED);
+			}
+			return true;
+		}catch (TokenException e) {
+			log.info("EXPIRED EXCEPTION");
+			sendAccessToken(response, token);
+			return false;
+		}
 	}
 
 }
