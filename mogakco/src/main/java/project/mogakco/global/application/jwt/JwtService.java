@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -131,7 +132,8 @@ public class JwtService {
 				);
 	}
 
-	public boolean isTokenValid(HttpServletResponse response,String token) {
+	@SneakyThrows
+	public boolean isTokenValid(HttpServletResponse response, String token) {
 		try {
 			log.info("토큰 검증 진입");
 			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
@@ -144,7 +146,7 @@ public class JwtService {
 			return true;
 		} catch (TokenExpiredException e) {
 			log.info("EXPIRED EXCEPTION");
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 			return false;
 		} catch (Exception e){
 			log.error("유효하지 않은 토큰입니다. {}", e.getMessage());

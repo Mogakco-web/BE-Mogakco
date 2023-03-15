@@ -84,11 +84,11 @@ public class TimerServiceImpl implements TimerService {
 
 	private String timeInfoToStringFormat(String own_recode,TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday){
 		String[] hms = own_recode.split(":");
-		return Integer.parseInt(hms[0]) + Integer.parseInt(timerRecodeInfoToday.getHours())
-				+ ":" +
-				Integer.parseInt(hms[1]) + Integer.parseInt(timerRecodeInfoToday.getMinute())
-				+ ":" +
-				Integer.parseInt(hms[2]) + Integer.parseInt(timerRecodeInfoToday.getSecond());
+		int hours = Integer.parseInt(hms[0]) + Integer.parseInt(timerRecodeInfoToday.getHours());
+		int minute = Integer.parseInt(hms[1]) + Integer.parseInt(timerRecodeInfoToday.getMinute());
+		int second = Integer.parseInt(hms[2]) + Integer.parseInt(timerRecodeInfoToday.getSecond());
+
+		return calculateTotalTimeToFormat(hours,minute,second);
 	}
 
 	private ResponseEntity<?> calculateTimeDiff(long todayRecode,long yesterdayRecode){
@@ -124,4 +124,18 @@ public class TimerServiceImpl implements TimerService {
 /*	public ResponseEntity<?> getDiffWeekInfo(){
 
 	}*/
+
+	private String calculateTotalTimeToFormat(int h,int m,int s){
+		if (s>=60){
+			m+=s/60;
+			s%=60;
+		}
+		if (m>=60){
+			h=m/60;
+			m%=60;
+		}
+		return h
+				+ ":" +m
+						+ ":" + s;
+	}
 }
