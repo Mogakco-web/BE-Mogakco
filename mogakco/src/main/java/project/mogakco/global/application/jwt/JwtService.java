@@ -72,7 +72,6 @@ public class JwtService {
 
 	public void sendAccessToken(HttpServletResponse response,String accessToken) {
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		response.setHeader("ReIssued Token","yes");
 	}
 
 
