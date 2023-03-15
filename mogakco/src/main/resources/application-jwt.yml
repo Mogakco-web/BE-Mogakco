@@ -2,7 +2,7 @@ jwt:
   secret: ${token-secret}
 
   access:
-    expiration: 1 #3600*24
+    expiration: 10 #3600*24
     header: Authorization
 
   refresh:
