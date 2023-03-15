@@ -69,11 +69,8 @@ public class JwtService {
 
 	public void sendAccessToken(HttpServletResponse response, String accessToken) {
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
-		response.setHeader(accessHeader, accessToken);
-		response.setHeader("ReIssued Token","yes");
-		log.info("재발급된 Access Token : {}", accessToken);
 	}
+
 
 	public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
 		response.setStatus(HttpServletResponse.SC_OK);
