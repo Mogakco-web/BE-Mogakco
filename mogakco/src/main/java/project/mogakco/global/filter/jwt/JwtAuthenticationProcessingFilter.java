@@ -136,8 +136,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 				.ifPresent(accessToken -> jwtService.extractNickname(accessToken)
 						.ifPresent(nickname -> memberRepository.findByNickname(nickname)
 								.ifPresent(this::saveAuthentication)));
-		jwtService.isTokenExpired(response,jwtService.extractAccessToken(request).get());
-
+		if (!jwtService.isTokenExpired(response,jwtService.extractAccessToken(request).get())){
+			log.info("Access토큰 만료되어 들어옴");
+		}
 		filterChain.doFilter(request, response);
 	}
 
