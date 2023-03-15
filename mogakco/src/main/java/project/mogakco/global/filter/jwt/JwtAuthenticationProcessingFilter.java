@@ -65,7 +65,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		// 사용자의 요청 헤더에 RefreshToken이 있는 경우는, AccessToken이 만료되어 요청한 경우밖에 없다.
 		// 따라서, 위의 경우를 제외하면 추출한 refreshToken은 모두 null
 		String refreshToken = jwtService.extractRefreshToken(request)
-				.filter(jwtService::isTokenValid)
+				.filter(token->jwtService.isTokenValid(response,token))
 				.orElse(null);
 
 
@@ -132,13 +132,14 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 												  FilterChain filterChain) throws ServletException, IOException {
 		log.info("checkAccessTokenAndAuthentication() 호출");
 		jwtService.extractAccessToken(request)
-				.filter(jwtService::isTokenValid)
+				.filter(token->jwtService.isTokenValid(response,token))
 				.ifPresent(accessToken -> jwtService.extractNickname(accessToken)
 						.ifPresent(nickname -> memberRepository.findByNickname(nickname)
 								.ifPresent(this::saveAuthentication)));
-		if (!jwtService.isTokenExpired(response,jwtService.extractAccessToken(request).get())){
+
+		/*if (!jwtService.isTokenExpired(response,jwtService.extractAccessToken(request).get())){
 			log.info("Access토큰 만료되어 들어옴");
-		}
+		}*/
 		filterChain.doFilter(request, response);
 	}
 

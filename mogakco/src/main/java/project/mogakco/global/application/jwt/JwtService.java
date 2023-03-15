@@ -3,6 +3,7 @@ package project.mogakco.global.application.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -130,27 +131,16 @@ public class JwtService {
 				);
 	}
 
-	public boolean isTokenValid(String token) {
+	public boolean isTokenValid(HttpServletResponse response,String token) {
 		try {
 			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
 			return true;
 		} catch (Exception e) {
 			log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
-			return false;
-		}
-	}
-
-	public boolean isTokenExpired(HttpServletResponse response,String token) throws TokenException{
-		try {
-			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
-			long time = verify.getExpiresAt().getTime();
-			if (isExpiredToken(time)){
-				throw new TokenException("만료토큰",HttpStatus.UNAUTHORIZED);
+			if (e.getClass().equals(TokenExpiredException.class)){
+				log.info("EXPIRED EXCEPTION");
+				sendAccessToken(response,token);
 			}
-			return true;
-		}catch (TokenException e){
-			log.info("EXPIRED EXCEPTION");
-			sendAccessToken(response,token);
 			return false;
 		}
 	}
@@ -171,13 +161,4 @@ public class JwtService {
 		}
 	}
 
-	private boolean isExpiredToken(long compare_time){
-		TimeZone seoulTimeZone = TimeZone.getTimeZone("Asia/Seoul");
-
-		Date now=new Date();
-		now.setTime(now.getTime()+seoulTimeZone.getOffset(now.getTime()));
-		System.out.println("nowTime="+now.getTime());
-		System.out.println("compareTime="+compare_time);
-		return compare_time<now.getTime();
-	}
 }
