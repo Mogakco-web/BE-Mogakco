@@ -140,19 +140,17 @@ public class JwtService {
 		}
 	}
 
-	public boolean isTokenExpired(HttpServletResponse response,String token) throws TokenException{
+	public void isTokenExpired(HttpServletResponse response,String token) throws TokenException{
 		try {
 			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
 			long time = verify.getExpiresAt().getTime();
 			if (isExpiredToken(time)){
 				throw new TokenException("만료토큰",HttpStatus.UNAUTHORIZED);
 			}
-			return true;
 		}catch (TokenException e){
 			log.info("EXPIRED EXCEPTION");
 			sendAccessToken(response,token);
 		}
-		return false;
 	}
 
 	private Date changeDateStandardToSeoul(String token_type){
@@ -177,6 +175,7 @@ public class JwtService {
 		Date now=new Date();
 		now.setTime(now.getTime()+seoulTimeZone.getOffset(now.getTime()));
 		System.out.println("nowTime="+now.getTime());
+		System.out.println("compareTime="+compare_time);
 		return compare_time<now.getTime();
 	}
 }
