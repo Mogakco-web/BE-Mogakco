@@ -17,6 +17,7 @@ import project.mogakco.global.exception.TokenException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -137,7 +138,7 @@ public class JwtService {
 			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
 			long expiredTime = verify.getExpiresAt().getTime();
 			System.out.println("Expried="+expiredTime);
-			System.out.println("NOW="+new Date().getTime());
+			System.out.println("NOW="+ LocalDate.now());
 			return true;
 		} catch (Exception e) {
 			log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
