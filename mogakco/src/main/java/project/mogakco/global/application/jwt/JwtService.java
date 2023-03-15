@@ -139,6 +139,9 @@ public class JwtService {
 			long expiredTime = verify.getExpiresAt().getTime();
 			System.out.println("Expried="+expiredTime);
 			System.out.println("NOW="+ LocalDate.now());
+			if(isExpiredToken(expiredTime)){
+				throw new TokenExpiredException("Token Expired",null);
+			}
 			return true;
 		} catch (Exception e) {
 			log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
@@ -164,6 +167,15 @@ public class JwtService {
 			System.out.println("refresh="+refresh.getTime());
 			return refresh;
 		}
+	}
+
+	private boolean isExpiredToken(long compare_time){
+		TimeZone seoulTimeZone = TimeZone.getTimeZone("Asia/Seoul");
+
+		Date now=new Date();
+		now.setTime(now.getTime()+seoulTimeZone.getOffset(now.getTime()));
+		System.out.println("nowTime="+now.getTime());
+		return compare_time < now.getTime();
 	}
 
 }
