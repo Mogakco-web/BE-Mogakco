@@ -69,8 +69,7 @@ public class JwtService {
 				.sign(Algorithm.HMAC512(secretKey));
 	}
 
-	public void sendAccessToken(HttpServletResponse response, String accessToken) {
-		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	public void sendAccessToken(String accessToken) {
 	}
 
 
@@ -147,7 +146,7 @@ public class JwtService {
 			log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
 			if (e.getClass().equals(TokenExpiredException.class)){
 				log.info("EXPIRED EXCEPTION");
-				sendAccessToken(response,token);
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			}
 			return false;
 		}
