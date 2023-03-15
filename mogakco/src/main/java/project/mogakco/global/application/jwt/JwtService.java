@@ -142,12 +142,12 @@ public class JwtService {
 				throw new TokenExpiredException("Token Expired",null);
 			}
 			return true;
-		} catch (Exception e) {
+		} catch (TokenExpiredException e) {
+			log.info("EXPIRED EXCEPTION");
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			return false;
+		} catch (Exception e){
 			log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
-			if (e.getClass().equals(TokenExpiredException.class)){
-				log.info("EXPIRED EXCEPTION");
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			}
 			return false;
 		}
 	}
