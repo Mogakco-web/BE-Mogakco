@@ -133,7 +133,11 @@ public class JwtService {
 
 	public boolean isTokenValid(HttpServletResponse response,String token) {
 		try {
+			log.info("토큰 검증 진입");
 			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+			long expiredTime = verify.getExpiresAt().getTime();
+			System.out.println("Expried="+expiredTime);
+			System.out.println("NOW="+new Date().getTime());
 			return true;
 		} catch (Exception e) {
 			log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
