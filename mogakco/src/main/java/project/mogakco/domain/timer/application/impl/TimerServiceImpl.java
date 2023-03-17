@@ -63,8 +63,12 @@ public class TimerServiceImpl implements TimerService {
 	@Override
 	public ResponseEntity<?> getTodayInfo(TimerRecodeDTO.todayDateInfoDTO todayDateInfoDTO) {
 		MemberSocial findM = memberService.getMemberInfoByOAuthId(todayDateInfoDTO.getOauthId());
-		Timer timer = timerRepository.findByTimerCreDayAndMemberSocial(todayDateInfoDTO.getTimerCreDay(),findM).get();
-		return new ResponseEntity<>(timer.getRecodeTime(),HttpStatus.OK);
+		Optional<Timer> findT = timerRepository.findByTimerCreDayAndMemberSocial(todayDateInfoDTO.getTimerCreDay(), findM);
+		if (findT.isPresent()){
+			return new ResponseEntity<>(findT.get().getRecodeTime(),HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>("해당날짜 공부 기록없음",HttpStatus.OK);
+		}
 	}
 
 	@Override
