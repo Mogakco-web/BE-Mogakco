@@ -74,8 +74,11 @@ public class TimerServiceImpl implements TimerService {
 	@Override
 	public ResponseEntity<?> getDiffYesterdayInfo(TimerRecodeDTO.diffYesterdayDateCompareDTO diffYesterdayDateCompareDTO) {
 		MemberSocial findM = memberService.getMemberInfoByOAuthId(diffYesterdayDateCompareDTO.getOauthId());
-		long todayRecode = timerRepository.findByTimerCreDayAndMemberSocial(diffYesterdayDateCompareDTO.getTodayDateInfo(), findM)
-				.get().getDay_of_totalTime();
+		Optional<Timer> findT = timerRepository.findByTimerCreDayAndMemberSocial(diffYesterdayDateCompareDTO.getTodayDateInfo(), findM);
+		if (findT.isEmpty()){
+			return new ResponseEntity<>("해당 날짜 기록이 없습니다",HttpStatus.OK);
+		}
+		long todayRecode = findT.get().getDay_of_totalTime();
 		if (timerRepository.findByTimerCreDayAndMemberSocial(diffYesterdayDateCompareDTO.getYesterdayDateInfo(),findM).isEmpty()){
 			return new ResponseEntity<>("오늘이 첫 공부",HttpStatus.OK);
 		}else {
