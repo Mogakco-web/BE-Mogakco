@@ -6,6 +6,7 @@ import project.mogakco.domain.todo.dto.CategoryResponseDTO;
 import project.mogakco.global.domain.BaseEntity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,7 +23,7 @@ public class Category extends BaseEntity {
 	private String categoryName;
 
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "category",cascade = CascadeType.ALL)
-	private List<ToDo> toDo;
+	private List<ToDo> toDo =new ArrayList<>();
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_seq")

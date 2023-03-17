@@ -11,4 +11,6 @@ public interface TimerService {
 	ResponseEntity<?> getTodayInfo(TimerRecodeDTO.todayDateInfoDTO todayDateInfoDTO);
 
 	ResponseEntity<?> getDiffYesterdayInfo(TimerRecodeDTO.diffYesterdayDateCompareDTO diffYesterdayDateCompareDTO);
+
+	void getDiffWeekInfo(String oauthId);
 }

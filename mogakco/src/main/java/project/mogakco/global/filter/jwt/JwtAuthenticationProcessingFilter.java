@@ -98,7 +98,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		memberRepository.findByRefreshToken(refreshToken)
 				.ifPresent(member -> {
 					String reIssuedRefreshToken = reIssueRefreshToken(member);
-					jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(member.getEmail()),
+					jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(member.getNickname()),
 							reIssuedRefreshToken);
 				});
 	}
@@ -136,6 +136,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 			response.getWriter().write("UnAuthorization");
 			return;
 		}
+		System.out.println(response.getStatus());
 		filterChain.doFilter(request, response);
 	}
 

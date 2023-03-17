@@ -9,6 +9,7 @@ import project.mogakco.domain.todo.entity.ToDo;
 import project.mogakco.global.domain.BaseEntity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -43,10 +44,10 @@ public class MemberSocial extends BaseEntity {
 	private String password;
 
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial")
-	private List<ToDo> toDoList;
+	private List<ToDo> toDoList=new ArrayList<>();
 
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial")
-	private List<Timer> timer;
+	private List<Timer> timer =new ArrayList<>();
 	public void updateRefreshToken(String updateRefreshToken){
 		this.refreshToken=updateRefreshToken;
 	}

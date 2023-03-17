@@ -1,5 +1,6 @@
 package project.mogakco.domain.timer.application.impl;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -12,10 +13,14 @@ import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.timer.application.service.TimerService;
 import project.mogakco.domain.timer.dto.request.TimerRecodeDTO;
 import project.mogakco.domain.timer.dto.response.TimerResponseDTO;
+import project.mogakco.domain.timer.entity.QTimer;
 import project.mogakco.domain.timer.entity.Timer;
 import project.mogakco.domain.timer.repo.TimerRepository;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -27,6 +32,9 @@ public class TimerServiceImpl implements TimerService {
 	private final TimerRepository timerRepository;
 
 	private final MemberServiceImpl memberService;
+
+	private final JPAQueryFactory jpaQueryFactory;
+
 
 	@Override
 	@Transactional
@@ -46,7 +54,7 @@ public class TimerServiceImpl implements TimerService {
 			return new ResponseEntity<>(recodeTime, HttpStatus.OK);
 		}else {
 			log.info("중복저장");
-			Timer t = findT.get().updateRecodeInfo(timeInfoToStringFormat(findT.get().getRecodeTime(),timerRecodeInfoToday), sumOfDayTime(timerRecodeInfoToday));
+			Timer t = findT.get().updateRecodeInfo(timeInfoToStringFormat(timerRecodeInfoToday),sumOfDayTime(timerRecodeInfoToday));
 			TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
 			return new ResponseEntity<>(recodeTime,HttpStatus.OK);
 		}
@@ -56,7 +64,7 @@ public class TimerServiceImpl implements TimerService {
 	public ResponseEntity<?> getTodayInfo(TimerRecodeDTO.todayDateInfoDTO todayDateInfoDTO) {
 		MemberSocial findM = memberService.getMemberInfoByOAuthId(todayDateInfoDTO.getOauthId());
 		Timer timer = timerRepository.findByCreateDateAndMemberSocial(todayDateInfoDTO.getLocalDate(),findM).get();
-		return new ResponseEntity<>(timer.getDay_of_totalTime(),HttpStatus.OK);
+		return new ResponseEntity<>(timer.getRecodeTime(),HttpStatus.OK);
 	}
 
 	@Override
@@ -82,26 +90,23 @@ public class TimerServiceImpl implements TimerService {
 		return hours_sec+minute_sec+sec_sec;
 	}
 
-	private String timeInfoToStringFormat(String own_recode,TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday){
-		String[] hms = own_recode.split(":");
-		int hours = Integer.parseInt(hms[0]) + Integer.parseInt(timerRecodeInfoToday.getHours());
-		int minute = Integer.parseInt(hms[1]) + Integer.parseInt(timerRecodeInfoToday.getMinute());
-		int second = Integer.parseInt(hms[2]) + Integer.parseInt(timerRecodeInfoToday.getSecond());
-
-		return calculateTotalTimeToFormat(hours,minute,second);
+	private String timeInfoToStringFormat(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday){
+		return timerRecodeInfoToday.getHours()
+				+ ":" +timerRecodeInfoToday.getMinute()
+				+ ":" +timerRecodeInfoToday.getSecond();
 	}
 
 	private ResponseEntity<?> calculateTimeDiff(long todayRecode,long yesterdayRecode){
 		if (todayRecode>yesterdayRecode){
 			long diffRecode = todayRecode - yesterdayRecode;
 			String cal_result = caluculateResult(diffRecode);
-			return new ResponseEntity<>( cal_result+" 더 공부했습니다.",HttpStatus.OK);
+			return new ResponseEntity<>( "+"+cal_result,HttpStatus.OK);
 		}else if (yesterdayRecode==todayRecode){
-			return new ResponseEntity<>("어제랑 같은 시간으로 공부했네요!",HttpStatus.OK);
+			return new ResponseEntity<>("=",HttpStatus.OK);
 		}else {
 			long diffRecode = yesterdayRecode - todayRecode;
 			String cal_result = caluculateResult(diffRecode);
-			return new ResponseEntity<>(cal_result+"가 어제보다 부족하네요",HttpStatus.OK);
+			return new ResponseEntity<>("-"+cal_result,HttpStatus.OK);
 		}
 	}
 
@@ -121,21 +126,25 @@ public class TimerServiceImpl implements TimerService {
 				+timerRecodeInfoToday.getSecond();
 	}
 
-/*	public ResponseEntity<?> getDiffWeekInfo(){
+	@Override
+	public void getDiffWeekInfo(String oauthId){
+		log.info("1주일비교");
+		System.out.println("1주일");
+		QTimer timer=QTimer.timer;
+		List<Timer> timers = timerRepository.findByMemberSocial(memberService.getMemberInfoByOAuthId(oauthId)).get();
+		LocalDate today = LocalDate.now();
+		LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+		LocalDate endOfWeek = startOfWeek.plusDays(6);
 
-	}*/
+		for (Timer t:timers){
+			List<Timer> fetch = jpaQueryFactory.selectFrom(timer)
+					.where(timer.memberSocial.eq(t.getMemberSocial())
+							.and(timer.createDate.between(startOfWeek, endOfWeek))
+					)
+					.fetch();
+			System.out.println("fetch="+fetch);
+		}
 
-	private String calculateTotalTimeToFormat(int h,int m,int s){
-		if (s>=60){
-			m+=s/60;
-			s%=60;
-		}
-		if (m>=60){
-			h=m/60;
-			m%=60;
-		}
-		return h
-				+ ":" +m
-						+ ":" + s;
 	}
+
 }

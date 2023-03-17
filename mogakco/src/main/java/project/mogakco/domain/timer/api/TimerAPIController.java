@@ -6,6 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.mogakco.domain.timer.application.service.TimerService;
 import project.mogakco.domain.timer.dto.request.TimerRecodeDTO;
+import project.mogakco.global.application.jwt.JwtService;
+
+import javax.websocket.server.PathParam;
 
 @RestController
 @RequestMapping(value = "/api/v1/timer",produces = "application/json; charset=utf8")
@@ -14,6 +17,9 @@ import project.mogakco.domain.timer.dto.request.TimerRecodeDTO;
 public class TimerAPIController {
 
 	private final TimerService timerService;
+
+	private final JwtService jwtService;
+
 
 	@PostMapping("/recode")
 	public ResponseEntity<?> recodeTodayTimeInfo(@RequestBody TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday){
@@ -30,4 +36,5 @@ public class TimerAPIController {
 	public ResponseEntity<?> getInfoCompareYesterDay(@RequestBody TimerRecodeDTO.diffYesterdayDateCompareDTO diffYesterdayDateCompareDTO){
 		return timerService.getDiffYesterdayInfo(diffYesterdayDateCompareDTO);
 	}
+
 }

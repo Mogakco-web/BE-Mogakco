@@ -105,12 +105,15 @@ public class JwtService {
 	}
 
 	public Optional<String> extractNickname(String accessToken) {
+		log.info("테스트");
 		try {
-			return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
+			Optional<String> s = Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
 					.build()
 					.verify(accessToken)
 					.getClaim(NICKNAME_CLAIM)
 					.asString());
+			System.out.println("extractNickname="+s);
+			return s;
 		} catch (Exception e) {
 			log.error("액세스 토큰이 유효하지 않습니다.");
 			return Optional.empty();
@@ -134,8 +137,8 @@ public class JwtService {
 	}
 
 	public boolean isTokenValid(String token) {
+		log.info("Token 유효성 검사="+token);
 		try {
-			log.info("토큰 검증 진입");
 			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
 			return true;
 		}
@@ -174,8 +177,6 @@ public class JwtService {
 		try {
 			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
 			long expiredTime = verify.getExpiresAt().getTime();
-			System.out.println("Expried="+expiredTime);
-			System.out.println("NOW="+ LocalDate.now());
 			if(isExpiredToken(expiredTime)){
 				throw new TokenException("Token Expired",HttpStatus.UNAUTHORIZED);
 			}
@@ -187,4 +188,7 @@ public class JwtService {
 		}
 	}
 
+	public void tokenTest(String token){
+		DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+	}
 }
