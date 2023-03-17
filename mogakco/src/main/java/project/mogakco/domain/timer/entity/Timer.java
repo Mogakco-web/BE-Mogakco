@@ -6,6 +6,7 @@ import project.mogakco.domain.timer.dto.response.TimerResponseDTO;
 import project.mogakco.global.domain.BaseEntity;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -24,6 +25,8 @@ public class Timer extends BaseEntity {
 
 	private String recodeTime;
 
+	private LocalDate timerCreDay;
+
 	private long day_of_totalTime;
 
 	public Timer updateRecodeInfo(String recodeTime, long day_of_totalTime){
@@ -38,6 +41,7 @@ public class Timer extends BaseEntity {
 				.day_of_totalTime(day_of_totalTime)
 				.member_Seq(memberSocial.getMember_seq())
 				.recodeTime(recodeTime)
+				.timerCreDay(timerCreDay.toString())
 				.build();
 	}
 }

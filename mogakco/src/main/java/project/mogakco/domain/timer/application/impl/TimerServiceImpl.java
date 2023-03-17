@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.mogakco.domain.member.application.impl.GithubSocialServiceImpl;
 import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.timer.application.service.TimerService;
@@ -40,14 +39,15 @@ public class TimerServiceImpl implements TimerService {
 	@Transactional
 	public ResponseEntity<?> recodeTimeToday(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday) {
 		MemberSocial findM = memberService.getMemberInfoByOAuthId(timerRecodeInfoToday.getOauthId());
-		System.out.println(timerRecodeInfoToday.getLocalDate());
-		Optional<Timer> findT = timerRepository.findByCreateDateAndMemberSocial(timerRecodeInfoToday.getLocalDate(),findM);
+		System.out.println(timerRecodeInfoToday.getTimerCreDay());
+		Optional<Timer> findT = timerRepository.findByTimerCreDayAndMemberSocial(timerRecodeInfoToday.getTimerCreDay(),findM);
 		if (findT.isEmpty()){
 			Timer t = timerRepository.save(
 					Timer.builder()
 							.recodeTime(changeTimeFormatToString(timerRecodeInfoToday))
 							.memberSocial(findM)
 							.day_of_totalTime(sumOfDayTime(timerRecodeInfoToday))
+							.timerCreDay(timerRecodeInfoToday.getTimerCreDay())
 							.build()
 			);
 			TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
@@ -63,19 +63,19 @@ public class TimerServiceImpl implements TimerService {
 	@Override
 	public ResponseEntity<?> getTodayInfo(TimerRecodeDTO.todayDateInfoDTO todayDateInfoDTO) {
 		MemberSocial findM = memberService.getMemberInfoByOAuthId(todayDateInfoDTO.getOauthId());
-		Timer timer = timerRepository.findByCreateDateAndMemberSocial(todayDateInfoDTO.getLocalDate(),findM).get();
+		Timer timer = timerRepository.findByTimerCreDayAndMemberSocial(todayDateInfoDTO.getTimerCreDay(),findM).get();
 		return new ResponseEntity<>(timer.getRecodeTime(),HttpStatus.OK);
 	}
 
 	@Override
 	public ResponseEntity<?> getDiffYesterdayInfo(TimerRecodeDTO.diffYesterdayDateCompareDTO diffYesterdayDateCompareDTO) {
 		MemberSocial findM = memberService.getMemberInfoByOAuthId(diffYesterdayDateCompareDTO.getOauthId());
-		long todayRecode = timerRepository.findByCreateDateAndMemberSocial(diffYesterdayDateCompareDTO.getTodayDateInfo(), findM)
+		long todayRecode = timerRepository.findByTimerCreDayAndMemberSocial(diffYesterdayDateCompareDTO.getTodayDateInfo(), findM)
 				.get().getDay_of_totalTime();
-		if (timerRepository.findByCreateDateAndMemberSocial(diffYesterdayDateCompareDTO.getYesterdayDateInfo(),findM).isEmpty()){
+		if (timerRepository.findByTimerCreDayAndMemberSocial(diffYesterdayDateCompareDTO.getYesterdayDateInfo(),findM).isEmpty()){
 			return new ResponseEntity<>("오늘이 첫 공부",HttpStatus.OK);
 		}else {
-			long yesterDayRecode= timerRepository.findByCreateDateAndMemberSocial(diffYesterdayDateCompareDTO.getYesterdayDateInfo(), findM)
+			long yesterDayRecode= timerRepository.findByTimerCreDayAndMemberSocial(diffYesterdayDateCompareDTO.getYesterdayDateInfo(), findM)
 					.get().getDay_of_totalTime();
 			return calculateTimeDiff(todayRecode,yesterDayRecode);
 		}

@@ -25,5 +25,7 @@ public class TimerResponseDTO {
 		private String recodeTime;
 
 		private long day_of_totalTime;
+
+		private String timerCreDay;
 	}
 }

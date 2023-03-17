@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TimerRepository extends JpaRepository<Timer,Long> {
-	Optional<Timer> findByCreateDateAndMemberSocial(LocalDate localDate, MemberSocial memberSocial);
+	Optional<Timer> findByTimerCreDayAndMemberSocial(LocalDate localDate, MemberSocial memberSocial);
 
 	Optional<List<Timer>> findByMemberSocial(MemberSocial memberSocial);
 }

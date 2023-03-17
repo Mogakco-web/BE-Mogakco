@@ -16,7 +16,7 @@ public class TimerRecodeDTO {
 		private String hours;
 		private String minute;
 		private String second;
-		private LocalDate localDate;
+		private LocalDate timerCreDay;
 		private String oauthId;
 
 	}
@@ -24,7 +24,7 @@ public class TimerRecodeDTO {
 	@Getter
 	public static class todayDateInfoDTO{
 		private String oauthId;
-		private LocalDate localDate;
+		private LocalDate timerCreDay;
 	}
 
 	@Getter
