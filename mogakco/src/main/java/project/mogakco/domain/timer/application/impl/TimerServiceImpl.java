@@ -148,6 +148,7 @@ public class TimerServiceImpl implements TimerService {
 				.where(timer.memberSocial.eq(memberInfo)
 						.and(timer.timerCreDay.between(startOfWeek, endOfWeek)
 						))
+				.orderBy(timer.timerCreDay.asc())
 				.fetch();
 		System.out.println("fetchList="+fetch);
 		for (Timer t: fetch){
