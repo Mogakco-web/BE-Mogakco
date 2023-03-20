@@ -19,8 +19,8 @@ import project.mogakco.domain.timer.repo.TimerRepository;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Log4j2
@@ -135,23 +135,47 @@ public class TimerServiceImpl implements TimerService {
 
 	@Override
 	public void getDiffWeekInfo(String oauthId){
-		log.info("1주일비교");
-		System.out.println("1주일");
-		QTimer timer=QTimer.timer;
-		List<Timer> timers = timerRepository.findByMemberSocial(memberService.getMemberInfoByOAuthId(oauthId)).get();
+		QTimer timer = QTimer.timer;
 		LocalDate today = LocalDate.now();
 		LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 		LocalDate endOfWeek = startOfWeek.plusDays(6);
 
-		for (Timer t:timers){
-			List<Timer> fetch = jpaQueryFactory.selectFrom(timer)
-					.where(timer.memberSocial.eq(t.getMemberSocial())
-							.and(timer.createDate.between(startOfWeek, endOfWeek))
-					)
-					.fetch();
-			System.out.println("fetch="+fetch);
-		}
+		// 회원 정보 가져오기
+		MemberSocial memberInfo = memberService.getMemberInfoByOAuthId(oauthId);
+		List<Timer> timers = timerRepository.findByMemberSocial(memberInfo).orElse(Collections.emptyList());
 
+		List<Timer> fetch = jpaQueryFactory.selectFrom(timer)
+				.where(timer.memberSocial.eq(memberInfo)
+						.and(timer.timerCreDay.between(startOfWeek, endOfWeek)
+						))
+				.fetch();
+		System.out.println("fetchList="+fetch);
+		for (Timer t: fetch){
+			System.out.println("t="+t.getTimer_seq());
+		}
+		// 하루 단위로 가져오기
+		/*Map<LocalDate, List<Timer>> timerMap = jpaQueryFactory.selectFrom(timer)
+				.where(timer.memberSocial.eq(memberInfo)
+						.and(timer.timerCreDay.between(startOfWeek, endOfWeek))
+				)
+				.fetch()
+				.stream()
+				.collect(Collectors.groupingBy(t -> t.getTimerCreDay()));
+
+		// 일주일 단위로 묶어서 처리하기
+		List<List<Timer>> result = new ArrayList<>();
+		for (LocalDate date = startOfWeek; date.isBefore(endOfWeek.plusDays(1)); date = date.plusDays(1)) {
+			List<Timer> dayTimers = timerMap.getOrDefault(date, Collections.emptyList());
+			result.add(dayTimers);
+		}
+		System.out.println("timerMap="+timerMap);
+		System.out.println("result="+result);*/
+/*
+		// 결과 출력
+		for (List<Timer> dayTimers : result) {
+			System.out.println("Date: " + dayTimers.get(0).getTimerCreDay());
+			System.out.println("Timers: " + dayTimers);
+		}*/
 	}
 
 }

@@ -37,4 +37,8 @@ public class TimerAPIController {
 		return timerService.getDiffYesterdayInfo(diffYesterdayDateCompareDTO);
 	}
 
+	@PostMapping("/test")
+	public void test(@PathParam("oauthId")String oauthId) {
+		timerService.getDiffWeekInfo(oauthId);
+	}
 }
