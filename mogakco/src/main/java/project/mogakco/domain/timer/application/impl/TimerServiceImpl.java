@@ -36,28 +36,29 @@ public class TimerServiceImpl implements TimerService {
 
 
 	@Override
+	public ResponseEntity<?> recodeInitialize(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday) {
+		MemberSocial findM = memberService.getMemberInfoByOAuthId(timerRecodeInfoToday.getOauthId());
+		Timer t = timerRepository.save(
+				Timer.builder()
+						.recodeTime(changeTimeFormatToString(timerRecodeInfoToday))
+						.memberSocial(findM)
+						.day_of_totalTime(sumOfDayTime(timerRecodeInfoToday))
+						.timerCreDay(timerRecodeInfoToday.getTimerCreDay())
+						.build()
+		);
+		TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
+		return new ResponseEntity<>(recodeTime, HttpStatus.OK);
+	}
+
+	@Override
 	@Transactional
 	public ResponseEntity<?> recodeTimeToday(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday) {
 		MemberSocial findM = memberService.getMemberInfoByOAuthId(timerRecodeInfoToday.getOauthId());
-		System.out.println(timerRecodeInfoToday.getTimerCreDay());
-		Optional<Timer> findT = timerRepository.findByTimerCreDayAndMemberSocial(timerRecodeInfoToday.getTimerCreDay(),findM);
-		if (findT.isEmpty()){
-			Timer t = timerRepository.save(
-					Timer.builder()
-							.recodeTime(changeTimeFormatToString(timerRecodeInfoToday))
-							.memberSocial(findM)
-							.day_of_totalTime(sumOfDayTime(timerRecodeInfoToday))
-							.timerCreDay(timerRecodeInfoToday.getTimerCreDay())
-							.build()
-			);
-			TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
-			return new ResponseEntity<>(recodeTime, HttpStatus.OK);
-		}else {
-			log.info("중복저장");
-			Timer t = findT.get().updateRecodeInfo(timeInfoToStringFormat(timerRecodeInfoToday),sumOfDayTime(timerRecodeInfoToday));
-			TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
-			return new ResponseEntity<>(recodeTime,HttpStatus.OK);
-		}
+		Optional<Timer> findT = timerRepository.findByTimerCreDayAndMemberSocial(timerRecodeInfoToday.getTimerCreDay(), findM);
+		Timer t = findT.get().updateRecodeInfo(timeInfoToStringFormat(timerRecodeInfoToday),sumOfDayTime(timerRecodeInfoToday));
+		TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
+		return new ResponseEntity<>(recodeTime,HttpStatus.OK);
+
 	}
 
 	@Override
@@ -134,7 +135,7 @@ public class TimerServiceImpl implements TimerService {
 	}
 
 	@Override
-	public void getDiffWeekInfo(String oauthId){
+	public ResponseEntity<?> getDiffWeekInfo(String oauthId){
 		QTimer timer = QTimer.timer;
 		LocalDate today = LocalDate.now();
 		LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
@@ -142,41 +143,19 @@ public class TimerServiceImpl implements TimerService {
 
 		// 회원 정보 가져오기
 		MemberSocial memberInfo = memberService.getMemberInfoByOAuthId(oauthId);
-		List<Timer> timers = timerRepository.findByMemberSocial(memberInfo).orElse(Collections.emptyList());
 
-		List<Timer> fetch = jpaQueryFactory.selectFrom(timer)
+		List<Timer> diffWeekInfoList = jpaQueryFactory.selectFrom(timer)
 				.where(timer.memberSocial.eq(memberInfo)
 						.and(timer.timerCreDay.between(startOfWeek, endOfWeek)
 						))
 				.orderBy(timer.timerCreDay.asc())
 				.fetch();
-		System.out.println("fetchList="+fetch);
-		for (Timer t: fetch){
-			System.out.println("t="+t.getTimer_seq());
-		}
-		// 하루 단위로 가져오기
-		/*Map<LocalDate, List<Timer>> timerMap = jpaQueryFactory.selectFrom(timer)
-				.where(timer.memberSocial.eq(memberInfo)
-						.and(timer.timerCreDay.between(startOfWeek, endOfWeek))
-				)
-				.fetch()
-				.stream()
-				.collect(Collectors.groupingBy(t -> t.getTimerCreDay()));
 
-		// 일주일 단위로 묶어서 처리하기
-		List<List<Timer>> result = new ArrayList<>();
-		for (LocalDate date = startOfWeek; date.isBefore(endOfWeek.plusDays(1)); date = date.plusDays(1)) {
-			List<Timer> dayTimers = timerMap.getOrDefault(date, Collections.emptyList());
-			result.add(dayTimers);
+		if (diffWeekInfoList.isEmpty()){
+			return new ResponseEntity<>("이번 주 공부 데이터 없음"+diffWeekInfoList,HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(diffWeekInfoList,HttpStatus.OK);
 		}
-		System.out.println("timerMap="+timerMap);
-		System.out.println("result="+result);*/
-/*
-		// 결과 출력
-		for (List<Timer> dayTimers : result) {
-			System.out.println("Date: " + dayTimers.get(0).getTimerCreDay());
-			System.out.println("Timers: " + dayTimers);
-		}*/
 	}
 
 }

@@ -6,11 +6,14 @@ import project.mogakco.domain.timer.dto.request.TimerRecodeDTO;
 import java.time.LocalDate;
 
 public interface TimerService {
+
+	ResponseEntity<?> recodeInitialize(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday);
+
 	ResponseEntity<?> recodeTimeToday(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday);
 
 	ResponseEntity<?> getTodayInfo(TimerRecodeDTO.todayDateInfoDTO todayDateInfoDTO);
 
 	ResponseEntity<?> getDiffYesterdayInfo(TimerRecodeDTO.diffYesterdayDateCompareDTO diffYesterdayDateCompareDTO);
 
-	void getDiffWeekInfo(String oauthId);
+	ResponseEntity<?> getDiffWeekInfo(String oauthId);
 }
