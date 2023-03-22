@@ -44,4 +44,11 @@ public class Timer extends BaseEntity {
 				.timerCreDay(timerCreDay.toString())
 				.build();
 	}
+
+	public TimerResponseDTO.TimeInfo toTimeInfo(){
+		return TimerResponseDTO.TimeInfo.builder()
+				.recodeTime(recodeTime)
+				.timerCreDay(timerCreDay.toString())
+				.build();
+	}
 }

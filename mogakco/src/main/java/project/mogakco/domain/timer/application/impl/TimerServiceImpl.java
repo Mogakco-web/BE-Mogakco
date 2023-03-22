@@ -34,31 +34,29 @@ public class TimerServiceImpl implements TimerService {
 
 	private final JPAQueryFactory jpaQueryFactory;
 
-
-	@Override
-	public ResponseEntity<?> recodeInitialize(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday) {
-		MemberSocial findM = memberService.getMemberInfoByOAuthId(timerRecodeInfoToday.getOauthId());
-		Timer t = timerRepository.save(
-				Timer.builder()
-						.recodeTime(changeTimeFormatToString(timerRecodeInfoToday))
-						.memberSocial(findM)
-						.day_of_totalTime(sumOfDayTime(timerRecodeInfoToday))
-						.timerCreDay(timerRecodeInfoToday.getTimerCreDay())
-						.build()
-		);
-		TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
-		return new ResponseEntity<>(recodeTime, HttpStatus.OK);
-	}
-
 	@Override
 	@Transactional
 	public ResponseEntity<?> recodeTimeToday(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday) {
 		MemberSocial findM = memberService.getMemberInfoByOAuthId(timerRecodeInfoToday.getOauthId());
+		System.out.println(timerRecodeInfoToday.getTimerCreDay());
 		Optional<Timer> findT = timerRepository.findByTimerCreDayAndMemberSocial(timerRecodeInfoToday.getTimerCreDay(), findM);
-		Timer t = findT.get().updateRecodeInfo(timeInfoToStringFormat(timerRecodeInfoToday),sumOfDayTime(timerRecodeInfoToday));
-		TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
-		return new ResponseEntity<>(recodeTime,HttpStatus.OK);
-
+		if (findT.isEmpty()) {
+			Timer t = timerRepository.save(
+					Timer.builder()
+							.recodeTime(changeTimeFormatToString(timerRecodeInfoToday))
+							.memberSocial(findM)
+							.day_of_totalTime(sumOfDayTime(timerRecodeInfoToday))
+							.timerCreDay(timerRecodeInfoToday.getTimerCreDay())
+							.build()
+			);
+			TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
+			return new ResponseEntity<>(recodeTime, HttpStatus.OK);
+		} else {
+			log.info("중복저장");
+			Timer t = findT.get().updateRecodeInfo(timeInfoToStringFormat(timerRecodeInfoToday), sumOfDayTime(timerRecodeInfoToday));
+			TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
+			return new ResponseEntity<>(recodeTime, HttpStatus.OK);
+		}
 	}
 
 	@Override
@@ -66,7 +64,7 @@ public class TimerServiceImpl implements TimerService {
 		MemberSocial findM = memberService.getMemberInfoByOAuthId(todayDateInfoDTO.getOauthId());
 		Optional<Timer> findT = timerRepository.findByTimerCreDayAndMemberSocial(todayDateInfoDTO.getTimerCreDay(), findM);
 		if (findT.isPresent()){
-			return new ResponseEntity<>(findT.get().getRecodeTime(),HttpStatus.OK);
+			return new ResponseEntity<>(findT.get().toTimeInfo(),HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>("해당날짜 공부 기록없음",HttpStatus.OK);
 		}
@@ -143,7 +141,7 @@ public class TimerServiceImpl implements TimerService {
 
 		// 회원 정보 가져오기
 		MemberSocial memberInfo = memberService.getMemberInfoByOAuthId(oauthId);
-
+		List<TimerResponseDTO.RecodeTime> diffWeekInfoListToDTO=new ArrayList<>();
 		List<Timer> diffWeekInfoList = jpaQueryFactory.selectFrom(timer)
 				.where(timer.memberSocial.eq(memberInfo)
 						.and(timer.timerCreDay.between(startOfWeek, endOfWeek)
@@ -151,10 +149,14 @@ public class TimerServiceImpl implements TimerService {
 				.orderBy(timer.timerCreDay.asc())
 				.fetch();
 
+
 		if (diffWeekInfoList.isEmpty()){
 			return new ResponseEntity<>("이번 주 공부 데이터 없음"+diffWeekInfoList,HttpStatus.OK);
 		}else {
-			return new ResponseEntity<>(diffWeekInfoList,HttpStatus.OK);
+			for (Timer t: diffWeekInfoList){
+				diffWeekInfoListToDTO.add(t.toDTO());
+			}
+			return new ResponseEntity<>(diffWeekInfoListToDTO,HttpStatus.OK);
 		}
 	}
 

@@ -28,4 +28,12 @@ public class TimerResponseDTO {
 
 		private String timerCreDay;
 	}
+
+	@Getter
+	@Builder
+	public static class TimeInfo{
+		private String recodeTime;
+
+		private String timerCreDay;
+	}
 }

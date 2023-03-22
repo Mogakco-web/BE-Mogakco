@@ -18,10 +18,6 @@ public class TimerAPIController {
 
 	private final TimerService timerService;
 
-	@PostMapping("/initialize")
-	public ResponseEntity<?> initializeTodayTimeInfo(@RequestBody TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday){
-		return timerService.recodeInitialize(timerRecodeInfoToday);
-	}
 
 	@PostMapping("/recode")
 	public ResponseEntity<?> recodeTodayTimeInfo(@RequestBody TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday){
