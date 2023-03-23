@@ -53,8 +53,8 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public Category getCategoryInfoName(String category_name) {
-		return categoryRepository.findByCategoryName(category_name).orElse(null);
+	public Category getCategoryInfoNameAndMember(String category_name,MemberSocial member) {
+		return categoryRepository.findByCategoryNameAndMemberSocial(category_name,member).orElse(null);
 	}
 
 	@Override

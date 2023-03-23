@@ -13,7 +13,7 @@ public interface CategoryService {
 
 	List<Category> getListOfCategory(MemberSocial memberSocial);
 
-	Category getCategoryInfoName(String category_name);
+	Category getCategoryInfoNameAndMember(String category_name,MemberSocial memberSocial);
 
 	void initializeBasicCategory(MemberSocial member);
 
