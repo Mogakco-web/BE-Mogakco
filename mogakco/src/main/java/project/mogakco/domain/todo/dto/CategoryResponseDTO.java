@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import project.mogakco.domain.member.entity.member.MemberSocial;
+import project.mogakco.domain.todo.dto.response.ToDoResponseDTO;
 import project.mogakco.domain.todo.entity.ToDo;
 
 import java.util.List;
@@ -17,5 +18,18 @@ public class CategoryResponseDTO {
 
 	private String categoryName;
 
-	private MemberSocial memberSocial;
+	private Long memberSeq;
+
+	@Getter
+	@Builder
+	@Setter
+	public static class ListOfMemberCategory{
+		private Long categorySeq;
+
+		private String categoryName;
+
+		private List<ToDoResponseDTO> todoList;
+
+		private Long memberSeq;
+	}
 }

@@ -38,7 +38,15 @@ public class Category extends BaseEntity {
 		return CategoryResponseDTO.builder()
 				.category_seq(category_seq)
 				.categoryName(categoryName)
-				.memberSocial(memberSocial)
+				.memberSeq(memberSocial.getMember_seq())
+				.build();
+	}
+
+	public CategoryResponseDTO.ListOfMemberCategory toListOfCategory(){
+		return CategoryResponseDTO.ListOfMemberCategory.builder()
+				.categorySeq(category_seq)
+				.categoryName(categoryName)
+				.memberSeq(memberSocial.getMember_seq())
 				.build();
 	}
 }

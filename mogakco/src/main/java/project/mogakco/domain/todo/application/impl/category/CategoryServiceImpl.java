@@ -1,5 +1,6 @@
 package project.mogakco.domain.todo.application.impl.category;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -9,14 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.todo.application.service.category.CategoryService;
+import project.mogakco.domain.todo.dto.CategoryResponseDTO;
 import project.mogakco.domain.todo.dto.request.CategoryDTO;
+import project.mogakco.domain.todo.dto.response.ToDoResponseDTO;
 import project.mogakco.domain.todo.entity.Category;
+import project.mogakco.domain.todo.entity.QCategory;
+import project.mogakco.domain.todo.entity.ToDo;
 import project.mogakco.domain.todo.repo.CategoryRepository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Log4j2
@@ -30,26 +32,29 @@ public class CategoryServiceImpl implements CategoryService {
 
 	private final MemberServiceImpl memberService;
 
+	private final JPAQueryFactory jpaQueryFactory;
+
 	@Override
 	@Transactional
-	public Category createCategoryOne(CategoryDTO.CategoryCreateDTO categoryCreateDTO) {
-		return categoryRepository.save(
+	public ResponseEntity<?> createCategoryOne(CategoryDTO.CategoryCreateDTO categoryCreateDTO) {
+		Category saveCategory = categoryRepository.save(
 				Category.builder()
 						.memberSocial(memberService.getMemberInfoByOAuthId(categoryCreateDTO.getOauthId()))
 						.categoryName(categoryCreateDTO.getCategory_name())
 						.build()
 		);
-
+		CategoryResponseDTO categoryResponseDTO = saveCategory.toDTO();
+		return new ResponseEntity<>(categoryResponseDTO,HttpStatus.OK);
 	}
 
 	@Override
-	public List<Category> getListOfCategory(MemberSocial memberSocial) {
-		List<Category> findByMemberInfoCategoryList=new ArrayList<>();
-		for (Category category:categoryRepository.findAll()){
-			if (category.getMemberSocial().equals(memberSocial)) findByMemberInfoCategoryList.add(category);
-		}
+	public ResponseEntity<?> getListOfCategory(MemberSocial memberSocial) {
+		QCategory category=QCategory.category;
 
-		return findByMemberInfoCategoryList;
+		List<Category> findList = jpaQueryFactory.selectFrom(category)
+				.where(category.memberSocial.eq(memberSocial))
+				.fetch();
+		return new ResponseEntity<>(getInfoMemberCategory(findList),HttpStatus.OK);
 	}
 
 	@Override
@@ -77,11 +82,14 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	@Transactional
-	public Category changeCategorayName(CategoryDTO.ChangeNameDTO changeNameDTO) {
-		return categoryRepository.findByCategoryNameAndMemberSocial(changeNameDTO.getCategoryOwn(),
-						memberService.getMemberInfoByOAuthId(changeNameDTO.getOauthId()))
+	public ResponseEntity<?> changeCategorayName(CategoryDTO.ChangeNameDTO changeNameDTO) {
+		CategoryResponseDTO categoryResponseDTO =
+				categoryRepository.findByCategoryNameAndMemberSocial(changeNameDTO.getCategoryOwn(),
+								memberService.getMemberInfoByOAuthId(changeNameDTO.getOauthId()))
 						.get()
-							.changeCategoryName(changeNameDTO.getCategoryGeu());
+							.changeCategoryName(changeNameDTO.getCategoryGeu())
+								.toDTO();
+		return new ResponseEntity<>(categoryResponseDTO,HttpStatus.OK);
 	}
 
 	@Override
@@ -98,4 +106,21 @@ public class CategoryServiceImpl implements CategoryService {
 		}
 	}
 
+	private List<CategoryResponseDTO.ListOfMemberCategory> getInfoMemberCategory(List<Category> categories){
+		List<CategoryResponseDTO.ListOfMemberCategory> getInfoMemberCategoryList=new ArrayList<>();
+		for (int i=0;i<categories.size();i++){
+			CategoryResponseDTO.ListOfMemberCategory listOfMemberCategory = categories.get(i).toListOfCategory();
+			listOfMemberCategory.setTodoList(getToDoInfoToDTO(categories.get(i).getToDo()));
+			getInfoMemberCategoryList.add(listOfMemberCategory);
+		}
+		return getInfoMemberCategoryList;
+	}
+
+	private List<ToDoResponseDTO> getToDoInfoToDTO(List<ToDo> toDoList){
+		Set<ToDoResponseDTO> toDoResponseDTOList=new HashSet<>();
+		for(ToDo t:toDoList){
+			toDoResponseDTOList.add(t.toDTO());
+		}
+		return new ArrayList<>(toDoResponseDTOList);
+	}
 }
