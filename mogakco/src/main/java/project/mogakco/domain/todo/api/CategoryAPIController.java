@@ -23,7 +23,7 @@ public class CategoryAPIController {
 
 	private final CategoryService categoryService;
 
-	@GetMapping
+	@PostMapping("/categoryInfo")
 	public ResponseEntity<?> getCategoryListInfo(@RequestBody MemberInfoDTO.selectInfoByoauthIdDTO selectInfoByoauthIdDTO){
 		return categoryService.getListOfCategory(memberService.getMemberInfoByOAuthId(selectInfoByoauthIdDTO.getOauthId()));
 	}
