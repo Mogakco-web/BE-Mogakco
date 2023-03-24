@@ -28,7 +28,7 @@ public class CategoryAPIController {
 		return categoryService.getListOfCategory(memberService.getMemberInfoByOAuthId(selectInfoByoauthIdDTO.getOauthId()));
 	}
 
-	@PostMapping
+	@PostMapping("/categoryCreate")
 	public ResponseEntity<?> createCategorayByName(@RequestBody CategoryDTO.CategoryCreateDTO categoryCreateDTO){
 		return categoryService.createCategoryOne(categoryCreateDTO);
 	}
