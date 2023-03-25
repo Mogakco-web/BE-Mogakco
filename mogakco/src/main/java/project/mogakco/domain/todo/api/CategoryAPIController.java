@@ -12,6 +12,7 @@ import project.mogakco.domain.todo.dto.request.ToDoDTO;
 import project.mogakco.domain.todo.entity.Category;
 import project.mogakco.global.dto.requset.MemberInfoDTO;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -41,5 +42,10 @@ public class CategoryAPIController {
 	@DeleteMapping
 	public ResponseEntity<?> eliminateCategory(@RequestBody CategoryDTO.EliminateDTO eliminateDTO){
 		return categoryService.eliminateCategory(eliminateDTO);
+	}
+
+	@GetMapping
+	public ResponseEntity<?> getCategoryInfoBy(@PathParam("categorySeq")Long categorySeq){
+		return categoryService.getCategoryInfoBySeq(categorySeq);
 	}
 }

@@ -95,7 +95,7 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	@Transactional
 	public ResponseEntity<?> eliminateCategory(CategoryDTO.EliminateDTO eliminateDTO) {
-		Optional<Category> findC = categoryRepository.findByCategoryNameAndMemberSocial(eliminateDTO.getCategoryName(),
+		Optional<Category> findC = categoryRepository.findByCategorySeqAndMemberSocial(eliminateDTO.getCategorySeq(),
 				memberService.getMemberInfoByOAuthId(eliminateDTO.getOauthId()));
 
 		if (findC.isPresent()){
@@ -103,6 +103,16 @@ public class CategoryServiceImpl implements CategoryService {
 			return new ResponseEntity<>("Category Delete", HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>("Bad Req",HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	public ResponseEntity<?> getCategoryInfoBySeq(Long categorySeq) {
+		Optional<Category> findC = categoryRepository.findById(categorySeq);
+		if (findC.isPresent()){
+			return new ResponseEntity<>(findC.get().toDTO(),HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>("찾는 데이터 없음",HttpStatus.OK);
 		}
 	}
 

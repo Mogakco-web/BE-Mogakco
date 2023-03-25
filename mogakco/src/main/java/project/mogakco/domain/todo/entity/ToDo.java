@@ -46,7 +46,7 @@ public class ToDo extends BaseEntity {
 				.todoSeq(todoSeq)
 				.todoTitle(todoTitle)
 				.todoContents(todoContents)
-				.categoryId(category.getCategory_seq())
+				.categoryId(category.getCategorySeq())
 				.memberId(memberSocial.getMember_seq())
 				.build();
 	}

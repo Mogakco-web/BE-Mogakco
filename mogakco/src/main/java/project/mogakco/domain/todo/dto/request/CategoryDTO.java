@@ -21,6 +21,6 @@ public class CategoryDTO {
 	@Getter
 	public static class EliminateDTO{
 		private String oauthId;
-		private String categoryName;
+		private Long categorySeq;
 	}
 }

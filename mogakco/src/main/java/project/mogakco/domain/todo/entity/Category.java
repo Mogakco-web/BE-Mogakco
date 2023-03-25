@@ -18,7 +18,7 @@ public class Category extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long category_seq;
+	private Long categorySeq;
 
 	private String categoryName;
 
@@ -36,7 +36,7 @@ public class Category extends BaseEntity {
 
 	public CategoryResponseDTO toDTO(){
 		return CategoryResponseDTO.builder()
-				.category_seq(category_seq)
+				.category_seq(categorySeq)
 				.categoryName(categoryName)
 				.memberSeq(memberSocial.getMember_seq())
 				.build();
@@ -44,7 +44,7 @@ public class Category extends BaseEntity {
 
 	public CategoryResponseDTO.ListOfMemberCategory toListOfCategory(){
 		return CategoryResponseDTO.ListOfMemberCategory.builder()
-				.categorySeq(category_seq)
+				.categorySeq(categorySeq)
 				.categoryName(categoryName)
 				.memberSeq(memberSocial.getMember_seq())
 				.build();

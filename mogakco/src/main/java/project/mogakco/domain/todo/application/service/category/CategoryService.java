@@ -23,4 +23,6 @@ public interface CategoryService {
 	ResponseEntity<?> changeCategorayName(CategoryDTO.ChangeNameDTO changeNameDTO);
 
 	ResponseEntity<?> eliminateCategory(CategoryDTO.EliminateDTO eliminateDTO);
+
+	ResponseEntity<?> getCategoryInfoBySeq(Long categorySeq);
 }
