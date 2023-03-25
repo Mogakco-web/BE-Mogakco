@@ -20,8 +20,8 @@ public class Ranking {
 
 	private int rank;
 
-	@OneToMany(fetch = FetchType.LAZY,mappedBy = "ranking")
-	private List<MemberSocial> memberSocials;
+	@OneToOne(fetch = FetchType.LAZY,mappedBy = "ranking")
+	private MemberSocial memberSocial;
 
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "ranking")
 	private List<Timer> timers;
