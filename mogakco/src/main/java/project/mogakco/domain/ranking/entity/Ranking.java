@@ -22,9 +22,14 @@ public class Ranking {
 
 	private long score;
 
-	@OneToOne(fetch = FetchType.LAZY,mappedBy = "ranking")
+	@OneToOne(fetch = FetchType.LAZY)
 	private MemberSocial memberSocial;
 
-	@OneToMany(fetch = FetchType.LAZY,mappedBy = "ranking")
+	@OneToMany(fetch = FetchType.LAZY)
 	private List<Timer> timers;
+
+
+	public void changeScoreInfo(Long changeInfoScore){
+		this.score=changeInfoScore;
+	}
 }

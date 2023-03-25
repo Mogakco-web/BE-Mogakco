@@ -56,8 +56,7 @@ public class MemberSocial extends BaseEntity {
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial")
 	public List<Category> categories;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "rankingSeq")
+	@OneToOne(fetch = FetchType.LAZY)
 	public Ranking ranking;
 
 	public MemberSocial updateOAuthInfo(MemberDTO.UpdateOAuthUser updateOAuthUser){
