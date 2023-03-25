@@ -20,6 +20,8 @@ public class Ranking {
 
 	private int rank;
 
+	private long score;
+
 	@OneToOne(fetch = FetchType.LAZY,mappedBy = "ranking")
 	private MemberSocial memberSocial;
 
