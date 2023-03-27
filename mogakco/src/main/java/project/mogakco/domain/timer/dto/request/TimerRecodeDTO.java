@@ -34,4 +34,9 @@ public class TimerRecodeDTO {
 		private LocalDate yesterdayDateInfo;
 	}
 
+	@Getter
+	public static class onlyOauthIdDTO{
+		private String oauthId;
+	}
+
 }

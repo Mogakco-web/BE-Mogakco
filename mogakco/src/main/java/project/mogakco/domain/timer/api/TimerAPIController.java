@@ -18,8 +18,6 @@ public class TimerAPIController {
 
 	private final TimerService timerService;
 
-	private final JwtService jwtService;
-
 
 	@PostMapping("/recode")
 	public ResponseEntity<?> recodeTodayTimeInfo(@RequestBody TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday){
@@ -37,8 +35,8 @@ public class TimerAPIController {
 		return timerService.getDiffYesterdayInfo(diffYesterdayDateCompareDTO);
 	}
 
-	@PostMapping("/test")
-	public void test(@PathParam("oauthId")String oauthId) {
-		timerService.getDiffWeekInfo(oauthId);
+	@PostMapping("/compareWeek")
+	public ResponseEntity<?> test(@RequestBody TimerRecodeDTO.onlyOauthIdDTO onlyOauthIdDTO) {
+		return timerService.getDiffWeekInfo(onlyOauthIdDTO.getOauthId());
 	}
 }

@@ -6,11 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.todo.application.service.category.CategoryService;
+import project.mogakco.domain.todo.dto.CategoryResponseDTO;
 import project.mogakco.domain.todo.dto.request.CategoryDTO;
 import project.mogakco.domain.todo.dto.request.ToDoDTO;
 import project.mogakco.domain.todo.entity.Category;
 import project.mogakco.global.dto.requset.MemberInfoDTO;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -22,28 +24,28 @@ public class CategoryAPIController {
 
 	private final CategoryService categoryService;
 
-	@GetMapping
-	public ResponseEntity<List<Category>> getCategoryListInfo(@RequestBody MemberInfoDTO.selectInfoByoauthIdDTO selectInfoByoauthIdDTO){
-		List<Category> listOfCategory = categoryService.getListOfCategory(memberService.getMemberInfoByOAuthId(selectInfoByoauthIdDTO.getOauthId()));
-		return new ResponseEntity<>(listOfCategory, HttpStatus.OK);
+	@PostMapping("/categoryInfo")
+	public ResponseEntity<?> getCategoryListInfo(@RequestBody MemberInfoDTO.selectInfoByoauthIdDTO selectInfoByoauthIdDTO){
+		return categoryService.getListOfCategory(memberService.getMemberInfoByOAuthId(selectInfoByoauthIdDTO.getOauthId()));
 	}
 
-	@PostMapping
+	@PostMapping("/categoryCreate")
 	public ResponseEntity<?> createCategorayByName(@RequestBody CategoryDTO.CategoryCreateDTO categoryCreateDTO){
-		Category createdCategory
-				= categoryService.createCategoryOne(categoryCreateDTO);
-		return new ResponseEntity<>(createdCategory,HttpStatus.OK);
+		return categoryService.createCategoryOne(categoryCreateDTO);
 	}
 
 	@PutMapping
 	public ResponseEntity<?> changCategoryName(@RequestBody CategoryDTO.ChangeNameDTO changeNameDTO){
-		Category changeCategorayName =
-				categoryService.changeCategorayName(changeNameDTO);
-		return new ResponseEntity<>(changeCategorayName,HttpStatus.OK);
+		return categoryService.changeCategorayName(changeNameDTO);
 	}
 
 	@DeleteMapping
 	public ResponseEntity<?> eliminateCategory(@RequestBody CategoryDTO.EliminateDTO eliminateDTO){
 		return categoryService.eliminateCategory(eliminateDTO);
+	}
+
+	@GetMapping
+	public ResponseEntity<?> getCategoryInfoBy(@PathParam("categorySeq")Long categorySeq){
+		return categoryService.getCategoryInfoBySeq(categorySeq);
 	}
 }

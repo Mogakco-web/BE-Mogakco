@@ -8,13 +8,15 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface TimerService {
+
 	ResponseEntity<?> recodeTimeToday(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday);
 
 	ResponseEntity<?> getTodayInfo(TimerRecodeDTO.todayDateInfoDTO todayDateInfoDTO);
 
 	ResponseEntity<?> getDiffYesterdayInfo(TimerRecodeDTO.diffYesterdayDateCompareDTO diffYesterdayDateCompareDTO);
 
-	void getDiffWeekInfo(String oauthId);
-
 	List<Timer> getTimerAllInfo();
+  
+	ResponseEntity<?> getDiffWeekInfo(String oauthId);
+
 }

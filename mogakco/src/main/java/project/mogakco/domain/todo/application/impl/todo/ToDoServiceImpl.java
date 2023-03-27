@@ -33,8 +33,7 @@ public class ToDoServiceImpl implements ToDoService {
 	@Transactional
 	@Override
 	public ToDoResponseDTO createOneToDoTap(ToDoDTO.ToDoCreateDTO toDoCreateDTO){
-
-		Category categoryInfoName = categoryService.getCategoryInfoName(toDoCreateDTO.getCategoryName());
+		Category categoryInfoName = categoryService.getCategoryInfoNameAndMember(toDoCreateDTO.getCategoryName(),memberService.getMemberInfoByOAuthId(toDoCreateDTO.getOauthId()));
 		ToDo createdTodo = ToDo
 							.builder()
 							.todoTitle(toDoCreateDTO.getTodoTitle())
