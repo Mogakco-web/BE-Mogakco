@@ -10,6 +10,8 @@ import project.mogakco.domain.todo.dto.request.ToDoDTO;
 import project.mogakco.domain.todo.dto.response.ToDoResponseDTO;
 import project.mogakco.domain.todo.entity.ToDo;
 
+import javax.websocket.server.PathParam;
+
 @RestController
 @RequiredArgsConstructor
 @Log4j2
@@ -47,4 +49,8 @@ public class ToDoAPIController {
 		return toDoService.eliminateOneToDoTap(eliminateDTO);
 	}
 
+	@GetMapping
+	public ResponseEntity<?> getInfoTodoListByCategorySeq(@PathParam("categorySeq")Long categorySeq){
+		return toDoService.getTodoListInfoByCategorySeq(categorySeq);
+	}
 }

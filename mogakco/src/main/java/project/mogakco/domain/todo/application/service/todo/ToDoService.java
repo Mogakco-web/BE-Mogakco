@@ -16,4 +16,6 @@ public interface ToDoService {
 	ResponseEntity<?> eliminateOneToDoTap(ToDoDTO.ToDoEliminateDTO toDoEliminateDTO);
 
 	ToDoResponseDTO changeTitleTodo(ToDoDTO.ChangTitleDTO changTitleDTO);
+
+	ResponseEntity<?> getTodoListInfoByCategorySeq(Long categorySeq);
 }

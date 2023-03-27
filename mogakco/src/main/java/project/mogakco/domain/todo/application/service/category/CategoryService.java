@@ -24,5 +24,5 @@ public interface CategoryService {
 
 	ResponseEntity<?> eliminateCategory(CategoryDTO.EliminateDTO eliminateDTO);
 
-	ResponseEntity<?> getCategoryInfoBySeq(Long categorySeq);
+	Category getCategoryInfoBySeq(Long categorySeq);
 }

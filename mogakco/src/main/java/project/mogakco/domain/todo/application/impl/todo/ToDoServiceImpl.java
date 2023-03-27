@@ -16,7 +16,9 @@ import project.mogakco.domain.todo.entity.Category;
 import project.mogakco.domain.todo.entity.ToDo;
 import project.mogakco.domain.todo.repo.ToDoRepository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -89,6 +91,19 @@ public class ToDoServiceImpl implements ToDoService {
 				);
 
 		return findT.map(toDo -> toDo.changeTitleTodo(changTitleDTO.getChangeTitle())).orElse(null).toDTO();
+	}
+
+	@Override
+	public ResponseEntity<?> getTodoListInfoByCategorySeq(Long categorySeq) {
+		List<ToDoResponseDTO> todoList = categoryService.getCategoryInfoBySeq(categorySeq)
+				.getToDo()
+				.stream()
+				.map(ToDo::toDTO)
+				.collect(Collectors.toList());
+
+		return todoList.isEmpty()? new ResponseEntity<>("해당 카테고리 ToDo없음",HttpStatus.OK):
+				new ResponseEntity<>(todoList,HttpStatus.OK);
+
 	}
 
 }
