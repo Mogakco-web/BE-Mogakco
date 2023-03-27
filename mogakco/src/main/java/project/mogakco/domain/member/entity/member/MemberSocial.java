@@ -2,12 +2,15 @@ package project.mogakco.domain.member.entity.member;
 
 import lombok.*;
 import project.mogakco.domain.member.dto.MemberDTO;
+import project.mogakco.domain.member.dto.MemberResponseDTO;
+import project.mogakco.domain.ranking.entity.Ranking;
 import project.mogakco.domain.timer.entity.Timer;
 import project.mogakco.domain.todo.entity.Category;
 import project.mogakco.domain.todo.entity.ToDo;
 import project.mogakco.global.domain.BaseEntity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -42,16 +45,19 @@ public class MemberSocial extends BaseEntity {
 	private String password;
 
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial")
-	private List<ToDo> toDoList;
+	private List<ToDo> toDoList=new ArrayList<>();
 
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial")
-	private List<Timer> timer;
+	private List<Timer> timer =new ArrayList<>();
 	public void updateRefreshToken(String updateRefreshToken){
 		this.refreshToken=updateRefreshToken;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial")
 	public List<Category> categories;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	public Ranking ranking;
 
 	public MemberSocial updateOAuthInfo(MemberDTO.UpdateOAuthUser updateOAuthUser){
 		this.authToken=updateOAuthUser.getAuthToken();
@@ -67,5 +73,20 @@ public class MemberSocial extends BaseEntity {
 	public void updateInfoByLogout(String refreshToken,String authToken){
 		updateRefreshToken(refreshToken);
 		updateAuthToken(authToken);
+	}
+
+	public MemberResponseDTO toDTO(){
+		return MemberResponseDTO
+				.builder()
+				.member_seq(member_seq)
+				.authToken(authToken)
+				.member_imgUrl(member_imgUrl)
+				.email(email)
+				.nickname(nickname)
+				.oauthId(oauthId)
+				.socialType(socialType)
+				.refreshToken(refreshToken)
+				.role(role)
+				.build();
 	}
 }

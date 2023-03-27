@@ -74,6 +74,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 	private MemberSocial initializeCategorySettings(String nickname){
 		MemberSocial findM = memberService.getMemberInfoByNickname(nickname);
 		if (categoryService.getCategoryInfoNameAndMember(findM)){
+			log.info("category settings");
+		}else {
 			categoryService.initializeBasicCategory(findM);
 		}
 

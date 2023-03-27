@@ -1,5 +1,6 @@
 package project.mogakco.domain.todo.application.impl.todo;
 
+import com.sun.xml.bind.v2.TODO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,8 @@ import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.todo.application.service.category.CategoryService;
 import project.mogakco.domain.todo.application.service.todo.ToDoService;
 import project.mogakco.domain.todo.dto.request.ToDoDTO;
+import project.mogakco.domain.todo.dto.response.ToDoResponseDTO;
+import project.mogakco.domain.todo.entity.Category;
 import project.mogakco.domain.todo.entity.ToDo;
 import project.mogakco.domain.todo.repo.ToDoRepository;
 
@@ -29,23 +32,35 @@ public class ToDoServiceImpl implements ToDoService {
 
 	@Transactional
 	@Override
-	public ToDo createOneToDoTap(ToDoDTO.ToDoCreateDTO toDoCreateDTO){
-		return toDoRepository.save(
-				ToDo.builder()
-						.todoTitle(toDoCreateDTO.getTodo_title())
-						.category(categoryService.getCategoryInfoName(toDoCreateDTO.getCategory_name()))
-						.memberSocial(memberService.getMemberInfoByOAuthId(toDoCreateDTO.getOauthId()))
-						.build()
-		);
+	public ToDoResponseDTO createOneToDoTap(ToDoDTO.ToDoCreateDTO toDoCreateDTO){
+
+		Category categoryInfoName = categoryService.getCategoryInfoName(toDoCreateDTO.getCategoryName());
+		ToDo createdTodo = ToDo
+							.builder()
+							.todoTitle(toDoCreateDTO.getTodoTitle())
+							.category(categoryInfoName)
+							.memberSocial(memberService.getMemberInfoByOAuthId(toDoCreateDTO.getOauthId()))
+							.build();
+
+
+
+		return toDoRepository.save(createdTodo).toDTO();
 	}
 
 	@Transactional
 	@Override
-	public ToDo writeContentsOneToDoTap(ToDoDTO.ToDoWriteContentsDTO toDoWriteContentsDTO){
-		return toDoRepository.findByTodoSeqAndMemberSocial(toDoWriteContentsDTO.getTodoSeq(),
+	public ResponseEntity<?> writeContentsOneToDoTap(ToDoDTO.ToDoWriteContentsDTO toDoWriteContentsDTO){
+		/*return toDoRepository.findByTodoSeqAndMemberSocial(toDoWriteContentsDTO.getTodoSeq(),
 						memberService.getMemberInfoByOAuthId(toDoWriteContentsDTO.getOauthId()))
 							.get()
-								.writeContents(toDoWriteContentsDTO.getTodo_contents());
+								.writeContents(toDoWriteContentsDTO.getTodo_contents());*/
+		Optional<ToDo> findTo = toDoRepository.findByTodoSeqAndMemberSocial(toDoWriteContentsDTO.getTodoSeq(),
+				memberService.getMemberInfoByOAuthId(toDoWriteContentsDTO.getOauthId()));
+		if (findTo.isPresent()){
+			return new ResponseEntity<>(findTo.get().writeContents(toDoWriteContentsDTO.getTodo_contents()).toDTO(),HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>("Request Not Accept",HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	@Transactional
@@ -67,15 +82,14 @@ public class ToDoServiceImpl implements ToDoService {
 
 	@Override
 	@Transactional
-	public ToDo changeTitleTodo(ToDoDTO.ChangTitleDTO changTitleDTO) {
+	public ToDoResponseDTO changeTitleTodo(ToDoDTO.ChangTitleDTO changTitleDTO) {
 		Optional<ToDo> findT =
 				toDoRepository.findByTodoSeqAndMemberSocial(
 						changTitleDTO.getTodoSeq(),
 						memberService.getMemberInfoByOAuthId(changTitleDTO.getOauthId())
 				);
 
-		return findT.map(toDo -> toDo.changeTitleTodo(changTitleDTO.getChangeTitle())).orElse(null);
+		return findT.map(toDo -> toDo.changeTitleTodo(changTitleDTO.getChangeTitle())).orElse(null).toDTO();
 	}
-
 
 }

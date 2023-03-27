@@ -2,14 +2,15 @@ package project.mogakco.global.application.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.mogakco.domain.member.repository.MemberRepository;
@@ -17,9 +18,7 @@ import project.mogakco.global.exception.TokenException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -55,6 +54,7 @@ public class JwtService {
 	private final MemberRepository memberRepository;
 
 
+
 	public String createAccessToken(String name) {
 		return JWT.create()
 				.withSubject(ACCESS_TOKEN_SUBJECT)
@@ -70,12 +70,10 @@ public class JwtService {
 				.sign(Algorithm.HMAC512(secretKey));
 	}
 
-	public void sendAccessToken(HttpServletResponse response, String accessToken) {
-		response.setStatus(HttpServletResponse.SC_OK);
-
-		response.setHeader(accessHeader, accessToken);
-		log.info("재발급된 Access Token : {}", accessToken);
+	public void sendAccessToken(HttpServletResponse response,String accessToken) {
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 	}
+
 
 	public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
 		response.setStatus(HttpServletResponse.SC_OK);
@@ -84,6 +82,7 @@ public class JwtService {
 		setRefreshTokenHeader(response, refreshToken);
 		log.info("Access Token, Refresh Token 헤더 설정 완료");
 	}
+
 
 	public Optional<String> extracUserInfo(HttpServletRequest request) {
 		log.info("userInfoReqeuest="+request.getHeader("userInfo"));
@@ -106,12 +105,15 @@ public class JwtService {
 	}
 
 	public Optional<String> extractNickname(String accessToken) {
+		log.info("테스트");
 		try {
-			return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
+			Optional<String> s = Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
 					.build()
 					.verify(accessToken)
 					.getClaim(NICKNAME_CLAIM)
 					.asString());
+			System.out.println("extractNickname="+s);
+			return s;
 		} catch (Exception e) {
 			log.error("액세스 토큰이 유효하지 않습니다.");
 			return Optional.empty();
@@ -135,15 +137,14 @@ public class JwtService {
 	}
 
 	public boolean isTokenValid(String token) {
-		System.out.println("token="+token);
-
+		log.info("Token 유효성 검사="+token);
 		try {
 			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
-			System.out.println("verify="+verify);
 			return true;
-		} catch (Exception e) {
+		}
+		catch (Exception e){
 			log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
-			throw new TokenException("유효하지 않은 토큰");
+			return false;
 		}
 	}
 
@@ -161,5 +162,33 @@ public class JwtService {
 			System.out.println("refresh="+refresh.getTime());
 			return refresh;
 		}
+	}
+
+	private boolean isExpiredToken(long compare_time){
+		TimeZone seoulTimeZone = TimeZone.getTimeZone("Asia/Seoul");
+
+		Date now=new Date();
+		now.setTime(now.getTime()+seoulTimeZone.getOffset(now.getTime()));
+		System.out.println("nowTime="+now.getTime());
+		return compare_time < now.getTime();
+	}
+
+	public boolean isTokenExpired(HttpServletResponse response, String token) {
+		try {
+			DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+			long expiredTime = verify.getExpiresAt().getTime();
+			if(isExpiredToken(expiredTime)){
+				throw new TokenException("Token Expired",HttpStatus.UNAUTHORIZED);
+			}
+			return true;
+		}catch (TokenException e) {
+			log.info("EXPIRED EXCEPTION");
+			sendAccessToken(response, token);
+			return false;
+		}
+	}
+
+	public void tokenTest(String token){
+		DecodedJWT verify = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
 	}
 }

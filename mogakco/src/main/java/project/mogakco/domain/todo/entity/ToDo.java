@@ -2,6 +2,7 @@ package project.mogakco.domain.todo.entity;
 
 import lombok.*;
 import project.mogakco.domain.member.entity.member.MemberSocial;
+import project.mogakco.domain.todo.dto.response.ToDoResponseDTO;
 import project.mogakco.global.domain.BaseEntity;
 
 import javax.persistence.*;
@@ -19,7 +20,7 @@ public class ToDo extends BaseEntity {
 
 	private String todoTitle;
 
-	private String todo_contents;
+	private String todoContents;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_seq")
@@ -30,12 +31,23 @@ public class ToDo extends BaseEntity {
 	private MemberSocial memberSocial;
 
 	public ToDo writeContents(String todo_contents){
-		this.todo_contents=todo_contents;
+		this.todoContents =todo_contents;
 		return this;
 	}
 
 	public ToDo changeTitleTodo(String todoTitle){
 		this.todoTitle =todoTitle;
 		return this;
+	}
+
+	public ToDoResponseDTO toDTO(){
+		return ToDoResponseDTO
+				.builder()
+				.todoSeq(todoSeq)
+				.todoTitle(todoTitle)
+				.todoContents(todoContents)
+				.categoryId(category.getCategory_seq())
+				.memberId(memberSocial.getMember_seq())
+				.build();
 	}
 }

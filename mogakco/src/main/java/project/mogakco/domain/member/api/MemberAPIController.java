@@ -8,11 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.member.dto.MemberDTO;
+import project.mogakco.domain.member.dto.MemberResponseDTO;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.member.repository.MemberRepository;
 import project.mogakco.global.application.jwt.JwtService;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.server.PathParam;
 import java.util.Optional;
 
 @RestController
@@ -31,12 +33,13 @@ public class MemberAPIController {
 		System.out.println("userInfoaccess="+accessToken);
 		String user_Nickname = jwtService.extractNickname(accessToken).get();
 		log.info("user_Nickname+"+user_Nickname);
-		MemberSocial selectInfo = memberService.getMemberInfoByNickname(user_Nickname);
+		MemberResponseDTO memberResponseDTO = memberService.getMemberInfoByNickname(user_Nickname).toDTO();
 
-		return new ResponseEntity<>(selectInfo, HttpStatus.OK);
+		return new ResponseEntity<>(memberResponseDTO, HttpStatus.OK);
 	}
 
 	@GetMapping("/userInfo/access")
 	public void getOneOfUserInfoAccess(){
 	}
+
 }
