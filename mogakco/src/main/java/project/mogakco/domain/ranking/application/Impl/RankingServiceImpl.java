@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.ranking.application.service.RankingService;
+import project.mogakco.domain.ranking.dto.response.RankingResponseDTO;
 import project.mogakco.domain.ranking.entity.QRanking;
 import project.mogakco.domain.ranking.entity.Ranking;
 import project.mogakco.domain.ranking.repo.RankingRepository;
@@ -15,9 +16,10 @@ import project.mogakco.domain.timer.application.service.TimerService;
 import project.mogakco.domain.timer.entity.Timer;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @Log4j2
 @RequiredArgsConstructor
 public class RankingServiceImpl implements RankingService {
@@ -29,6 +31,7 @@ public class RankingServiceImpl implements RankingService {
 	private final RankingRepository rankingRepository;
 
 	@Override
+	@Transactional
 	public void recodeTimeOfMemberRankingInit() {
 		Map<MemberSocial,Long> rankScore=new HashMap<>();
 		System.out.println("랭킹");
@@ -56,17 +59,27 @@ public class RankingServiceImpl implements RankingService {
 		rankInitialize();
 	}
 
-
-	private void rankInitialize(){
+	@Transactional
+	public void rankInitialize(){
 		QRanking ranking=QRanking.ranking;
+		int i=1;
 		List<Ranking> fetch = jpaQueryFactory.selectFrom(ranking)
 				.orderBy(ranking.score.desc())
+				.limit(10)
 				.fetch();
 
-		System.out.println(fetch);
 		for (Ranking r:fetch){
-			System.out.println("ranking="+r.getMemberSocial().getMember_seq());
-			System.out.println("ranking="+r.getScore());
+			r.changeRankInfo(i);
+			i++;
 		}
+	}
+
+	@Override
+	public List<RankingResponseDTO> getListInfoRanking() {
+		return rankingRepository.findAll()
+				.stream()
+				.map(Ranking::toDTO)
+				.sorted(Comparator.comparingInt(RankingResponseDTO::getRank))
+				.collect(Collectors.toList());
 	}
 }

@@ -2,6 +2,7 @@ package project.mogakco.domain.ranking.entity;
 
 import lombok.*;
 import project.mogakco.domain.member.entity.member.MemberSocial;
+import project.mogakco.domain.ranking.dto.response.RankingResponseDTO;
 import project.mogakco.domain.timer.entity.Timer;
 
 import javax.persistence.*;
@@ -31,5 +32,18 @@ public class Ranking {
 
 	public void changeScoreInfo(Long changeInfoScore){
 		this.score=changeInfoScore;
+	}
+
+	public void changeRankInfo(int changeInfoRank){
+		this.rank=changeInfoRank;
+	}
+
+	public RankingResponseDTO toDTO(){
+		return RankingResponseDTO.builder()
+				.rankingSeq(rankingSeq)
+				.rank(rank)
+				.score(score)
+				.memberResponseDTO(memberSocial.toDTO())
+				.build();
 	}
 }
