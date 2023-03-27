@@ -160,4 +160,9 @@ public class TimerServiceImpl implements TimerService {
 		}
 	}
 
+	@Override
+	public List<Timer> getTimerAllInfo() {
+		return timerRepository.findAll();
+	}
+
 }

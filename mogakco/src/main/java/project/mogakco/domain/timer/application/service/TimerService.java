@@ -2,8 +2,10 @@ package project.mogakco.domain.timer.application.service;
 
 import org.springframework.http.ResponseEntity;
 import project.mogakco.domain.timer.dto.request.TimerRecodeDTO;
+import project.mogakco.domain.timer.entity.Timer;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface TimerService {
 
@@ -13,5 +15,8 @@ public interface TimerService {
 
 	ResponseEntity<?> getDiffYesterdayInfo(TimerRecodeDTO.diffYesterdayDateCompareDTO diffYesterdayDateCompareDTO);
 
+	List<Timer> getTimerAllInfo();
+  
 	ResponseEntity<?> getDiffWeekInfo(String oauthId);
+
 }
