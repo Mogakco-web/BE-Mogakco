@@ -101,9 +101,7 @@ public class ToDoServiceImpl implements ToDoService {
 				.map(ToDo::toDTO)
 				.collect(Collectors.toList());
 
-		return todoList.isEmpty()? new ResponseEntity<>("해당 카테고리 ToDo없음",HttpStatus.OK):
-				new ResponseEntity<>(todoList,HttpStatus.OK);
-
+		return new ResponseEntity<>(todoList,HttpStatus.OK);
 	}
 
 }
