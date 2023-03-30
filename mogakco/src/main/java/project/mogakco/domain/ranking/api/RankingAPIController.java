@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import project.mogakco.domain.ranking.application.service.RankingService;
 import project.mogakco.domain.ranking.dto.response.RankingResponseDTO;
+import project.mogakco.domain.ranking.entity.redis.RankingRedis;
 
 import java.util.List;
 
@@ -29,8 +30,7 @@ public class RankingAPIController {
 
 	@GetMapping
 	public ResponseEntity<?> getRankingInfoList() {
-		List<RankingResponseDTO> listInfoRanking =
-				rankingService.getListInfoRanking();
+		List<RankingRedis> listInfoRanking = rankingService.getListInfoRanking();
 		if (listInfoRanking.isEmpty()) {
 			return new ResponseEntity<>("아무도 시간 기록없음", HttpStatus.OK);
 		} else {

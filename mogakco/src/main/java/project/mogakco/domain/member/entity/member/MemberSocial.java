@@ -3,7 +3,6 @@ package project.mogakco.domain.member.entity.member;
 import lombok.*;
 import project.mogakco.domain.member.dto.MemberDTO;
 import project.mogakco.domain.member.dto.MemberResponseDTO;
-import project.mogakco.domain.ranking.entity.Ranking;
 import project.mogakco.domain.timer.entity.Timer;
 import project.mogakco.domain.todo.entity.Category;
 import project.mogakco.domain.todo.entity.ToDo;
@@ -56,9 +55,6 @@ public class MemberSocial extends BaseEntity {
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial")
 	public List<Category> categories;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	public Ranking ranking;
-
 	public MemberSocial updateOAuthInfo(MemberDTO.UpdateOAuthUser updateOAuthUser){
 		this.authToken=updateOAuthUser.getAuthToken();
 		this.member_imgUrl=updateOAuthUser.getImgUrl();
@@ -87,6 +83,15 @@ public class MemberSocial extends BaseEntity {
 				.socialType(socialType)
 				.refreshToken(refreshToken)
 				.role(role)
+				.build();
+	}
+
+	public MemberResponseDTO.RankingDTO toRankingDTO(){
+		return MemberResponseDTO
+				.RankingDTO.builder()
+				.member_seq(member_seq)
+				.nickname(nickname)
+				.member_imgUrl(member_imgUrl)
 				.build();
 	}
 }
