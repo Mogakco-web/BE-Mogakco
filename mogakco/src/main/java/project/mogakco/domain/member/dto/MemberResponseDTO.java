@@ -28,4 +28,14 @@ public class MemberResponseDTO {
 
 	private String refreshToken;
 
+
+	@Getter
+	@Builder
+	public static class RankingDTO{
+		private Long member_seq;
+
+		private String nickname;
+
+		private String member_imgUrl;
+	}
 }

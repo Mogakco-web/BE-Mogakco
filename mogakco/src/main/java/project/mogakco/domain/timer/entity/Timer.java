@@ -2,7 +2,6 @@ package project.mogakco.domain.timer.entity;
 
 import lombok.*;
 import project.mogakco.domain.member.entity.member.MemberSocial;
-import project.mogakco.domain.ranking.entity.Ranking;
 import project.mogakco.domain.timer.dto.response.TimerResponseDTO;
 import project.mogakco.global.domain.BaseEntity;
 
@@ -29,10 +28,6 @@ public class Timer extends BaseEntity {
 	private LocalDate timerCreDay;
 
 	private long day_of_totalTime;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "rankingSeq")
-	public Ranking ranking;
 
 	public Timer updateRecodeInfo(String recodeTime, long day_of_totalTime){
 		this.recodeTime=recodeTime;
