@@ -49,8 +49,12 @@ public class ToDoAPIController {
 		return toDoService.eliminateOneToDoTap(eliminateDTO);
 	}
 
-	@GetMapping
+	@GetMapping("/listInfo")
 	public ResponseEntity<?> getInfoTodoListByCategorySeq(@PathParam("categorySeq")Long categorySeq){
 		return toDoService.getTodoListInfoByCategorySeq(categorySeq);
+	}
+	@GetMapping("/tapInfo")
+	public ResponseEntity<?> getInfoTodoOneTapByTodoSeq(@PathParam("todoSeq")Long todoSeq){
+		return toDoService.getTodoOneTapByTodoSeq(todoSeq);
 	}
 }

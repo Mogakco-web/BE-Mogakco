@@ -104,4 +104,14 @@ public class ToDoServiceImpl implements ToDoService {
 		return new ResponseEntity<>(todoList,HttpStatus.OK);
 	}
 
+	@Override
+	public ResponseEntity<?> getTodoOneTapByTodoSeq(Long todoSeq) {
+		Optional<ToDo> findT = toDoRepository.findById(todoSeq);
+		if (findT.isPresent()){
+			return new ResponseEntity<>(findT.get().toDTO(),HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>("없음",HttpStatus.OK);
+		}
+	}
+
 }

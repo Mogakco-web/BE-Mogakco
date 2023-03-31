@@ -18,4 +18,6 @@ public interface ToDoService {
 	ToDoResponseDTO changeTitleTodo(ToDoDTO.ChangTitleDTO changTitleDTO);
 
 	ResponseEntity<?> getTodoListInfoByCategorySeq(Long categorySeq);
+
+	ResponseEntity<?> getTodoOneTapByTodoSeq(Long todoSeq);
 }
