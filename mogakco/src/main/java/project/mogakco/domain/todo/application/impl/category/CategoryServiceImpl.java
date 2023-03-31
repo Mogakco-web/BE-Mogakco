@@ -107,13 +107,9 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public Category getCategoryInfoBySeq(Long categorySeq) {
+	public CategoryResponseDTO getCategoryInfoBySeq(Long categorySeq) {
 		Optional<Category> findC = categoryRepository.findById(categorySeq);
-		if (findC.isPresent()){
-			return findC.get();
-		}else {
-			return null;
-		}
+		return findC.map(Category::toDTO).orElse(null);
 	}
 
 	private List<CategoryResponseDTO.ListOfMemberCategory> getInfoMemberCategory(List<Category> categories){
