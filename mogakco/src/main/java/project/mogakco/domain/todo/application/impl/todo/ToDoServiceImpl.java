@@ -119,7 +119,7 @@ public class ToDoServiceImpl implements ToDoService {
 		Optional<ToDo> findT = toDoRepository.findById(changCategoryDTO.getTodoSeq());
 		if (findT.isPresent()){
 			ToDo changeTodo = findT.get().changeCategoryTodo(categoryService.getCategoryInfoBySeq(changCategoryDTO.getCategorySeq()));
-			return new ResponseEntity<>(changeTodo,HttpStatus.OK);
+			return new ResponseEntity<>(changeTodo.toDTO(),HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>("없음",HttpStatus.BAD_REQUEST);
 		}
