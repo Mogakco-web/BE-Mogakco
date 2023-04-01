@@ -115,6 +115,7 @@ public class ToDoServiceImpl implements ToDoService {
 	}
 
 	@Override
+	@Transactional
 	public ResponseEntity<?> changeCategoryTodo(ToDoDTO.ChangCategoryDTO changCategoryDTO) {
 		Optional<ToDo> findT = toDoRepository.findById(changCategoryDTO.getTodoSeq());
 		if (findT.isPresent()){
