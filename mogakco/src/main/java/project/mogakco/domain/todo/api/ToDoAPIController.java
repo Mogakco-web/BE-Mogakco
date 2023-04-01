@@ -38,10 +38,15 @@ public class ToDoAPIController {
 		return toDoService.writeContentsOneToDoTap(writeContentsDTO);
 	}
 
-	@PutMapping
+	@PutMapping("/title")
 	public ResponseEntity<?> changeTitleTodo(@RequestBody ToDoDTO.ChangTitleDTO changTitleDTO){
 		ToDoResponseDTO responseDTO = toDoService.changeTitleTodo(changTitleDTO);
 		return new ResponseEntity<>(responseDTO,HttpStatus.OK);
+	}
+
+	@PutMapping("/category")
+	public ResponseEntity<?> changeCategoryTodo(@RequestBody ToDoDTO.ChangCategoryDTO changCategoryDTO){
+		return toDoService.changeCategoryTodo(changCategoryDTO);
 	}
 
 	@DeleteMapping

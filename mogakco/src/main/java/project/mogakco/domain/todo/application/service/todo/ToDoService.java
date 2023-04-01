@@ -20,4 +20,6 @@ public interface ToDoService {
 	ResponseEntity<?> getTodoListInfoByCategorySeq(Long categorySeq);
 
 	ResponseEntity<?> getTodoOneTapByTodoSeq(Long todoSeq);
+
+	ResponseEntity<?> changeCategoryTodo(ToDoDTO.ChangCategoryDTO changCategoryDTO);
 }

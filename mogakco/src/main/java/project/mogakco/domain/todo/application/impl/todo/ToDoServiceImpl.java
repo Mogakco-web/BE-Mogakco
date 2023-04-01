@@ -114,4 +114,15 @@ public class ToDoServiceImpl implements ToDoService {
 		}
 	}
 
+	@Override
+	public ResponseEntity<?> changeCategoryTodo(ToDoDTO.ChangCategoryDTO changCategoryDTO) {
+		Optional<ToDo> findT = toDoRepository.findById(changCategoryDTO.getTodoSeq());
+		if (findT.isPresent()){
+			ToDo changeTodo = findT.get().changeCategoryTodo(categoryService.getCategoryInfoBySeq(changCategoryDTO.getCategorySeq()));
+			return new ResponseEntity<>(changeTodo,HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>("없음",HttpStatus.BAD_REQUEST);
+		}
+	}
+
 }
