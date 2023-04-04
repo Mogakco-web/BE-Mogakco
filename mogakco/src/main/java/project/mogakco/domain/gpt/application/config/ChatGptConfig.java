@@ -3,7 +3,7 @@ package project.mogakco.domain.gpt.application.config;
 public class ChatGptConfig {
 	public static final String AUTHORIZATION = "Authorization";
 	public static final String BEARER = "Bearer ";
-	public static final String API_KEY = "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";
+	public static final String API_KEY = "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";
 	public static final String MODEL = "text-davinci-003";
 	public static final Integer MAX_TOKEN = 300;
 	public static final Double TEMPERATURE = 0.0;

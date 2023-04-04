@@ -12,8 +12,8 @@ import project.mogakco.domain.gpt.dto.request.ChatGptRequestDto;
 import project.mogakco.domain.gpt.dto.request.QuestionRequestDto;
 import project.mogakco.domain.gpt.dto.response.ChatGptResponseDto;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -34,7 +34,11 @@ public class GptServiceImpl implements GptService {
 				ChatGptConfig.URL,
 				chatGptRequestDtoHttpEntity,
 				ChatGptResponseDto.class);
-
+		ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(
+				ChatGptConfig.URL,
+				chatGptRequestDtoHttpEntity,
+				String.class);
+		System.out.println("Resopnse="+stringResponseEntity);
 		return responseEntity.getBody();
 	}
 
