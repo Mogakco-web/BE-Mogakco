@@ -33,6 +33,7 @@ public class RankingServiceImpl implements RankingService {
 	@Override
 	@Transactional
 	public void recodeTimeOfMemberRankingInit() {
+		rankingRedisRepository.deleteAll();
 		Map<MemberSocial,Long> rankScore=new HashMap<>();
 		LocalDate today = LocalDate.now();
 		LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
@@ -57,6 +58,7 @@ public class RankingServiceImpl implements RankingService {
 
 		int i=1;
 		for (MemberSocial m:sortedRankList){
+			System.out.println("User="+m.getNickname());
 			rankingRedisRepository.save(
 					RankingRedis.builder()
 							.userNickname(m.getNickname())
@@ -72,7 +74,14 @@ public class RankingServiceImpl implements RankingService {
 
 	@Override
 	public List<RankingRedis> getListInfoRanking() {
+		System.out.println("랭킹 리스트 불러오기");
 		List<RankingRedis> rankInfoList = (List<RankingRedis>) rankingRedisRepository.findAll();
+		if (rankInfoList.isEmpty()) System.out.println("리스트 비어있음");
+		else System.out.println("안빔");
+		System.out.println(rankInfoList.size());
+		for (RankingRedis r: rankInfoList){
+			System.out.println("rank="+r);
+		}
 		return rankInfoList.stream()
 				.sorted(Comparator.comparingInt(RankingRedis::getRank))
 				.collect(Collectors.toList());
