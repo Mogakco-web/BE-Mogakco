@@ -14,8 +14,13 @@ public class GptAPIController {
 
 	private final GptService gptService;
 
-	@PostMapping
+	/*@PostMapping
 	public ResponseEntity<?> gptInit(@RequestBody QuestionRequestDto questionRequestDto){
 		return new ResponseEntity<>(gptService.askQuestion(questionRequestDto), HttpStatus.OK);
+	}*/
+
+	@PostMapping
+	public ResponseEntity<?> gptChat(@RequestBody QuestionRequestDto questionRequestDto){
+		return new ResponseEntity<>(gptService.chatContent(questionRequestDto),HttpStatus.OK);
 	}
 }
