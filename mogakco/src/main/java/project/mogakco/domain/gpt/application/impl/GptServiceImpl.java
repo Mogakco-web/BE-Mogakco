@@ -22,7 +22,7 @@ public class GptServiceImpl implements GptService {
 
 	@Override
 	public GptChatResponseConfig chatContent(QuestionRequestDto questionRequestDto) {
-		Messages messages = new Messages(questionRequestDto.getContent());
+		Messages messages = new Messages("user",questionRequestDto.getContent());
 		Messages[] messagesArray= new Messages[]{messages};
 
 		return this.getResponse(

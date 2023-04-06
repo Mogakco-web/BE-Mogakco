@@ -6,11 +6,12 @@ import java.io.Serializable;
 
 @Getter
 public class Messages implements Serializable {
-	public static final String role = "user";
+	public String role;
 
 	public String content;
 
-	public Messages(String content) {
+	public Messages(String role,String content) {
+		this.role=role;
 		this.content=content;
 	}
 }
