@@ -3,7 +3,7 @@ package project.mogakco.domain.gpt.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.mogakco.domain.gpt.application.entity.Choice;
+import project.mogakco.domain.gpt.entity.Choice;
 
 import java.io.Serializable;
 import java.time.LocalDate;

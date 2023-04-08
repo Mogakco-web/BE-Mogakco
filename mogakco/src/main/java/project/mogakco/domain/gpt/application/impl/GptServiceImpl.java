@@ -6,10 +6,10 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import project.mogakco.domain.gpt.application.config.request.GptChatRequestConfig;
-import project.mogakco.domain.gpt.application.config.request.GptChatRequestDTO;
-import project.mogakco.domain.gpt.application.config.request.Messages;
-import project.mogakco.domain.gpt.application.config.response.GptChatResponseConfig;
+import project.mogakco.domain.gpt.config.request.GptChatRequestConfig;
+import project.mogakco.domain.gpt.config.request.GptChatRequestDTO;
+import project.mogakco.domain.gpt.config.request.Messages;
+import project.mogakco.domain.gpt.config.response.GptChatResponseConfig;
 import project.mogakco.domain.gpt.application.service.GptService;
 import project.mogakco.domain.gpt.dto.request.QuestionRequestDto;
 

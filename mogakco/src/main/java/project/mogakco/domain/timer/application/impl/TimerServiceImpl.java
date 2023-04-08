@@ -118,12 +118,10 @@ public class TimerServiceImpl implements TimerService {
 
 	private String caluculateResult(long diffRecode){
 		long hours = diffRecode / 3600;
-		diffRecode-=hours*3600;
-		long minute = diffRecode / 60;
-		diffRecode-=minute*60;
-		long second=diffRecode;
+		long minutes = (diffRecode % 3600) / 60;
+		long seconds = diffRecode % 60;
 
-		return hours+"시간"+minute+"분"+second+"초";
+		return String.format("%d시간 %d분 %d초", hours, minutes, seconds);
 	}
 
 	private String changeTimeFormatToString(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday){

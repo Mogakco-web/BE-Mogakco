@@ -1,4 +1,4 @@
-package project.mogakco.domain.gpt.application.entity;
+package project.mogakco.domain.gpt.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
