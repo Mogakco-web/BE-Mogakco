@@ -1,4 +1,4 @@
-package project.mogakco.domain.gpt.application.config.response;
+package project.mogakco.domain.gpt.config.response;
 
 import lombok.Getter;
 

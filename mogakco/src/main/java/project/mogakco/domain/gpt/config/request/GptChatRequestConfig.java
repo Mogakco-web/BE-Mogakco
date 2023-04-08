@@ -1,4 +1,4 @@
-package project.mogakco.domain.gpt.application.config.request;
+package project.mogakco.domain.gpt.config.request;
 
 import lombok.Getter;
 
@@ -15,6 +15,6 @@ public class GptChatRequestConfig implements Serializable {
 
 	public static final String MEDIA_TYPE = "application/json; charset=UTF-8";
 
-	public static final String API_KEY = "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";
+	public static final String API_KEY = "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";
 
 }

@@ -6,10 +6,11 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import project.mogakco.domain.gpt.application.config.request.GptChatRequestConfig;
-import project.mogakco.domain.gpt.application.config.request.GptChatRequestDTO;
-import project.mogakco.domain.gpt.application.config.request.Messages;
-import project.mogakco.domain.gpt.application.config.response.GptChatResponseConfig;
+import project.mogakco.domain.gpt.config.InitializeConfig;
+import project.mogakco.domain.gpt.config.request.GptChatRequestConfig;
+import project.mogakco.domain.gpt.config.request.GptChatRequestDTO;
+import project.mogakco.domain.gpt.config.request.Messages;
+import project.mogakco.domain.gpt.config.response.GptChatResponseConfig;
 import project.mogakco.domain.gpt.application.service.GptService;
 import project.mogakco.domain.gpt.dto.request.QuestionRequestDto;
 
@@ -20,12 +21,24 @@ import project.mogakco.domain.gpt.dto.request.QuestionRequestDto;
 public class GptServiceImpl implements GptService {
 	private static RestTemplate restTemplate = new RestTemplate();
 
+
 	@Override
 	public GptChatResponseConfig chatContent(QuestionRequestDto questionRequestDto) {
 		Messages messages = new Messages("user",questionRequestDto.getContent());
 		Messages[] messagesArray= new Messages[]{messages};
 
 		return this.getResponse(
+				this.buildHttpEntity(
+						new GptChatRequestDTO("gpt-3.5-turbo", messagesArray)
+				)
+		);
+	}
+
+	@Override
+	public void initializeRoleGpt(){
+		Messages messages = new Messages("user", InitializeConfig.content);
+		Messages[] messagesArray= new Messages[]{messages};
+		this.getResponse(
 				this.buildHttpEntity(
 						new GptChatRequestDTO("gpt-3.5-turbo", messagesArray)
 				)
