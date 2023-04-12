@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.member.entity.member.MemberSocial;
+import project.mogakco.domain.mypage.application.service.RewardMemberSocialCheckService;
 import project.mogakco.domain.timer.application.service.TimerService;
 import project.mogakco.domain.timer.dto.request.TimerRecodeDTO;
 import project.mogakco.domain.timer.dto.response.TimerResponseDTO;
@@ -34,11 +35,12 @@ public class TimerServiceImpl implements TimerService {
 
 	private final JPAQueryFactory jpaQueryFactory;
 
+	private final RewardMemberSocialCheckService rewardMemberSocialCheckService;
+
 	@Override
 	@Transactional
 	public ResponseEntity<?> recodeTimeToday(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday) {
 		MemberSocial findM = memberService.getMemberInfoByOAuthId(timerRecodeInfoToday.getOauthId());
-		System.out.println(timerRecodeInfoToday.getTimerCreDay());
 		Optional<Timer> findT = timerRepository.findByTimerCreDayAndMemberSocial(timerRecodeInfoToday.getTimerCreDay(), findM);
 		if (findT.isEmpty()) {
 			Timer t = timerRepository.save(
@@ -163,4 +165,18 @@ public class TimerServiceImpl implements TimerService {
 		return timerRepository.findAll();
 	}
 
+	/*private void getTimerReward(MemberSocial memberSocial){
+		switch (timerRepository.findByMemberSocial(memberSocial)
+				.get()
+				.size()){
+			case 1:
+				rewardMemberSocialCheckService.saveRewardMemberSocial("부서진 초시계(을)를 얻었다",memberSocial);
+				break;
+			case 50:
+				rewardMemberSocialCheckService.saveRewardMemberSocial("초시계(750G) 획득!",memberSocial);
+				break;
+			case 100:
+				rewardMemberSocialCheckService.saveRewardMemberSocial("");
+		}
+	}*/
 }
