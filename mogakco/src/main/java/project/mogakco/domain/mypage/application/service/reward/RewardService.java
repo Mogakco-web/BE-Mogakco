@@ -1,4 +1,4 @@
-package project.mogakco.domain.mypage.application.service;
+package project.mogakco.domain.mypage.application.service.reward;
 
 import org.springframework.http.ResponseEntity;
 import project.mogakco.domain.member.entity.member.MemberSocial;

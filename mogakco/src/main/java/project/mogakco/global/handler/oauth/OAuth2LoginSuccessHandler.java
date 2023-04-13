@@ -1,16 +1,14 @@
 package project.mogakco.global.handler.oauth;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import project.mogakco.domain.member.application.impl.MemberServiceImpl;
-import project.mogakco.domain.member.application.service.GithubSocialService;
 import project.mogakco.domain.member.entity.member.MemberSocial;
-import project.mogakco.domain.mypage.application.service.RewardMemberSocialCheckService;
-import project.mogakco.domain.mypage.application.service.RewardService;
+import project.mogakco.domain.mypage.application.service.reward.RewardMemberSocialCheckService;
+import project.mogakco.domain.mypage.application.service.reward.RewardService;
 import project.mogakco.domain.mypage.entity.RewardMemberSocial;
 import project.mogakco.domain.todo.application.service.category.CategoryService;
 import project.mogakco.global.application.jwt.JwtService;
