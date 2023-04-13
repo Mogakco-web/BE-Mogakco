@@ -91,6 +91,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 	private void rewardToNewbie(MemberSocial memberSocial){
 		Optional<RewardMemberSocial> findRM = rewardMemberSocialCheckService.getInfoRMByRNameAndM("뉴비", memberSocial);
 		if (findRM.isEmpty()){
+			System.out.println("뉴비!");
 			rewardService.initializeRewardService("oauth",memberSocial);
 		}
 	}

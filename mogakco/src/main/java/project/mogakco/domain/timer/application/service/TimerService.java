@@ -1,10 +1,10 @@
 package project.mogakco.domain.timer.application.service;
 
 import org.springframework.http.ResponseEntity;
+import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.timer.dto.request.TimerRecodeDTO;
 import project.mogakco.domain.timer.entity.Timer;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface TimerService {
@@ -19,4 +19,5 @@ public interface TimerService {
   
 	ResponseEntity<?> getDiffWeekInfo(String oauthId);
 
+	List<Timer> getTimerInfoListByMemberSocial(MemberSocial memberSocial);
 }
