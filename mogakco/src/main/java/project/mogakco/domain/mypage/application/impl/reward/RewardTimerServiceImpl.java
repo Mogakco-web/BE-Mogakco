@@ -1,4 +1,4 @@
-package project.mogakco.domain.mypage.application.impl;
+package project.mogakco.domain.mypage.application.impl.reward;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

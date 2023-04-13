@@ -1,4 +1,4 @@
-package project.mogakco.domain.mypage.application.impl;
+package project.mogakco.domain.mypage.application.impl.reward;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

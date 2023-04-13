@@ -160,14 +160,4 @@ public class TimerServiceImpl implements TimerService {
 		}
 	}
 
-	@Override
-	public List<Timer> getTimerInfoListByMemberSocial(MemberSocial memberSocial) {
-		return timerRepository.findByMemberSocial(memberSocial).get();
-	}
-
-	@Override
-	public List<Timer> getTimerAllInfo() {
-		return timerRepository.findAll();
-	}
-
 }

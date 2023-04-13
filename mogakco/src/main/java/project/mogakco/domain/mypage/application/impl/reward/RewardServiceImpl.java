@@ -1,4 +1,4 @@
-package project.mogakco.domain.mypage.application.impl;
+package project.mogakco.domain.mypage.application.impl.reward;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,19 +9,19 @@ import project.mogakco.domain.mypage.entity.Reward;
 import project.mogakco.domain.mypage.entity.RewardMemberSocial;
 import project.mogakco.domain.mypage.repo.RewardMemberSocialRepository;
 import project.mogakco.domain.mypage.repo.RewardRepository;
-import project.mogakco.domain.timer.application.service.TimerService;
-import project.mogakco.domain.timer.repo.TimerRepository;
+import project.mogakco.domain.timer.application.service.TimerCheckService;
+
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class RewardServiceImpl implements RewardService {
+public class RewardServiceImpl extends RewardService {
 
 	private final RewardMemberSocialRepository rewardMemberSocialRepository;
 
 	private final RewardRepository rewardRepository;
 
-	private final TimerRepository timerRepository;
+	private final TimerCheckService timerCheckService;
 
 	@Override
 	public void initializeRewardService(String type,MemberSocial memberSocial) {
@@ -36,8 +36,7 @@ public class RewardServiceImpl implements RewardService {
 
 	@Transactional
 	public void timerInitialize(MemberSocial memberSocial) {
-		switch (timerRepository.findByMemberSocial(memberSocial)
-				.get()
+		switch (timerCheckService.getTimerInfoListByMemberSocial(memberSocial)
 				.size()
 		){
 			case 1:
