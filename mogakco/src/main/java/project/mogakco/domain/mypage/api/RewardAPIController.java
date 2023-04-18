@@ -25,4 +25,7 @@ public class RewardAPIController {
 										getInfoRMListByM(onlyUseOauthId.getOauthId())
 										, HttpStatus.OK);
 	}
+
+	@PostMapping
+	public ResponseEntity<?> getRewardListInfo()
 }
