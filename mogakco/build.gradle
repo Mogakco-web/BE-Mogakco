@@ -113,6 +113,9 @@ dependencies {
 
     //redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    //FCM
+    implementation 'com.google.firebase:firebase-messaging:21.1.0'
 }
 
 test {
