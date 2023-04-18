@@ -40,6 +40,11 @@ public class ToDo extends BaseEntity {
 		return this;
 	}
 
+	public ToDo changeCategoryTodo(Category category){
+		this.category=category;
+		return this;
+	}
+
 	public ToDoResponseDTO toDTO(){
 		return ToDoResponseDTO
 				.builder()

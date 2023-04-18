@@ -3,6 +3,7 @@ package project.mogakco.domain.member.entity.member;
 import lombok.*;
 import project.mogakco.domain.member.dto.MemberDTO;
 import project.mogakco.domain.member.dto.MemberResponseDTO;
+import project.mogakco.domain.mypage.entity.RewardMemberSocial;
 import project.mogakco.domain.timer.entity.Timer;
 import project.mogakco.domain.todo.entity.Category;
 import project.mogakco.domain.todo.entity.ToDo;
@@ -54,6 +55,9 @@ public class MemberSocial extends BaseEntity {
 
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial")
 	public List<Category> categories;
+
+	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial",cascade = CascadeType.ALL)
+	public List<RewardMemberSocial> rewardMemberSocials;
 
 	public MemberSocial updateOAuthInfo(MemberDTO.UpdateOAuthUser updateOAuthUser){
 		this.authToken=updateOAuthUser.getAuthToken();

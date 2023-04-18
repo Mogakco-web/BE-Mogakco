@@ -46,6 +46,6 @@ public class CategoryAPIController {
 
 	@GetMapping
 	public ResponseEntity<?> getCategoryInfoBy(@PathParam("categorySeq")Long categorySeq){
-		return categoryService.getCategoryInfoBySeq(categorySeq);
+		return new ResponseEntity<>(categoryService.getCategoryInfoBySeq(categorySeq).toDTO(),HttpStatus.OK);
 	}
 }

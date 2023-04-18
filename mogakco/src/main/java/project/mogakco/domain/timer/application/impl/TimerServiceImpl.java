@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.member.entity.member.MemberSocial;
+import project.mogakco.domain.mypage.application.service.reward.RewardService;
 import project.mogakco.domain.timer.application.service.TimerService;
 import project.mogakco.domain.timer.dto.request.TimerRecodeDTO;
 import project.mogakco.domain.timer.dto.response.TimerResponseDTO;
@@ -20,7 +21,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Log4j2
@@ -34,11 +34,12 @@ public class TimerServiceImpl implements TimerService {
 
 	private final JPAQueryFactory jpaQueryFactory;
 
+	private final RewardService rewardService;
+
 	@Override
 	@Transactional
 	public ResponseEntity<?> recodeTimeToday(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday) {
 		MemberSocial findM = memberService.getMemberInfoByOAuthId(timerRecodeInfoToday.getOauthId());
-		System.out.println(timerRecodeInfoToday.getTimerCreDay());
 		Optional<Timer> findT = timerRepository.findByTimerCreDayAndMemberSocial(timerRecodeInfoToday.getTimerCreDay(), findM);
 		if (findT.isEmpty()) {
 			Timer t = timerRepository.save(
@@ -50,6 +51,7 @@ public class TimerServiceImpl implements TimerService {
 							.build()
 			);
 			TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
+			rewardService.initializeRewardService("timer",findM);
 			return new ResponseEntity<>(recodeTime, HttpStatus.OK);
 		} else {
 			log.info("중복저장");
@@ -118,12 +120,10 @@ public class TimerServiceImpl implements TimerService {
 
 	private String caluculateResult(long diffRecode){
 		long hours = diffRecode / 3600;
-		diffRecode-=hours*3600;
-		long minute = diffRecode / 60;
-		diffRecode-=minute*60;
-		long second=diffRecode;
+		long minutes = (diffRecode % 3600) / 60;
+		long seconds = diffRecode % 60;
 
-		return hours+"시간"+minute+"분"+second+"초";
+		return String.format("%d시간 %d분 %d초", hours, minutes, seconds);
 	}
 
 	private String changeTimeFormatToString(TimerRecodeDTO.timerRecodeInfoToday timerRecodeInfoToday){
@@ -158,11 +158,6 @@ public class TimerServiceImpl implements TimerService {
 			}
 			return new ResponseEntity<>(diffWeekInfoListToDTO,HttpStatus.OK);
 		}
-	}
-
-	@Override
-	public List<Timer> getTimerAllInfo() {
-		return timerRepository.findAll();
 	}
 
 }

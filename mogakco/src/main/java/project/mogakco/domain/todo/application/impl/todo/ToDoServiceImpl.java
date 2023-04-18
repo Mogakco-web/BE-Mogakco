@@ -16,7 +16,9 @@ import project.mogakco.domain.todo.entity.Category;
 import project.mogakco.domain.todo.entity.ToDo;
 import project.mogakco.domain.todo.repo.ToDoRepository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -89,6 +91,39 @@ public class ToDoServiceImpl implements ToDoService {
 				);
 
 		return findT.map(toDo -> toDo.changeTitleTodo(changTitleDTO.getChangeTitle())).orElse(null).toDTO();
+	}
+
+	@Override
+	public ResponseEntity<?> getTodoListInfoByCategorySeq(Long categorySeq) {
+		List<ToDoResponseDTO> todoList = categoryService.getCategoryInfoBySeq(categorySeq)
+				.getToDo()
+				.stream()
+				.map(ToDo::toDTO)
+				.collect(Collectors.toList());
+
+		return new ResponseEntity<>(todoList,HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<?> getTodoOneTapByTodoSeq(Long todoSeq) {
+		Optional<ToDo> findT = toDoRepository.findById(todoSeq);
+		if (findT.isPresent()){
+			return new ResponseEntity<>(findT.get().toDTO(),HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>("없음",HttpStatus.OK);
+		}
+	}
+
+	@Override
+	@Transactional
+	public ResponseEntity<?> changeCategoryTodo(ToDoDTO.ChangCategoryDTO changCategoryDTO) {
+		Optional<ToDo> findT = toDoRepository.findById(changCategoryDTO.getTodoSeq());
+		if (findT.isPresent()){
+			ToDo changeTodo = findT.get().changeCategoryTodo(categoryService.getCategoryInfoBySeq(changCategoryDTO.getCategorySeq()));
+			return new ResponseEntity<>(changeTodo.toDTO(),HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>("없음",HttpStatus.BAD_REQUEST);
+		}
 	}
 
 }

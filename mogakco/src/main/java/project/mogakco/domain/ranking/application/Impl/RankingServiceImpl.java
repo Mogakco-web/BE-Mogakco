@@ -9,6 +9,7 @@ import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.ranking.application.service.RankingService;
 import project.mogakco.domain.ranking.entity.redis.RankingRedis;
 import project.mogakco.domain.ranking.repo.redis.RankingRedisRepository;
+import project.mogakco.domain.timer.application.service.TimerCheckService;
 import project.mogakco.domain.timer.application.service.TimerService;
 import project.mogakco.domain.timer.entity.Timer;
 
@@ -26,9 +27,9 @@ public class RankingServiceImpl implements RankingService {
 
 	private final JPAQueryFactory jpaQueryFactory;
 
-	private final TimerService timerService;
-
 	private final RankingRedisRepository rankingRedisRepository;
+
+	private final TimerCheckService timerCheckService;
 
 	@Override
 	@Transactional
@@ -38,7 +39,7 @@ public class RankingServiceImpl implements RankingService {
 		LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 		LocalDate endOfWeek = startOfWeek.plusDays(6);
 
-		List<Timer> weekTimerList = timerService.getTimerAllInfo()
+		List<Timer> weekTimerList = timerCheckService.getTimerAllInfo()
 				.stream()
 				.filter(timer -> timer.getTimerCreDay().isAfter(startOfWeek.minusDays(1))
 						&&

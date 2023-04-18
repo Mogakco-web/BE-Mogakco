@@ -107,12 +107,12 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public ResponseEntity<?> getCategoryInfoBySeq(Long categorySeq) {
+	public Category getCategoryInfoBySeq(Long categorySeq) {
 		Optional<Category> findC = categoryRepository.findById(categorySeq);
 		if (findC.isPresent()){
-			return new ResponseEntity<>(findC.get().toDTO(),HttpStatus.OK);
+			return findC.get();
 		}else {
-			return new ResponseEntity<>("찾는 데이터 없음",HttpStatus.OK);
+			return null;
 		}
 	}
 

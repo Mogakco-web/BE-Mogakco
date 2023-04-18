@@ -10,6 +10,8 @@ import project.mogakco.domain.todo.dto.request.ToDoDTO;
 import project.mogakco.domain.todo.dto.response.ToDoResponseDTO;
 import project.mogakco.domain.todo.entity.ToDo;
 
+import javax.websocket.server.PathParam;
+
 @RestController
 @RequiredArgsConstructor
 @Log4j2
@@ -36,10 +38,15 @@ public class ToDoAPIController {
 		return toDoService.writeContentsOneToDoTap(writeContentsDTO);
 	}
 
-	@PutMapping
+	@PutMapping("/title")
 	public ResponseEntity<?> changeTitleTodo(@RequestBody ToDoDTO.ChangTitleDTO changTitleDTO){
 		ToDoResponseDTO responseDTO = toDoService.changeTitleTodo(changTitleDTO);
 		return new ResponseEntity<>(responseDTO,HttpStatus.OK);
+	}
+
+	@PutMapping("/category")
+	public ResponseEntity<?> changeCategoryTodo(@RequestBody ToDoDTO.ChangCategoryDTO changCategoryDTO){
+		return toDoService.changeCategoryTodo(changCategoryDTO);
 	}
 
 	@DeleteMapping
@@ -47,4 +54,12 @@ public class ToDoAPIController {
 		return toDoService.eliminateOneToDoTap(eliminateDTO);
 	}
 
+	@GetMapping("/listInfo")
+	public ResponseEntity<?> getInfoTodoListByCategorySeq(@PathParam("categorySeq")Long categorySeq){
+		return toDoService.getTodoListInfoByCategorySeq(categorySeq);
+	}
+	@GetMapping("/tapInfo")
+	public ResponseEntity<?> getInfoTodoOneTapByTodoSeq(@PathParam("todoSeq")Long todoSeq){
+		return toDoService.getTodoOneTapByTodoSeq(todoSeq);
+	}
 }

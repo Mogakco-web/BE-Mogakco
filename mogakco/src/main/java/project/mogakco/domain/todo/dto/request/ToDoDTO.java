@@ -42,4 +42,10 @@ public class ToDoDTO {
 		private String oauthId;
 		private String changeTitle;
 	}
+
+	@Getter
+	public static class ChangCategoryDTO{
+		private Long todoSeq;
+		private Long categorySeq;
+	}
 }
