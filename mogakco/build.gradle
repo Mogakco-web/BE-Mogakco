@@ -115,6 +115,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     //FCM
+    // https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
+    implementation 'com.google.firebase:firebase-admin:7.1.1'
     implementation 'com.google.firebase:firebase-messaging:21.1.0'
 }
 
