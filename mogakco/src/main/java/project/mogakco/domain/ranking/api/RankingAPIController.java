@@ -30,11 +30,6 @@ public class RankingAPIController {
 
 	@GetMapping
 	public ResponseEntity<?> getRankingInfoList() {
-		List<RankingRedis> listInfoRanking = rankingService.getListInfoRanking();
-		if (listInfoRanking.isEmpty()) {
-			return new ResponseEntity<>("아무도 시간 기록없음", HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(listInfoRanking, HttpStatus.OK);
-		}
+		return new ResponseEntity<>(rankingService.getListInfoRanking(), HttpStatus.OK);
 	}
 }
