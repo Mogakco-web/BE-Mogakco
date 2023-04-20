@@ -19,4 +19,10 @@ public class MyPageDTO {
 		private String oauthId;
 		private LocalDate nowDate;
 	}
+
+	@Getter
+	public static class attachReward{
+		private String oauthId;
+		private Long rewardSeq;
+	}
 }

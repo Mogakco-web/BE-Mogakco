@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import project.mogakco.domain.mypage.application.service.reward.RewardMemberSocialCheckService;
+import project.mogakco.domain.mypage.application.service.reward.RewardService;
 import project.mogakco.domain.mypage.dto.request.RewardRequestDTO;
 
 @RestController
@@ -19,6 +20,8 @@ public class RewardAPIController {
 
 	private final RewardMemberSocialCheckService rewardMemberSocialCheckService;
 
+	private final RewardService rewardService;
+
 	@PostMapping
 	public ResponseEntity<?> getRewardInfo(@RequestBody RewardRequestDTO.OnlyUseOauthId onlyUseOauthId) {
 		return new ResponseEntity<>(rewardMemberSocialCheckService.
@@ -27,5 +30,7 @@ public class RewardAPIController {
 	}
 
 	@PostMapping
-	public ResponseEntity<?> getRewardListInfo()
+	public ResponseEntity<?> getRewardListInfo(){
+		return new ResponseEntity<>(rewardService.getListInfoRewardList(),HttpStatus.OK);
+	}
 }

@@ -22,4 +22,10 @@ public class RewardMemberSocial {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_seq")
 	private MemberSocial memberSocial;
+
+	private Long attachReward;
+
+	public void attachTheReward(Long reward){
+		this.attachReward=reward;
+	}
 }

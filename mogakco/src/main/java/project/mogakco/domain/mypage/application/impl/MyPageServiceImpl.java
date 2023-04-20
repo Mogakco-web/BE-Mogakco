@@ -7,9 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.member.entity.member.MemberSocial;
-import project.mogakco.domain.mypage.application.service.MyPageService;
 import project.mogakco.domain.mypage.dto.MyPageDTO;
 import project.mogakco.domain.mypage.dto.response.MyPageResponseDTO;
 import project.mogakco.domain.timer.entity.QTimer;
@@ -63,6 +61,11 @@ public class MyPageServiceImpl implements MyPageService {
 				.fetch();
 
 		return checkTimerUseContinue(fetch);
+	}
+
+	@Override
+	public ResponseEntity<?> attachReward() {
+		return null;
 	}
 
 	private ResponseEntity<?> checkTimerUseContinue(List<Timer> fetchResult){

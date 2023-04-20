@@ -27,4 +27,9 @@ public class MyPageAPIController {
 	public ResponseEntity<?> getMemberTimerInfoContinue(@RequestBody MyPageDTO.continueTimer continueTimer){
 		return myPageService.continueTimerDay(continueTimer);
 	}
+
+	/*@PostMapping("/attachReward")
+	public ResponseEntity<?> attachRewardAtMyPage(){
+		return
+	}*/
 }

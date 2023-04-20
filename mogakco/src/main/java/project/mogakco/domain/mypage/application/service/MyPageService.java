@@ -7,4 +7,6 @@ public interface MyPageService {
 	ResponseEntity<?> getTotalTimerUse(MyPageDTO.totalTimerUse totalTimerUse);
 
 	ResponseEntity<?> continueTimerDay(MyPageDTO.continueTimer continueTimer);
+
+	ResponseEntity<?> attachReward();
 }
