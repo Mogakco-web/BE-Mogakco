@@ -36,7 +36,7 @@ public class RewardServiceImpl extends RewardService {
 
 	@PostConstruct
 	public void initializeReward(){
-		initializeRewardList();
+		dummyRewardList=initializeRewardList();
 	}
 
 	@Override
@@ -101,18 +101,19 @@ public class RewardServiceImpl extends RewardService {
 		return new ResponseEntity<>(dummyRewardList, HttpStatus.OK);
 	}
 
-	private void initializeRewardList(){
-		LinkedList<String> name_list= (LinkedList<String>) Arrays.asList("뉴비","부서진 초시계(을)를 얻었다",
-				"초시계(750G) 획득!","존야의 모래시계","시간의 지배자");
+	private List<DummyReward> initializeRewardList(){
+		LinkedList<String> name_list= new LinkedList<>(Arrays.asList("뉴비","부서진 초시계(을)를 얻었다",
+				"초시계(750G) 획득!","존야의 모래시계","시간의 지배자"));
 
-		LinkedList<String> des_list=(LinkedList<String>) Arrays.asList("모각코에 당도한 것을 환영하오 낯선이여",
-				"장비를 정지합니다","룬 : 완벽한 초시계","김동준의 가호가 함께합니다","따이무 쓰또쁘");
-
+		LinkedList<String> des_list=new LinkedList<>(Arrays.asList("모각코에 당도한 것을 환영하오 낯선이여",
+				"장비를 정지합니다","룬 : 완벽한 초시계","김동준의 가호가 함께합니다","따이무 쓰또쁘"));
+		List<DummyReward> dummyList=new ArrayList<>();
 		for (int i=0;i<name_list.size();i++){
-			dummyRewardList.add(DummyReward.builder()
+			dummyList.add(DummyReward.builder()
 							.name(name_list.get(i))
 							.description(des_list.get(i))
 					.build());
 		}
+		return dummyList;
 	}
 }
