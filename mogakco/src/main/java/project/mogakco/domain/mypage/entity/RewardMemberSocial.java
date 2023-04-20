@@ -23,9 +23,5 @@ public class RewardMemberSocial {
 	@JoinColumn(name = "member_seq")
 	private MemberSocial memberSocial;
 
-	private Long attachReward;
 
-	public void attachTheReward(Long reward){
-		this.attachReward=reward;
-	}
 }

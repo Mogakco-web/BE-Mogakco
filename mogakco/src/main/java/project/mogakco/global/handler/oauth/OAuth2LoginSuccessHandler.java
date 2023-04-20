@@ -75,17 +75,23 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		jwtService.updateRefreshToken((String) oAuth2User.getAttributes().get("login"), refreshToken);
 	}
 
-	private MemberSocial initializeCategorySettings(String nickname){
+	private void initializeCategorySettings(String nickname){
 		MemberSocial findM = memberService.getMemberInfoByNickname(nickname);
+		isNewbie(findM);
 		if (categoryService.getCategoryInfoNameAndMember(findM)){
 			log.info("category settings");
 		}else {
 			categoryService.initializeBasicCategory(findM);
+		}
+	}
+
+
+	private void isNewbie(MemberSocial findM){
+		if(rewardMemberSocialCheckService.getInfoRMListByM(findM).isEmpty()){
 			rewardToNewbie(findM);
 		}
-
-		return findM;
 	}
+
 	private void rewardToNewbie(MemberSocial memberSocial){
 		Optional<RewardMemberSocial> findRM = rewardMemberSocialCheckService.getInfoRMByRNameAndM("뉴비", memberSocial);
 		if (findRM.isEmpty()){

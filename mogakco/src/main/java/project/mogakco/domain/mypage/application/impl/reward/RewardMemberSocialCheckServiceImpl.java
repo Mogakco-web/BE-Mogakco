@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.mypage.application.service.reward.RewardMemberSocialCheckService;
+import project.mogakco.domain.mypage.dto.response.RewardDTO;
 import project.mogakco.domain.mypage.entity.QReward;
 import project.mogakco.domain.mypage.entity.QRewardMemberSocial;
 import project.mogakco.domain.mypage.entity.Reward;
@@ -16,6 +17,7 @@ import project.mogakco.domain.mypage.repo.RewardMemberSocialRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -36,7 +38,7 @@ public class RewardMemberSocialCheckServiceImpl implements RewardMemberSocialChe
 	}
 
 	@Override
-	public List<Reward> getInfoRMListByM(String oauthId) {
+	public List<RewardDTO.listReward> getInfoRMListByOId(String oauthId) {
 		MemberSocial memberSocial = memberService.getMemberInfoByOAuthId(oauthId);
 		QRewardMemberSocial qRewardMemberSocial=QRewardMemberSocial.rewardMemberSocial;
 		QReward qReward=QReward.reward;
@@ -44,7 +46,14 @@ public class RewardMemberSocialCheckServiceImpl implements RewardMemberSocialChe
 		return jpaQueryFactory.select(qReward)
 				.from(qRewardMemberSocial)
 				.where(qRewardMemberSocial.memberSocial.eq(memberSocial))
-				.fetch();
+				.stream()
+				.map(Reward::toDTO)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<RewardMemberSocial> getInfoRMListByM(MemberSocial memberSocial) {
+		return rewardMemberSocialRepository.findByMemberSocial(memberSocial);
 	}
 
 }

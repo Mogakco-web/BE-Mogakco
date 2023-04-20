@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class MyPageDTO {
 
 	@Getter
-	public static class totalTimerUse{
+	public static class onlyUseOauthId {
 		private String oauthId;
 	}
 

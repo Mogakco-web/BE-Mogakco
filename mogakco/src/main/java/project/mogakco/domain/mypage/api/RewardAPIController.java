@@ -22,7 +22,7 @@ public class RewardAPIController {
 	@PostMapping
 	public ResponseEntity<?> getRewardInfo(@RequestBody RewardRequestDTO.OnlyUseOauthId onlyUseOauthId) {
 		return new ResponseEntity<>(rewardMemberSocialCheckService.
-										getInfoRMListByM(onlyUseOauthId.getOauthId())
+				getInfoRMListByOId(onlyUseOauthId.getOauthId())
 										, HttpStatus.OK);
 	}
 

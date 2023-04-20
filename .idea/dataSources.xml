@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="mogakco@mogakco.c9d71oyl8as0.ap-northeast-2.rds.amazonaws.com" uuid="2bb9c9ca-546c-4ba9-b6fc-ce23e2094372">
+      <driver-ref>mariadb</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mariadb://mogakco.c9d71oyl8as0.ap-northeast-2.rds.amazonaws.com:3306/mogakco?useUnicode=yes&amp;characterEncoding=UTF-8</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+  </component>
+</project>
