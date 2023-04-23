@@ -108,6 +108,8 @@ dependencies {
 
     //redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    implementation 'com.google.firebase:firebase-admin:7.1.1'
 }
 
 test {

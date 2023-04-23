@@ -1,4 +1,3 @@
-/*
 package project.mogakco.global.application.fcm.impl;
 
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -15,4 +14,3 @@ public class FCMServiceImpl implements FCMService {
 		FirebaseMessaging.getInstance().sendAsync(message);
 	}
 }
-*/
