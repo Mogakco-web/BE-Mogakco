@@ -13,6 +13,8 @@ import project.mogakco.domain.mypage.entity.RewardMemberSocial;
 import project.mogakco.domain.mypage.repo.RewardMemberSocialRepository;
 import project.mogakco.domain.mypage.repo.RewardRepository;
 import project.mogakco.domain.timer.application.service.TimerCheckService;
+import project.mogakco.global.application.fcm.service.FCMService;
+import project.mogakco.global.config.RewardConfig;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -33,6 +35,9 @@ public class RewardServiceImpl extends RewardService {
 	private final TimerCheckService timerCheckService;
 
 	private static List<DummyReward> dummyRewardList;
+
+	private final FCMService fcmService;
+
 
 	@PostConstruct
 	public void initializeReward(){
@@ -58,30 +63,31 @@ public class RewardServiceImpl extends RewardService {
 				.size()
 		){
 			case 1:
-				saveRewardMemberSocial(saveOnlyReward("부서진 초시계(을)를 얻었다",
-						"장비를 정지합니다"),memberSocial);
+				saveRewardMemberSocial(saveOnlyReward(RewardConfig.TimerOne.title,
+						RewardConfig.TimerOne.description),memberSocial);
 				break;
 			case 50:
-				saveRewardMemberSocial(saveOnlyReward("초시계(750G) 획득!",
-						"룬 : 완벽한 초시계"),memberSocial);
+				saveRewardMemberSocial(saveOnlyReward(RewardConfig.TimerFifty.title,
+						RewardConfig.TimerFifty.description),memberSocial);
 				break;
 			case 100:
-				saveRewardMemberSocial(saveOnlyReward("존야의 모래시계",
-						"강민의 가호가 함께합니다"),memberSocial);
+				saveRewardMemberSocial(saveOnlyReward(RewardConfig.TimerHundred.title,
+						RewardConfig.TimerHundred.description),memberSocial);
 				break;
 			case 500:
-				saveRewardMemberSocial(saveOnlyReward("시간의 지배자",
-						"따이무 쓰또쁘"),memberSocial);
+				saveRewardMemberSocial(saveOnlyReward(RewardConfig.TimerFHundred.title,
+						RewardConfig.TimerFHundred.description),memberSocial);
 				break;
 		}
 	}
 
 	@Transactional
 	public void oauthInitialize(MemberSocial memberSocial){
-		saveRewardMemberSocial(saveOnlyReward("뉴비","모각코에 당도한 것을 환영하오 낯선이여"), memberSocial);
+		saveRewardMemberSocial(saveOnlyReward(RewardConfig.Newbie.title,RewardConfig.Newbie.description), memberSocial);
 	}
 
 	public Reward saveOnlyReward(String reward_name,String reward_description){
+		messagingToClientReward(reward_description,reward_description);
 		return rewardRepository.save(
 				Reward.builder()
 						.name(reward_name)
@@ -89,6 +95,10 @@ public class RewardServiceImpl extends RewardService {
 						.build()
 		);
 
+	}
+
+	private void messagingToClientReward(String title,String contents){
+		fcmService.sendNotificationReward(title,contents);
 	}
 
 	@Transactional
@@ -107,11 +117,9 @@ public class RewardServiceImpl extends RewardService {
 	}
 
 	private List<DummyReward> initializeRewardList(){
-		LinkedList<String> name_list= new LinkedList<>(Arrays.asList("뉴비","부서진 초시계(을)를 얻었다",
-				"초시계(750G) 획득!","존야의 모래시계","시간의 지배자"));
+		LinkedList<String> name_list= (LinkedList<String>) RewardConfig.getTitles();
 
-		LinkedList<String> des_list=new LinkedList<>(Arrays.asList("모각코에 당도한 것을 환영하오 낯선이여",
-				"장비를 정지합니다","룬 : 완벽한 초시계","강민의 가호가 함께합니다","따이무 쓰또쁘"));
+		LinkedList<String> des_list= (LinkedList<String>) RewardConfig.getDescriptions();
 		List<DummyReward> dummyList=new ArrayList<>();
 		for (int i=0;i<name_list.size();i++){
 			dummyList.add(DummyReward.builder()

@@ -11,6 +11,7 @@ import project.mogakco.domain.mypage.application.service.reward.RewardMemberSoci
 import project.mogakco.domain.mypage.application.service.reward.RewardService;
 import project.mogakco.domain.mypage.entity.RewardMemberSocial;
 import project.mogakco.domain.todo.application.service.category.CategoryService;
+import project.mogakco.global.application.fcm.service.FCMService;
 import project.mogakco.global.application.jwt.JwtService;
 import project.mogakco.global.domain.entity.oauth.CustomOAuth2User;
 
@@ -30,6 +31,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 	private final MemberServiceImpl memberService;
 	private final RewardMemberSocialCheckService rewardMemberSocialCheckService;
 	private final RewardService rewardService;
+	private final FCMService fcmService;
 //    private final UserRepository userRepository;
 
 	@Override
@@ -56,7 +58,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 			return;
 //			}
 		} catch (Exception e) {
-			System.out.println("oauth Erro지금 널 만나러 갈게r");
+			System.out.println("oauth Error");
 			throw e;
 		}
 
