@@ -38,4 +38,12 @@ public class MemberResponseDTO {
 
 		private String member_imgUrl;
 	}
+
+	@Getter
+	@Builder
+	public static class RewardAttachDTO{
+		private Long member_seq;
+		private String nickname;
+		private Long rewardSeq;
+	}
 }

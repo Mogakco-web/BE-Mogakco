@@ -6,9 +6,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import project.mogakco.domain.member.application.impl.MemberServiceImpl;
-import project.mogakco.domain.member.application.service.GithubSocialService;
 import project.mogakco.domain.member.entity.member.MemberSocial;
+import project.mogakco.domain.mypage.application.service.reward.RewardMemberSocialCheckService;
+import project.mogakco.domain.mypage.application.service.reward.RewardService;
+import project.mogakco.domain.mypage.entity.RewardMemberSocial;
 import project.mogakco.domain.todo.application.service.category.CategoryService;
+import project.mogakco.global.application.fcm.service.FCMService;
 import project.mogakco.global.application.jwt.JwtService;
 import project.mogakco.global.domain.entity.oauth.CustomOAuth2User;
 
@@ -16,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 @Log4j2
 @Component
@@ -23,9 +27,11 @@ import java.io.IOException;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 	private final JwtService jwtService;
-	private final GithubSocialService githubSocialService;
 	private final CategoryService categoryService;
 	private final MemberServiceImpl memberService;
+	private final RewardMemberSocialCheckService rewardMemberSocialCheckService;
+	private final RewardService rewardService;
+	private final FCMService fcmService;
 //    private final UserRepository userRepository;
 
 	@Override
@@ -71,14 +77,28 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		jwtService.updateRefreshToken((String) oAuth2User.getAttributes().get("login"), refreshToken);
 	}
 
-	private MemberSocial initializeCategorySettings(String nickname){
+	private void initializeCategorySettings(String nickname){
 		MemberSocial findM = memberService.getMemberInfoByNickname(nickname);
+		isNewbie(findM);
 		if (categoryService.getCategoryInfoNameAndMember(findM)){
 			log.info("category settings");
 		}else {
 			categoryService.initializeBasicCategory(findM);
 		}
+	}
 
-		return findM;
+
+	private void isNewbie(MemberSocial findM){
+		if(rewardMemberSocialCheckService.getInfoRMListByM(findM).isEmpty()){
+			rewardToNewbie(findM);
+		}
+	}
+
+	private void rewardToNewbie(MemberSocial memberSocial){
+		Optional<RewardMemberSocial> findRM = rewardMemberSocialCheckService.getInfoRMByRNameAndM("뉴비", memberSocial);
+		if (findRM.isEmpty()){
+			System.out.println("뉴비!");
+			rewardService.initializeRewardService("oauth",memberSocial);
+		}
 	}
 }
