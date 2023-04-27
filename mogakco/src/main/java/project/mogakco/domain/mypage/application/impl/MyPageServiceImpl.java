@@ -10,8 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.mypage.application.service.MyPageService;
+import project.mogakco.domain.mypage.application.service.reward.RewardMemberSocialCheckService;
 import project.mogakco.domain.mypage.dto.MyPageDTO;
 import project.mogakco.domain.mypage.dto.response.MyPageResponseDTO;
+import project.mogakco.domain.mypage.repo.RewardRepository;
 import project.mogakco.domain.timer.entity.QTimer;
 import project.mogakco.domain.timer.entity.Timer;
 
@@ -28,8 +30,12 @@ public class MyPageServiceImpl implements MyPageService {
 
 	private final MemberServiceImpl memberService;
 
+	private final RewardMemberSocialCheckService rewardMemberSocialCheckService;
+
+	private final RewardRepository rewardRepository;
+
 	@Override
-	public ResponseEntity<?> getTotalTimerUse(MyPageDTO.totalTimerUse totalTimerUse) {
+	public ResponseEntity<?> getTotalTimerUse(MyPageDTO.onlyUseOauthId totalTimerUse) {
 		MemberSocial findM = memberService.getMemberInfoByOAuthId(totalTimerUse.getOauthId());
 		QTimer timer = QTimer.timer;
 		Long memberOfTotal = jpaQueryFactory.select(timer.day_of_totalTime.sum())
@@ -63,6 +69,19 @@ public class MyPageServiceImpl implements MyPageService {
 				.fetch();
 
 		return checkTimerUseContinue(fetch);
+	}
+
+	@Override
+	@Transactional
+	public ResponseEntity<?> attachReward(MyPageDTO.attachReward attachReward) {
+		return new ResponseEntity<>(memberService.getMemberInfoByOAuthId(attachReward.getOauthId())
+				.attachTheReward(attachReward.getRewardSeq())
+				.toAttachRewardDTO(),HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<?> getInfoByRewardSeq(Long rewardSeq) {
+		return new ResponseEntity<>(rewardRepository.findById(rewardSeq).get().toCheckDTO(),HttpStatus.OK);
 	}
 
 	private ResponseEntity<?> checkTimerUseContinue(List<Timer> fetchResult){

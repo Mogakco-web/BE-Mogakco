@@ -59,6 +59,13 @@ public class MemberSocial extends BaseEntity {
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberSocial",cascade = CascadeType.ALL)
 	public List<RewardMemberSocial> rewardMemberSocials;
 
+	private Long attachReward;
+
+	public MemberSocial attachTheReward(Long reward){
+		this.attachReward=reward;
+		return this;
+	}
+
 	public MemberSocial updateOAuthInfo(MemberDTO.UpdateOAuthUser updateOAuthUser){
 		this.authToken=updateOAuthUser.getAuthToken();
 		this.member_imgUrl=updateOAuthUser.getImgUrl();
@@ -96,6 +103,15 @@ public class MemberSocial extends BaseEntity {
 				.member_seq(member_seq)
 				.nickname(nickname)
 				.member_imgUrl(member_imgUrl)
+				.build();
+	}
+
+	public MemberResponseDTO.RewardAttachDTO toAttachRewardDTO(){
+		return MemberResponseDTO.RewardAttachDTO
+				.builder()
+				.member_seq(member_seq)
+				.nickname(nickname)
+				.rewardSeq(attachReward)
 				.build();
 	}
 }

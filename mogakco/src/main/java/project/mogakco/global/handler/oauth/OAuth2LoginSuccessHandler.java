@@ -11,6 +11,7 @@ import project.mogakco.domain.mypage.application.service.reward.RewardMemberSoci
 import project.mogakco.domain.mypage.application.service.reward.RewardService;
 import project.mogakco.domain.mypage.entity.RewardMemberSocial;
 import project.mogakco.domain.todo.application.service.category.CategoryService;
+import project.mogakco.global.application.fcm.service.FCMService;
 import project.mogakco.global.application.jwt.JwtService;
 import project.mogakco.global.domain.entity.oauth.CustomOAuth2User;
 
@@ -30,6 +31,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 	private final MemberServiceImpl memberService;
 	private final RewardMemberSocialCheckService rewardMemberSocialCheckService;
 	private final RewardService rewardService;
+	private final FCMService fcmService;
 //    private final UserRepository userRepository;
 
 	@Override
@@ -56,7 +58,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 			return;
 //			}
 		} catch (Exception e) {
-			System.out.println("oauth Erro지금 널 만나러 갈게r");
+			System.out.println("oauth Error");
 			throw e;
 		}
 
@@ -75,17 +77,23 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		jwtService.updateRefreshToken((String) oAuth2User.getAttributes().get("login"), refreshToken);
 	}
 
-	private MemberSocial initializeCategorySettings(String nickname){
+	private void initializeCategorySettings(String nickname){
 		MemberSocial findM = memberService.getMemberInfoByNickname(nickname);
+		isNewbie(findM);
 		if (categoryService.getCategoryInfoNameAndMember(findM)){
 			log.info("category settings");
 		}else {
 			categoryService.initializeBasicCategory(findM);
+		}
+	}
+
+
+	private void isNewbie(MemberSocial findM){
+		if(rewardMemberSocialCheckService.getInfoRMListByM(findM).isEmpty()){
 			rewardToNewbie(findM);
 		}
-
-		return findM;
 	}
+
 	private void rewardToNewbie(MemberSocial memberSocial){
 		Optional<RewardMemberSocial> findRM = rewardMemberSocialCheckService.getInfoRMByRNameAndM("뉴비", memberSocial);
 		if (findRM.isEmpty()){

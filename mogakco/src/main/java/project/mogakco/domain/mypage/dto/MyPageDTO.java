@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class MyPageDTO {
 
 	@Getter
-	public static class totalTimerUse{
+	public static class onlyUseOauthId {
 		private String oauthId;
 	}
 
@@ -18,5 +18,11 @@ public class MyPageDTO {
 	public static class continueTimer{
 		private String oauthId;
 		private LocalDate nowDate;
+	}
+
+	@Getter
+	public static class attachReward{
+		private String oauthId;
+		private Long rewardSeq;
 	}
 }
