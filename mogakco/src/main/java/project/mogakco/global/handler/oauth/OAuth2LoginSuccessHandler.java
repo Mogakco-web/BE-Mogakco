@@ -100,7 +100,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		if (findRM.isEmpty()){
 			System.out.println("뉴비!");
 			rewardService.initializeRewardService("oauth",memberSocial);
-			memberSocial.updateInfoToFCMToken(fcmConfig.generateFCMToken());
+
+			String generateFcmToken = fcmConfig.generateFCMToken();
+			System.out.println("fcm init="+generateFcmToken);
+			memberSocial.updateInfoToFCMToken(generateFcmToken);
 		}
 	}
 }

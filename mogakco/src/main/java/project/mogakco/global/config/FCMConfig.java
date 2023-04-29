@@ -47,7 +47,7 @@ public class FCMConfig {
 				.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
 
 		googleCredentials.refreshIfExpired();
-
+		System.out.println("Generated = "+googleCredentials.getAccessToken().getTokenValue());
 		return googleCredentials.getAccessToken().getTokenValue();
 	}
 }
