@@ -109,7 +109,8 @@ dependencies {
     //redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-    implementation 'com.google.firebase:firebase-admin:7.1.1'
+    // https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
+    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.1.0'
 }
 
 test {

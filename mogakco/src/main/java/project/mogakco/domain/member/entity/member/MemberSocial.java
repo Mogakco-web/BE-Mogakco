@@ -61,6 +61,8 @@ public class MemberSocial extends BaseEntity {
 
 	private Long attachReward;
 
+	private String fcmToken;
+
 	public MemberSocial attachTheReward(Long reward){
 		this.attachReward=reward;
 		return this;
@@ -113,5 +115,9 @@ public class MemberSocial extends BaseEntity {
 				.nickname(nickname)
 				.rewardSeq(attachReward)
 				.build();
+	}
+
+	public void updateInfoToFCMToken(String generateFcmToken){
+		this.fcmToken=generateFcmToken;
 	}
 }

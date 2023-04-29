@@ -7,7 +7,8 @@ spring:
     include:
       - jwt
       - oauth
-    active: jwt, oauth
+      - fcm
+    active: jwt, oauth, fcm
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: ${jdbc-url}
@@ -15,8 +16,8 @@ spring:
     password: ${password}
 
   config:
-    name: application,application-jwt,application-oauth
-    location: classpath:/application.yml,classpath:/application-jwt.yml,classpath:/application-oauth.yml
+    name: application,application-jwt,application-oauth,application-fcm
+    location: classpath:/application.yml,classpath:/application-jwt.yml,classpath:/application-oauth.yml,calsspath:/application-fcm.yml
 
 
   jpa:

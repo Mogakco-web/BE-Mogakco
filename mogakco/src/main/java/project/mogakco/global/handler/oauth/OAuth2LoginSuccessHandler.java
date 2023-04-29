@@ -13,6 +13,7 @@ import project.mogakco.domain.mypage.entity.RewardMemberSocial;
 import project.mogakco.domain.todo.application.service.category.CategoryService;
 import project.mogakco.global.application.fcm.service.FCMService;
 import project.mogakco.global.application.jwt.JwtService;
+import project.mogakco.global.config.FCMConfig;
 import project.mogakco.global.domain.entity.oauth.CustomOAuth2User;
 
 import javax.servlet.ServletException;
@@ -31,7 +32,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 	private final MemberServiceImpl memberService;
 	private final RewardMemberSocialCheckService rewardMemberSocialCheckService;
 	private final RewardService rewardService;
-	private final FCMService fcmService;
+	private final FCMConfig fcmConfig;
 //    private final UserRepository userRepository;
 
 	@Override
@@ -77,7 +78,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		jwtService.updateRefreshToken((String) oAuth2User.getAttributes().get("login"), refreshToken);
 	}
 
-	private void initializeCategorySettings(String nickname){
+	private void initializeCategorySettings(String nickname) throws IOException {
 		MemberSocial findM = memberService.getMemberInfoByNickname(nickname);
 		isNewbie(findM);
 		if (categoryService.getCategoryInfoNameAndMember(findM)){
@@ -88,17 +89,18 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 	}
 
 
-	private void isNewbie(MemberSocial findM){
+	private void isNewbie(MemberSocial findM) throws IOException {
 		if(rewardMemberSocialCheckService.getInfoRMListByM(findM).isEmpty()){
 			rewardToNewbie(findM);
 		}
 	}
 
-	private void rewardToNewbie(MemberSocial memberSocial){
+	private void rewardToNewbie(MemberSocial memberSocial) throws IOException {
 		Optional<RewardMemberSocial> findRM = rewardMemberSocialCheckService.getInfoRMByRNameAndM("뉴비", memberSocial);
 		if (findRM.isEmpty()){
 			System.out.println("뉴비!");
 			rewardService.initializeRewardService("oauth",memberSocial);
+			memberSocial.updateInfoToFCMToken(fcmConfig.generateFCMToken());
 		}
 	}
 }

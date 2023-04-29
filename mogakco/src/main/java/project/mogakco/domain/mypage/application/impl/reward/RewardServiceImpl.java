@@ -87,7 +87,6 @@ public class RewardServiceImpl extends RewardService {
 	}
 
 	public Reward saveOnlyReward(String reward_name,String reward_description){
-		messagingToClientReward(reward_description,reward_description);
 		return rewardRepository.save(
 				Reward.builder()
 						.name(reward_name)
@@ -97,12 +96,13 @@ public class RewardServiceImpl extends RewardService {
 
 	}
 
-	private void messagingToClientReward(String title,String contents){
-		fcmService.sendNotificationReward(title,contents);
+	private void messagingToClientReward(String title,String contents,String fcmToken){
+		fcmService.sendNotificationReward(title,contents,fcmToken);
 	}
 
 	@Transactional
 	public void saveRewardMemberSocial(Reward reward, MemberSocial memberSocial){
+		messagingToClientReward(reward.getName(),reward.getDescription(),memberSocial.getFcmToken());
 		rewardMemberSocialRepository.save(
 				RewardMemberSocial.builder()
 						.reward(reward)
@@ -117,9 +117,9 @@ public class RewardServiceImpl extends RewardService {
 	}
 
 	private List<DummyReward> initializeRewardList(){
-		LinkedList<String> name_list= (LinkedList<String>) RewardConfig.getTitles();
+		LinkedList<String> name_list= RewardConfig.getTitles();
 
-		LinkedList<String> des_list= (LinkedList<String>) RewardConfig.getDescriptions();
+		LinkedList<String> des_list= RewardConfig.getDescriptions();
 		List<DummyReward> dummyList=new ArrayList<>();
 		for (int i=0;i<name_list.size();i++){
 			dummyList.add(DummyReward.builder()

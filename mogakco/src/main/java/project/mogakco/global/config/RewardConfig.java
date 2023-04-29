@@ -43,13 +43,13 @@ public class RewardConfig {
 		public static final String description="따이무 쓰또쁘";
 	}
 
-	public static List<String> getTitles() {
+	public static LinkedList<String> getTitles() {
 		return Stream.of(Newbie.title, TimerOne.title, TimerFifty.title, TimerHundred.title, TimerFHundred.title)
-				.collect(Collectors.toList());
+				.collect(Collectors.toCollection(LinkedList::new));
 	}
 
-	public static List<String> getDescriptions() {
+	public static LinkedList<String> getDescriptions() {
 		return Stream.of(Newbie.description, TimerOne.description, TimerFifty.description, TimerHundred.description, TimerFHundred.description)
-				.collect(Collectors.toList());
+				.collect(Collectors.toCollection(LinkedList::new));
 	}
 }
