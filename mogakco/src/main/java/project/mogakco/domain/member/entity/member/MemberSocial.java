@@ -118,6 +118,7 @@ public class MemberSocial extends BaseEntity {
 	}
 
 	public void updateInfoToFCMToken(String generateFcmToken){
+		System.out.println("generate="+generateFcmToken);
 		this.fcmToken=generateFcmToken;
 	}
 }

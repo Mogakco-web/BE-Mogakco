@@ -27,4 +27,12 @@ public class MemberServiceImpl {
 		log.info("FindOAUTHID="+oauthId);
 		return memberRepository.findByOauthId(oauthId).orElse(null);
 	}
+
+	public String getMemberFcmTokenInfoByMemberSocial(MemberSocial memberSocial){
+		return memberSocial.getFcmToken();
+	}
+
+	public MemberSocial getMemberInfoByMemberSeq(Long memberSeq){
+		return memberRepository.findById(memberSeq).get();
+	}
 }

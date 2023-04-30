@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.mypage.application.service.reward.RewardMemberSocialCheckService;
@@ -28,11 +29,7 @@ import java.util.Optional;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 	private final JwtService jwtService;
-	private final CategoryService categoryService;
-	private final MemberServiceImpl memberService;
-	private final RewardMemberSocialCheckService rewardMemberSocialCheckService;
-	private final RewardService rewardService;
-	private final FCMConfig fcmConfig;
+
 //    private final UserRepository userRepository;
 
 	@Override
@@ -54,7 +51,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 //                findUser.authorizeUser();
 			} else {*/
 			loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
-			initializeCategorySettings((String) oAuth2User.getAttributes().get("login"));
 			response.sendRedirect("http://localhost:3000/callback?accessToken="+response.getHeader("Authorization")+"&refreshToken="+response.getHeader("Authorization_refresh"));
 			return;
 //			}
@@ -78,32 +74,5 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		jwtService.updateRefreshToken((String) oAuth2User.getAttributes().get("login"), refreshToken);
 	}
 
-	private void initializeCategorySettings(String nickname) throws IOException {
-		MemberSocial findM = memberService.getMemberInfoByNickname(nickname);
-		isNewbie(findM);
-		if (categoryService.getCategoryInfoNameAndMember(findM)){
-			log.info("category settings");
-		}else {
-			categoryService.initializeBasicCategory(findM);
-		}
-	}
 
-
-	private void isNewbie(MemberSocial findM) throws IOException {
-		if(rewardMemberSocialCheckService.getInfoRMListByM(findM).isEmpty()){
-			rewardToNewbie(findM);
-		}
-	}
-
-	private void rewardToNewbie(MemberSocial memberSocial) throws IOException {
-		Optional<RewardMemberSocial> findRM = rewardMemberSocialCheckService.getInfoRMByRNameAndM("뉴비", memberSocial);
-		if (findRM.isEmpty()){
-			System.out.println("뉴비!");
-			rewardService.initializeRewardService("oauth",memberSocial);
-
-			String generateFcmToken = fcmConfig.generateFCMToken();
-			System.out.println("fcm init="+generateFcmToken);
-			memberSocial.updateInfoToFCMToken(generateFcmToken);
-		}
-	}
 }

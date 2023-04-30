@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.mypage.application.service.reward.RewardService;
 import project.mogakco.domain.mypage.entity.DummyReward;
@@ -38,6 +39,8 @@ public class RewardServiceImpl extends RewardService {
 
 	private final FCMService fcmService;
 
+	private final MemberServiceImpl memberService;
+
 
 	@PostConstruct
 	public void initializeReward(){
@@ -45,45 +48,46 @@ public class RewardServiceImpl extends RewardService {
 	}
 
 	@Override
-	public void initializeRewardService(String type,MemberSocial memberSocial) {
+	public void initializeRewardService(String type,MemberSocial memberSocial,String fcmToken) {
 		switch (type){
 			case "oauth":
-				oauthInitialize(memberSocial);
+				oauthInitialize(memberSocial,fcmToken);
 				break;
 			case "timer":
-				timerInitialize(memberSocial);
+				timerInitialize(memberSocial,fcmToken);
+				break;
 		}
 	}
 
 
 
 	@Transactional
-	public void timerInitialize(MemberSocial memberSocial) {
+	public void timerInitialize(MemberSocial memberSocial,String fcmToken) {
 		switch (timerCheckService.getTimerInfoListByMemberSocial(memberSocial)
 				.size()
 		){
 			case 1:
 				saveRewardMemberSocial(saveOnlyReward(RewardConfig.TimerOne.title,
-						RewardConfig.TimerOne.description),memberSocial);
+						RewardConfig.TimerOne.description),memberSocial,fcmToken);
 				break;
 			case 50:
 				saveRewardMemberSocial(saveOnlyReward(RewardConfig.TimerFifty.title,
-						RewardConfig.TimerFifty.description),memberSocial);
+						RewardConfig.TimerFifty.description),memberSocial,fcmToken);
 				break;
 			case 100:
 				saveRewardMemberSocial(saveOnlyReward(RewardConfig.TimerHundred.title,
-						RewardConfig.TimerHundred.description),memberSocial);
+						RewardConfig.TimerHundred.description),memberSocial,fcmToken);
 				break;
 			case 500:
 				saveRewardMemberSocial(saveOnlyReward(RewardConfig.TimerFHundred.title,
-						RewardConfig.TimerFHundred.description),memberSocial);
+						RewardConfig.TimerFHundred.description),memberSocial,fcmToken);
 				break;
 		}
 	}
 
 	@Transactional
-	public void oauthInitialize(MemberSocial memberSocial){
-		saveRewardMemberSocial(saveOnlyReward(RewardConfig.Newbie.title,RewardConfig.Newbie.description), memberSocial);
+	public void oauthInitialize(MemberSocial memberSocial,String fcmToken){
+		saveRewardMemberSocial(saveOnlyReward(RewardConfig.Newbie.title,RewardConfig.Newbie.description), memberSocial,fcmToken);
 	}
 
 	public Reward saveOnlyReward(String reward_name,String reward_description){
@@ -97,12 +101,15 @@ public class RewardServiceImpl extends RewardService {
 	}
 
 	private void messagingToClientReward(String title,String contents,String fcmToken){
+		System.out.println("t="+title);
+		System.out.println("c="+contents);
+		System.out.println("f="+fcmToken);
 		fcmService.sendNotificationReward(title,contents,fcmToken);
 	}
 
 	@Transactional
-	public void saveRewardMemberSocial(Reward reward, MemberSocial memberSocial){
-		messagingToClientReward(reward.getName(),reward.getDescription(),memberSocial.getFcmToken());
+	public void saveRewardMemberSocial(Reward reward, MemberSocial memberSocial,String fcmToken){
+		messagingToClientReward(reward.getName(),reward.getDescription(),fcmToken);
 		rewardMemberSocialRepository.save(
 				RewardMemberSocial.builder()
 						.reward(reward)

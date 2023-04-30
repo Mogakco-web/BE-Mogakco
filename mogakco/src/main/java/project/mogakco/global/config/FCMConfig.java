@@ -12,6 +12,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -24,6 +25,12 @@ public class FCMConfig {
 	private String googleApplicationCredentials;
 
 	private String FIREBASE_CONFIG_PATH="/mogakco.json";
+
+	@Value("${fcm.projectId}")
+	private String projectId;
+
+	private String scope = "https://www.googleapis.com/auth/firebase.messaging";
+
 
 	@PostConstruct
 	public void initialize() throws IOException {
@@ -41,13 +48,22 @@ public class FCMConfig {
 		}
 	}
 
-	public String generateFCMToken() throws IOException {
+	/*public String generateFCMToken() throws IOException {*//*
 		GoogleCredentials   googleCredentials = GoogleCredentials
 				.fromStream(new ClassPathResource(FIREBASE_CONFIG_PATH).getInputStream())
 				.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
 
 		googleCredentials.refreshIfExpired();
 		System.out.println("Generated = "+googleCredentials.getAccessToken().getTokenValue());
-		return googleCredentials.getAccessToken().getTokenValue();
-	}
+		return googleCredentials.getAccessToken().getTokenValue();*//*
+		FirebaseOptions options = FirebaseOptions.builder()
+				.setCredentials(GoogleCredentials.fromStream(new FileInputStream(FIREBASE_CONFIG_PATH)))
+				.setProjectId(projectId)
+				.build();
+		FirebaseApp.initializeApp(options);
+
+		FirebaseMessaging messaging = FirebaseMessaging.getInstance();
+
+
+	}*/
 }
