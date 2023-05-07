@@ -13,7 +13,7 @@ public class RewardTimerServiceImpl implements RewardTimerService {
 	private final RewardService rewardService;
 
 	@Override
-	public void initializeTimerReward(String type, MemberSocial memberSocial) {
-		rewardService.initializeRewardService(type,memberSocial);
+	public void initializeTimerReward(String type, MemberSocial memberSocial,String fcmToken) {
+		rewardService.initializeRewardService(type,memberSocial,fcmToken);
 	}
 }

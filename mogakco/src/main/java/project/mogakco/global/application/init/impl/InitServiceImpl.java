@@ -11,10 +11,8 @@ import project.mogakco.domain.mypage.application.service.reward.RewardService;
 import project.mogakco.domain.mypage.entity.RewardMemberSocial;
 import project.mogakco.domain.todo.application.service.category.CategoryService;
 import project.mogakco.global.application.init.service.InitService;
-import project.mogakco.global.config.FCMConfig;
 import project.mogakco.global.dto.init.InitDTO;
 
-import java.io.IOException;
 import java.util.Optional;
 
 @Service

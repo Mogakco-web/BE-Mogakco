@@ -16,6 +16,7 @@ public class TimerRecodeDTO {
 		private String hours;
 		private String minute;
 		private String second;
+		private String fcmToken;
 		private LocalDate timerCreDay;
 		private String oauthId;
 

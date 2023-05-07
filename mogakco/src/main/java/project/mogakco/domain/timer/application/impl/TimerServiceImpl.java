@@ -51,7 +51,7 @@ public class TimerServiceImpl implements TimerService {
 							.build()
 			);
 			TimerResponseDTO.RecodeTime recodeTime = t.toDTO();
-			rewardService.initializeRewardService("timer",findM);
+			rewardService.initializeRewardService("timer",findM,timerRecodeInfoToday.getFcmToken());
 			return new ResponseEntity<>(recodeTime, HttpStatus.OK);
 		} else {
 			log.info("중복저장");
