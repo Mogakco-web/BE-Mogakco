@@ -34,7 +34,7 @@ public class MemberAPIController {
 		String user_Nickname = jwtService.extractNickname(accessToken).get();
 		log.info("user_Nickname+"+user_Nickname);
 		MemberResponseDTO memberResponseDTO = memberService.getMemberInfoByNickname(user_Nickname).toDTO();
-
+		System.out.println("AUTHTOKEN="+memberResponseDTO.getAuthToken());
 		return new ResponseEntity<>(memberResponseDTO, HttpStatus.OK);
 	}
 

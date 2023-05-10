@@ -11,6 +11,10 @@ public class WebConfig implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
 				.allowedOrigins("/**")
+				.allowedOrigins("https://f206-114-205-30-236.ngrok-free.app`")
+				.allowedOrigins("https://localhost:3000/**")
+				.allowedOrigins("http://localhost:3000/**")
+				.allowedOrigins("http://127.0.0.1:4040/**")
 				.allowedHeaders("Access-Control-Allow-Origin")
 				.exposedHeaders("Access-Control-Allow-Origin")
 				.allowCredentials(true)
