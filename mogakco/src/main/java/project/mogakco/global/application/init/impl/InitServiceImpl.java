@@ -29,7 +29,10 @@ public class InitServiceImpl implements InitService {
 	@Override
 	@Transactional
 	public void basicSetting(InitDTO.BasicSetting basicSetting){
-		MemberSocial findM = memberService.getMemberInfoByMemberSeq(basicSetting.getMemberSeq());
+		MemberSocial findM = memberService.getMemberInfoByOAuthId(basicSetting.getOauthId());
+		System.out.println("Basic oauth="+basicSetting.getOauthId());
+		System.out.println("Basic FINDM="+findM);
+
 		findM.updateInfoToFCMToken(Optional.ofNullable(findM.getFcmToken())
 				.orElse(basicSetting.getFcmToken()));
 		initializeCategorySettings(findM);
@@ -46,17 +49,19 @@ public class InitServiceImpl implements InitService {
 
 
 	private void isNewbie(MemberSocial findM){
-		if(rewardMemberSocialCheckService.getInfoRMListByM(findM).isEmpty()){
-			rewardToNewbie(findM);
-		}
+//		if(rewardMemberSocialCheckService.getInfoRMListByM(findM).isEmpty()){
+//			rewardToNewbie(findM);
+//		}
+		rewardToNewbie(findM);
 	}
 
 	@Transactional
 	public void rewardToNewbie(MemberSocial memberSocial) {
-		Optional<RewardMemberSocial> findRM = rewardMemberSocialCheckService.getInfoRMByRNameAndM("뉴비", memberSocial);
-		if (findRM.isEmpty()){
-			System.out.println("뉴비!");
-			rewardService.initializeRewardService("oauth",memberSocial,memberSocial.getFcmToken());
-		}
+//		Optional<RewardMemberSocial> findRM = rewardMemberSocialCheckService.getInfoRMByRNameAndM("뉴비", memberSocial);
+//		if (findRM.isEmpty()){
+//			System.out.println("뉴비!");
+//			rewardService.initializeRewardService("oauth",memberSocial,memberSocial.getFcmToken());
+//		}
+		rewardService.initializeRewardService("oauth",memberSocial,memberSocial.getFcmToken());
 	}
 }

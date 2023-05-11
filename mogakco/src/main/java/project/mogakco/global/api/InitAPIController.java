@@ -12,7 +12,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Log4j2
 @RequestMapping("/api/v1/init")
-public class FcmAPIController {
+public class InitAPIController {
 
 	private final InitService initService;
 

@@ -109,7 +109,10 @@ public class RewardServiceImpl extends RewardService {
 
 	@Transactional
 	public void saveRewardMemberSocial(Reward reward, MemberSocial memberSocial,String fcmToken){
-		messagingToClientReward(reward.getName(),reward.getDescription(),fcmToken);
+		System.out.println("FCMTOKEN="+fcmToken);
+		if(fcmToken!=null){
+			messagingToClientReward(reward.getName(),reward.getDescription(),fcmToken);
+		}
 		rewardMemberSocialRepository.save(
 				RewardMemberSocial.builder()
 						.reward(reward)

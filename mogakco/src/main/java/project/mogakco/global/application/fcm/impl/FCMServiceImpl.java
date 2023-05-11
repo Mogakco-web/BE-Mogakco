@@ -31,6 +31,7 @@ public class FCMServiceImpl implements FCMService {
 	@SneakyThrows
 	public void send(Message message){
 		try{
+			System.out.println("Message="+message.toString());
 			FirebaseMessaging.getInstance().send(message);
 		}catch (Exception e){
 			System.out.println("FCM error="+e.getMessage());
