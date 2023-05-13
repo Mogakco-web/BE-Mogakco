@@ -49,19 +49,17 @@ public class InitServiceImpl implements InitService {
 
 
 	private void isNewbie(MemberSocial findM){
-//		if(rewardMemberSocialCheckService.getInfoRMListByM(findM).isEmpty()){
-//			rewardToNewbie(findM);
-//		}
-		rewardToNewbie(findM);
-	}
+		if(rewardMemberSocialCheckService.getInfoRMListByM(findM).isEmpty()){
+			rewardToNewbie(findM);
+		}
+ 	}
 
 	@Transactional
 	public void rewardToNewbie(MemberSocial memberSocial) {
-//		Optional<RewardMemberSocial> findRM = rewardMemberSocialCheckService.getInfoRMByRNameAndM("뉴비", memberSocial);
-//		if (findRM.isEmpty()){
-//			System.out.println("뉴비!");
-//			rewardService.initializeRewardService("oauth",memberSocial,memberSocial.getFcmToken());
-//		}
-		rewardService.initializeRewardService("oauth",memberSocial,memberSocial.getFcmToken());
+		Optional<RewardMemberSocial> findRM = rewardMemberSocialCheckService.getInfoRMByRNameAndM("뉴비", memberSocial);
+		if (findRM.isEmpty()){
+			System.out.println("뉴비!");
+			rewardService.initializeRewardService("oauth",memberSocial,memberSocial.getFcmToken());
+		}
 	}
 }
