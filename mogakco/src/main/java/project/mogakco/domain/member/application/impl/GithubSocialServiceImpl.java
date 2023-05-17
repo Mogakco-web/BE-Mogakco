@@ -92,6 +92,7 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 				Void.class,
 				client_id
 		);
+		System.out.println("Response="+response.getBody());
 		System.out.println("Response="+response.getStatusCode());
 		if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
 			MemberSocial findM = memberService.getMemberInfoByAuthToken(git_authToken);
