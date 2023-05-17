@@ -77,7 +77,9 @@ public class GithubSocialServiceImpl implements GithubSocialService {
 		RestTemplate restTemplate = new RestTemplate();
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", "Basic " + Base64Utils.encodeToString((client_id + ":" + client_secret).getBytes()));
+		String auth = Base64Utils.encodeToString((client_id + ":" + client_secret).getBytes());
+		System.out.println("auth="+auth);
+		headers.set("Authorization", "Basic " + auth);
 		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
 		Map<String, String> requestBody = new HashMap<>();
