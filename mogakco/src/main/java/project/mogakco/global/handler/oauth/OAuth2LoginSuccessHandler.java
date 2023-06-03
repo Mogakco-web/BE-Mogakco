@@ -38,6 +38,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		log.info("callback-git url : "+request.getRequestURI());
 		try {
 			CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+			log.info("authentication:"+ oAuth2User);
+			log.info("AUTH:"+authentication.toString());
 			log.info("OAuth2User="+oAuth2User.getAttributes().get("login"));
 
 			loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
