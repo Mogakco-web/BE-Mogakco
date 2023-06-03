@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.UriComponentsBuilder;
 import project.mogakco.domain.member.application.impl.MemberServiceImpl;
 import project.mogakco.domain.member.entity.member.MemberSocial;
 import project.mogakco.domain.mypage.application.service.reward.RewardMemberSocialCheckService;
@@ -16,6 +17,7 @@ import project.mogakco.global.application.fcm.service.FCMService;
 import project.mogakco.global.application.jwt.JwtService;
 import project.mogakco.global.config.FCMConfig;
 import project.mogakco.global.domain.entity.oauth.CustomOAuth2User;
+import project.mogakco.global.dto.oauth.OAuthDTO;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -42,8 +44,14 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 			log.info("AUTH:"+authentication.toString());
 			log.info("OAuth2User="+oAuth2User.getAttributes().get("login"));
 
-			loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
-			response.sendRedirect("http://localhost:3000/callback?accessToken="+response.getHeader("Authorization")+"&refreshToken="+response.getHeader("Authorization_refresh"));
+			OAuthDTO.OAuthSuccess oAuthSuccess = loginSuccess(response, oAuth2User);// 로그인에 성공한 경우 access, refresh 토큰 생성
+			response.setContentType("text/html;charset=UTF-8");
+			response.setHeader("accessToken",oAuthSuccess.getAccessToken());
+			response.setHeader("refreshToken",oAuthSuccess.getRefreshToken());
+			response.setContentType("application/json;charset=UTF-8");
+//			String responseBody = "{\"accessToken\": \"" + oAuthSuccess.getAccessToken() + "\", \"refreshToken\": \"" + oAuthSuccess.getRefreshToken() + "\"}";
+//			response.getWriter().write(responseBody);
+			response.sendRedirect("http://localhost:3000/callback");
 			return;
 //			}
 		} catch (Exception e) {
@@ -54,7 +62,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 	}
 
 	// TODO : 소셜 로그인 시에도 무조건 토큰 생성하지 말고 JWT 인증 필터처럼 RefreshToken 유/무에 따라 다르게 처리해보기
-	private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
+	private OAuthDTO.OAuthSuccess loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
 		String accessToken = jwtService.createAccessToken((String) oAuth2User.getAttributes().get("login"));
 		String refreshToken = jwtService.createRefreshToken();
 		System.out.println("accessToken="+accessToken);
@@ -64,6 +72,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 		jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
 		jwtService.updateRefreshToken((String) oAuth2User.getAttributes().get("login"), refreshToken);
+
+		return OAuthDTO.OAuthSuccess.builder()
+				.accessToken(accessToken)
+				.refreshToken(refreshToken)
+				.build();
 	}
 
 
